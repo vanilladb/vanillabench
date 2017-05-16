@@ -1,0 +1,10 @@
+
+### Eclipse ###
+.settings/
+.recommenders
+.classpath
+.project
+target/
+
+### Others ###
+design
