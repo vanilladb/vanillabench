@@ -17,7 +17,7 @@ public class VanillaDbSpDriver implements SutDriver {
 	}
 	
 	@Override
-	public SutConnection connectToSut(Object... args) throws SQLException {
+	public SutConnection connectToSut() throws SQLException {
 		SpDriver driver = new SpDriver();
 		return new VanillaDbSpConnection(driver.connect(SERVER_IP, null));
 	}

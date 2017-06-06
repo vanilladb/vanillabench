@@ -4,6 +4,6 @@ import java.sql.SQLException;
 
 public interface SutDriver {
 
-	SutConnection connectToSut(Object... args) throws SQLException;
+	SutConnection connectToSut() throws SQLException;
 
 }
