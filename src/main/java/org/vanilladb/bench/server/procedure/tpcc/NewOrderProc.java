@@ -8,16 +8,16 @@ import org.vanilladb.core.server.VanillaDb;
 
 /**
  * Entering a new order is done in a single database transaction with the
- * following steps:<br />
- * 1. Create an order header, comprised of: <br />
- * - 2 row selections with data retrieval <br />
- * - 1 row selections with data retrieval and update<br />
- * - 2 row insertions <br />
+ * following steps:<br>
+ * 1. Create an order header, comprised of: <br>
+ * - 2 row selections with data retrieval <br>
+ * - 1 row selections with data retrieval and update<br>
+ * - 2 row insertions <br>
  * 2. Order a variable number of items (average ol_cnt = 10), comprised of:
- * <br />
- * - (1 * ol_cnt) row selections with data retrieval <br />
- * - (1 * ol_cnt) row selections with data retrieval and update <br />
- * - (1 * ol_cnt) row insertions <br />
+ * <br>
+ * - (1 * ol_cnt) row selections with data retrieval <br>
+ * - (1 * ol_cnt) row selections with data retrieval and update <br>
+ * - (1 * ol_cnt) row insertions <br>
  * 
  * @author yslin
  *
