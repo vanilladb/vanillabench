@@ -10,14 +10,14 @@
 	<name>vanillabench</name>
 	<description>The benchmarker for VanillaCore</description>
 	<url>http://www.vanilladb.org</url>
-	
+
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
-	
+
 	<organization>
 		<name>VanillaDB Organization</name>
 		<url>http://www.vanilladb.org</url>
@@ -49,7 +49,7 @@
 			<email>ctsai@netdb.cs.nthu.edu.tw</email>
 		</developer>
 	</developers>
-	
+
 	<scm>
 		<connection>scm:git:git://github.com/vanilladb/vanillabench.git</connection>
 		<developerConnection>scm:git:ssh://github.com:vanilladb/vanillabench.git</developerConnection>
@@ -73,7 +73,7 @@
 			<version>0.2.2</version>
 		</dependency>
 	</dependencies>
-	
+
 	<!-- For deploying to the central repository -->
 	<distributionManagement>
 		<snapshotRepository>
@@ -85,7 +85,7 @@
 			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
-	
+
 	<build>
 		<plugins>
 			<!-- Use JDK 1.7, instead of the default one (JDK 1.5) -->
@@ -98,34 +98,10 @@
 					<target>1.7</target>
 				</configuration>
 			</plugin>
-			
+
 			<!-- Testing Settings -->
 			<!-- TODO: Load properties for testing -->
 
-			<!-- Copy the properties files to a different directory -->
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.0.1</version>
-				<executions>
-					<execution>
-						<id>copy-resources</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${basedir}/target/properties</outputDirectory>
-							<resources>
-								<resource>
-									<directory>src/main/resources</directory>
-									<filtering>true</filtering>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			
 			<!-- Generate the source jar -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -156,12 +132,76 @@
 				</executions>
 			</plugin>
 
+			<!-- Generate Scripts -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>appassembler-maven-plugin</artifactId>
+				<version>1.10</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>assemble</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- Set alternative assemble directory -->
+					<assembleDirectory>${project.build.directory}/stand-alone</assembleDirectory>
+					<!-- VM Arguments -->
+					<extraJvmArguments>-Djava.util.logging.config.file=properties/logging.properties
+						-Dorg.vanilladb.bench.config.file=properties/vanillabench.properties
+						-Dorg.vanilladb.core.config.file=properties/vanilladb.properties</extraJvmArguments>
+					<programs>
+						<!-- Server -->
+						<program>
+							<mainClass>org.vanilladb.bench.server.StartUp</mainClass>
+							<id>server</id>
+						</program>
+						<!-- Client -->
+						<program>
+							<mainClass>org.vanilladb.bench.App</mainClass>
+							<id>client</id>
+						</program>
+					</programs>
+				</configuration>
+			</plugin>
+
+			<!-- Copy the properties files to a different directory -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.0.1</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/stand-alone/properties</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources/java/util/logging/</directory>
+								</resource>
+								<resource>
+									<directory>src/main/resources/org/vanilladb/bench/</directory>
+								</resource>
+								<resource>
+									<directory>src/main/resources/org/vanilladb/core/</directory>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
-	
+
 	<profiles>
-		<!-- Make sure release only happening when I need it
-			(To avoid error when others try to run 'mvn install', like Travis CI) -->
+		<!-- Make sure release only happening when I need it (To avoid error when 
+			others try to run 'mvn install', like Travis CI) -->
 		<profile>
 			<id>release-sign-artifacts</id>
 			<activation>

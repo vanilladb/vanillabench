@@ -15,8 +15,8 @@ public class App {
 		try {
 			parseArguments(args);
 		} catch (IllegalArgumentException e) {
-			System.out.println("Error: " + e.getMessage());
-			System.out.println("Usage: ./app [Action]");
+			System.err.println("Error: " + e.getMessage());
+			System.err.println("Usage: ./app [Action]");
 		}
 		
 		// Create a driver for connection
