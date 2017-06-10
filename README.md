@@ -1,5 +1,9 @@
 # VanillaBench
 
+[![Build Status](https://travis-ci.org/vanilladb/vanillabench.svg?branch=master)](https://travis-ci.org/vanilladb/vanillabench)
+[![Apache 2.0 License](https://img.shields.io/badge/license-apache%202.0-orange.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Maven Central](https://img.shields.io/maven-central/v/org.vanilladb/bench.svg)](https://maven-badges.herokuapp.com/maven-central/org.vanilladb/bench)
+
 VanillaBench is a benchmarking tool for testing the performance (throughput and latency) in extreme environment.
 
 ## Type of Benchmarks
