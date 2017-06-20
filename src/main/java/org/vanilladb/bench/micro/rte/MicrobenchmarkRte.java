@@ -1,4 +1,4 @@
-package org.vanilladb.bench.rte.micro;
+package org.vanilladb.bench.micro.rte;
 
 import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.TransactionType;

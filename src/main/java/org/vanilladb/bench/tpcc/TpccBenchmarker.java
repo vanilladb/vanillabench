@@ -10,7 +10,7 @@ import org.vanilladb.bench.TransactionType;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutDriver;
 import org.vanilladb.bench.rte.RemoteTerminalEmulator;
-import org.vanilladb.bench.rte.tpcc.TpccRte;
+import org.vanilladb.bench.tpcc.rte.TpccRte;
 
 public class TpccBenchmarker extends Benchmarker {
 	
