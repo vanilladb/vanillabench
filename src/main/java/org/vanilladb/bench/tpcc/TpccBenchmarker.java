@@ -47,4 +47,9 @@ public class TpccBenchmarker extends Benchmarker {
 	protected void stopProfilingProcedure(SutConnection conn) throws SQLException {
 		conn.callStoredProc(TpccTransactionType.STOP_PROFILING.ordinal());
 	}
+	
+	@Override
+	protected void executePersistingProcedure(SutConnection conn) throws SQLException {
+		conn.callStoredProc(TpccTransactionType.NVM_PERSIST.ordinal());
+	}
 }

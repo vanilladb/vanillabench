@@ -49,6 +49,9 @@ public class App {
 		case 2: // Benchmarking
 			benchmarker.benchmark();
 			break;
+		case 3: // Persist
+			benchmarker.persist();
+			break;
 		}
 	}
 	

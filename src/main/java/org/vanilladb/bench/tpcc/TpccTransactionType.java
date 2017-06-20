@@ -10,7 +10,10 @@ public enum TpccTransactionType implements TransactionType {
 	START_PROFILING, STOP_PROFILING,
 	
 	// TPC-C procedures
-	NEW_ORDER, PAYMENT, ORDER_STATUS, DELIVERY, STOCK_LEVEL;
+	NEW_ORDER, PAYMENT, ORDER_STATUS, DELIVERY, STOCK_LEVEL,
+	
+	// NVM simulation
+	NVM_PERSIST;
 	
 	public static TpccTransactionType fromProcedureId(int pid) {
 		return TpccTransactionType.values()[pid];

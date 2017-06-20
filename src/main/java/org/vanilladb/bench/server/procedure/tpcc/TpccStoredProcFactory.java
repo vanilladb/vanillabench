@@ -30,6 +30,9 @@ public class TpccStoredProcFactory implements StoredProcedureFactory {
 		case PAYMENT:
 			sp = new PaymentProc();
 			break;
+		case NVM_PERSIST:
+			sp = new NVMPersistProc();
+			break;
 		default:
 			throw new UnsupportedOperationException("Procedure " + TpccTransactionType.fromProcedureId(pid) + " is not supported for now");
 		}

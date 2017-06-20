@@ -30,7 +30,7 @@ public abstract class Benchmarker {
 	protected abstract void stopProfilingProcedure(SutConnection conn) throws SQLException;
 	
 	protected abstract RemoteTerminalEmulator createRte(SutConnection conn, StatisticMgr statMgr);
-	
+		
 	public void loadTestbed() {
 		if (logger.isLoggable(Level.INFO))
 			logger.info("loading the testbed of tpcc benchmark...");
@@ -128,7 +128,29 @@ public abstract class Benchmarker {
 			logger.info("benchmark process finished.");
 	}
 	
+	public void persist() {
+		if (logger.isLoggable(Level.INFO))
+			logger.info("persisting data structures in NVM...");
+		
+		try {
+			SutConnection con = getConnection();
+			executePersistingProcedure(con);
+		} catch (SQLException e) {
+			if (logger.isLoggable(Level.SEVERE))
+				logger.severe("Error: " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		if (logger.isLoggable(Level.INFO))
+			logger.info("persisting procedure finished.");
+	}
+	
 	private SutConnection getConnection() throws SQLException {
 		return driver.connectToSut();
 	}
+	
+	protected void executePersistingProcedure(SutConnection conn) throws SQLException {
+	
+	}
+
 }
