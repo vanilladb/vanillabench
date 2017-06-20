@@ -1,4 +1,4 @@
-package org.vanilladb.bench.rte.tpcc;
+package org.vanilladb.bench.tpcc.rte;
 
 import java.util.HashMap;
 import java.util.Map;

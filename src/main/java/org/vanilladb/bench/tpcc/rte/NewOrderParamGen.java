@@ -1,4 +1,4 @@
-package org.vanilladb.bench.rte.tpcc;
+package org.vanilladb.bench.tpcc.rte;
 
 import org.vanilladb.bench.TransactionType;
 import org.vanilladb.bench.tpcc.TpccConstants;
