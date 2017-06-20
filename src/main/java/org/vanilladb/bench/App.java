@@ -4,6 +4,7 @@ import org.vanilladb.bench.micro.MicroBenchmarker;
 import org.vanilladb.bench.remote.SutDriver;
 import org.vanilladb.bench.remote.sp.VanillaDbSpDriver;
 import org.vanilladb.bench.tpcc.TpccBenchmarker;
+import org.vanilladb.bench.tpce.TpceBenchmarker;
 
 public class App {
 	
@@ -39,7 +40,8 @@ public class App {
 			benchmarker = new TpccBenchmarker(driver);
 			break;
 		case TPCE:
-			throw new UnsupportedOperationException("No TPC-E for now");
+			benchmarker = new TpceBenchmarker(driver);
+			break;
 		}
 		
 		switch (action) {
