@@ -67,10 +67,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 
 			sql = "INSERT INTO item(i_id, i_im_id, i_name, i_price, i_data) VALUES (" + iid + ", " + iimid + ", '"
 					+ iname + "', " + iprice + ", '" + idata + "' )";
-
-			int result = VanillaDb.newPlanner().executeUpdate(sql, tx);
-			if (result <= 0)
-				throw new RuntimeException();
+			executeUpdate(sql);
 		}
 
 		if (logger.isLoggable(Level.FINE))

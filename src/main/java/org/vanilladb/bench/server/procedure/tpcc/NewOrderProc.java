@@ -2,9 +2,7 @@ package org.vanilladb.bench.server.procedure.tpcc;
 
 import org.vanilladb.bench.server.param.tpcc.NewOrderProcParamHelper;
 import org.vanilladb.bench.server.procedure.BasicStoredProcedure;
-import org.vanilladb.core.query.algebra.Plan;
 import org.vanilladb.core.query.algebra.Scan;
-import org.vanilladb.core.server.VanillaDb;
 
 /**
  * Entering a new order is done in a single database transaction with the
@@ -162,24 +160,5 @@ public class NewOrderProc extends BasicStoredProcedure<NewOrderProcParamHelper> 
 		paramHelper.setTotalAmount(
 				totalAmount * (1 - paramHelper.getcDiscount()) * (1 + paramHelper.getwTax() + paramHelper.getdTax()));
 
-	}
-	
-	private Scan executeQuery(String sql) {
-		Plan p = VanillaDb.newPlanner().createQueryPlan(sql, tx);
-		Scan s = p.open();
-		s.beforeFirst();
-		if (s.next()) {
-			return s;
-		} else
-			throw new RuntimeException("Query: " + sql + " fails.");
-	}
-	
-	private void executeUpdate(String sql) {
-		int count = VanillaDb.newPlanner().executeUpdate(sql, tx);
-		
-		if (count > 1)
-			throw new RuntimeException("Update: " + sql + " affect more than 1 record.");
-		else if (count < 1)
-			throw new RuntimeException("Update: " + sql + " fails.");
 	}
 }
