@@ -21,7 +21,7 @@ import org.vanilladb.bench.util.RandomValueGenerator;
  */
 public class TpceDataManager {
 
-	private static final String DATA_DIR;
+	public static final String DATA_DIR;
 
 	static {
 		DATA_DIR = BenchProperties.getLoader().getPropertyAsString(TpceDataManager.class.getName() + ".DATA_DIR", "");
