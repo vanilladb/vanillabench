@@ -14,14 +14,14 @@ import org.vanilladb.bench.tpcc.TpccTransactionType;
 
 public class TpccRte extends RemoteTerminalEmulator {
 	
+	private static final Random TX_TYPE_RANDOM = new Random();
+	
 	private int homeWid;
-	private static Random txnTypeRandom;
 	private Map<TransactionType, TpccTxExecutor> executors;
 
 	public TpccRte(SutConnection conn, StatisticMgr statMgr, int homeWarehouseId) {
 		super(conn, statMgr);
 		homeWid = homeWarehouseId;
-		txnTypeRandom = new Random();
 		executors = new HashMap<TransactionType, TpccTxExecutor>();
 		executors.put(TpccTransactionType.NEW_ORDER, new TpccTxExecutor(new NewOrderParamGen(homeWid)));
 		executors.put(TpccTransactionType.PAYMENT, new TpccTxExecutor(new PaymentParamGen(homeWid)));
@@ -31,7 +31,7 @@ public class TpccRte extends RemoteTerminalEmulator {
 	}
 	
 	protected TransactionType getNextTxType() {
-		int index = txnTypeRandom.nextInt(TpccConstants.FREQUENCY_TOTAL);
+		int index = TX_TYPE_RANDOM.nextInt(TpccConstants.FREQUENCY_TOTAL);
 		if (index < TpccConstants.RANGE_NEW_ORDER)
 			return TpccTransactionType.NEW_ORDER;
 		else if (index < TpccConstants.RANGE_PAYMENT)
