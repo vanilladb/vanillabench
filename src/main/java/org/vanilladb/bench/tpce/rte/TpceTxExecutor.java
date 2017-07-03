@@ -31,7 +31,7 @@ public class TpceTxExecutor extends TransactionExecutor {
 			txnRT = System.nanoTime() - txnRT;
 			
 			// notify the parameter generator
-			paramGen.onResponseReceived();
+			paramGen.onResponseReceived(result);
 
 			// display output
 			if (TransactionExecutor.DISPLAY_RESULT)

@@ -1,6 +1,7 @@
 package org.vanilladb.bench.tpce.rte;
 
 import org.vanilladb.bench.TransactionType;
+import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.tpce.TpceTransactionType;
 import org.vanilladb.bench.tpce.data.Customer;
 import org.vanilladb.bench.tpce.data.CustomerAccount;
@@ -55,8 +56,9 @@ public class TradeOrderParamGen implements TpceTxParamGenerator {
 	}
 
 	@Override
-	public void onResponseReceived() {
-		dataMgr.addNewTrade(tradeId, customerId, customerAccountId, brokerId);
+	public void onResponseReceived(SutResultSet result) {
+		if (result.isCommitted())
+			dataMgr.addNewTrade(tradeId, customerId, customerAccountId, brokerId);
 	}
 
 }
