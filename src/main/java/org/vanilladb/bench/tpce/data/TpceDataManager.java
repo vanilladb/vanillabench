@@ -111,7 +111,7 @@ public class TpceDataManager {
 		try {
 			// Load customer data
 			customerMap = new ConcurrentHashMap<Long, Customer>();
-			BufferedReader br = new BufferedReader(new FileReader(DATA_DIR + "Customer.txt"));
+			BufferedReader br = new BufferedReader(new FileReader(DATA_DIR + "\\Customer.txt"));
 
 			String line = null;
 			while ((line = br.readLine()) != null) {
@@ -126,7 +126,7 @@ public class TpceDataManager {
 			br.close();
 
 			// Load customer account data
-			br = new BufferedReader(new FileReader(DATA_DIR + "CustomerAccount.txt"));
+			br = new BufferedReader(new FileReader(DATA_DIR + "\\CustomerAccount.txt"));
 
 			line = null;
 			while ((line = br.readLine()) != null) {
@@ -144,7 +144,7 @@ public class TpceDataManager {
 
 			// Load company data
 			ArrayList<String> comanyNameList = new ArrayList<String>();
-			br = new BufferedReader(new FileReader(DATA_DIR + "Company.txt"));
+			br = new BufferedReader(new FileReader(DATA_DIR + "\\Company.txt"));
 
 			line = null;
 			while ((line = br.readLine()) != null) {
@@ -159,7 +159,7 @@ public class TpceDataManager {
 
 			// Load security data
 			ArrayList<String> secNameList = new ArrayList<String>();
-			br = new BufferedReader(new FileReader(DATA_DIR + "Security.txt"));
+			br = new BufferedReader(new FileReader(DATA_DIR + "\\Security.txt"));
 
 			line = null;
 			while ((line = br.readLine()) != null) {

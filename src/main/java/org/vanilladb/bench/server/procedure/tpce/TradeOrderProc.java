@@ -2,6 +2,7 @@ package org.vanilladb.bench.server.procedure.tpce;
 
 import org.vanilladb.bench.server.param.tpce.TradeOrderParamHelper;
 import org.vanilladb.bench.server.procedure.BasicStoredProcedure;
+import org.vanilladb.core.query.algebra.Scan;
 
 /**
  * Inputs: acct_id, co_name, exec_f_name, exec_l_name, exec_tax_id, is_lifo
@@ -14,6 +15,11 @@ import org.vanilladb.bench.server.procedure.BasicStoredProcedure;
  *
  */
 public class TradeOrderProc extends BasicStoredProcedure<TradeOrderParamHelper> {
+	
+	String acctName, custFName, custLName, taxId, brokerName, exchId, sName, statusId;
+	long brokerId, custId, coId;
+	int taxStatus, custTier, typeIsMarket, typeIsSell;
+	double marketPrice;
 
 	public TradeOrderProc() {
 		super(new TradeOrderParamHelper());
@@ -36,20 +42,39 @@ public class TradeOrderProc extends BasicStoredProcedure<TradeOrderParamHelper> 
 		// SELECT acct_name = ca_name, broker_id = ca_b_id, 
 		// cust_id = ca_c_id, tax_status = ca_tax_st FROM
 		// customer_account WHERE ca_id = acct_id
+		String sql = "SELECT ca_name, ca_b_id, ca_c_id, ca_tax_st FROM customer_account"
+				+ " WHERE ca_id = " + paramHelper.getAcctId();
+		Scan s = executeQuery(sql);
+		acctName = (String) s.getVal("ca_name").asJavaVal();
+		brokerId = (Long) s.getVal("ca_b_id").asJavaVal();
+		custId = (Long) s.getVal("ca_c_id").asJavaVal();
+		taxStatus = (Integer) s.getVal("ca_tax_st").asJavaVal();
 		
+		// TODO: Add this
 		// num_found = row_count
 		
 		// SELECT cust_f_name = c_f_name, cust_l_name = c_l_name, 
 		// cust_tier = c_tier, tax_id = c_tax_id FROM
 		// customer WHERE c_id = cust_id
+		sql = "SELECT c_f_name, c_l_name, c_tier, c_tax_id FROM customer"
+				+ " WHERE c_id = " + custId;
+		s = executeQuery(sql);
+		custFName = (String) s.getVal("c_f_name").asJavaVal();
+		custLName = (String) s.getVal("c_l_name").asJavaVal();
+		custTier = (Integer) s.getVal("c_tier").asJavaVal();
+		taxId = (String) s.getVal("c_tax_id").asJavaVal();
 		
 		// SELECT broker_name = b_name FROM broker WHERE b_id = broker_id
+		sql = "SELECT b_name FROM broker WHERE b_id = " + brokerId;
+		s = executeQuery(sql);
+		brokerName = (String) s.getVal("b_name").asJavaVal();
 	}
 	
 	/**
 	 * Check executor's permission
 	 */
 	private void frame2() {
+		// TODO: This has been skipped in simplified version
 		// SELECT ap_acl = ap_acl FROM account_permission WHERE
 		// ap_ca_id = acct_id, ap_f_name = exec_f_name,
 		// ap_l_name = exec_l_name, ap_tax_id = exec_tax_id
@@ -59,6 +84,43 @@ public class TradeOrderProc extends BasicStoredProcedure<TradeOrderParamHelper> 
 	 * Estimate overall effects of the trade
 	 */
 	private void frame3() {
+		
+		// ===== Simplified Version =====
+		
+		// SELECT co_id = s_co_id, exch_id = s_ex_id, s_name = s_name
+		// FROM security WHERE s_symb = symbol
+		String sql = "SELECT s_co_id, s_ex_id, s_name FROM security WHERE "
+				+ "s_symb = " + paramHelper.getSymbol();
+		Scan s = executeQuery(sql);
+		coId = (Long) s.getVal("s_co_id").asJavaVal();
+		exchId = (String) s.getVal("s_ex_id").asJavaVal();
+		sName = (String) s.getVal("s_name").asJavaVal();
+		
+		// SELECT market_price = lt_price FROM last_trade
+		// WHERE lt_s_symb = symbol
+		sql = "SELECT lt_price FROM last_trade WHERE "
+				+ "lt_s_symb = " + paramHelper.getSymbol();
+		s = executeQuery(sql);
+		marketPrice = (Double) s.getVal("lt_price").asJavaVal();
+		
+		// SELECT type_is_market = tt_is_mrkt, type_is_sell = tt_is_sell
+		// FROM trade_type WHERE tt_id = trade_type_id
+		sql = "SELECT tt_is_mrkt, tt_is_sell FROM trade_type WHERE "
+				+ "tt_id = " + paramHelper.getTradeTypeId();
+		s = executeQuery(sql);
+		typeIsMarket = (Integer) s.getVal("tt_is_mrkt").asJavaVal();
+		typeIsSell = (Integer) s.getVal("tt_is_sell").asJavaVal();
+		
+		if (typeIsMarket == 1) {
+			statusId = "A";
+		} else {
+			statusId = "B";
+		}
+		
+		
+		// TODO: Implement this version
+		// ===== Full Version =====
+		
 		// Get information on the security
 		if (true) {
 			// SELECT co_id = co_id FROM company WHERE co_name = co_name
@@ -77,7 +139,7 @@ public class TradeOrderProc extends BasicStoredProcedure<TradeOrderParamHelper> 
 		// WHERE lt_s_symb = symbol
 		
 		// Set trade characteristics based on the type of trade
-		// SELECT type_is_market = tt_is_mark, type_is_sell = tt_is_sell
+		// SELECT type_is_market = tt_is_mrkt, type_is_sell = tt_is_sell
 		// FROM trade_type WHERE tt_id = trade_type_id
 		
 		// If this is a limit-order, then the requested_price was passed in to the frame,
@@ -94,11 +156,24 @@ public class TradeOrderProc extends BasicStoredProcedure<TradeOrderParamHelper> 
 	 * Record the trade request by making all related updates
 	 */
 	private void frame4() {
+		long currentTime = System.currentTimeMillis();
+		
+		// XXX: Lots of dummy value
 		// Record trade information in TRADE table.
 		// INSERT INTO trade (t_id, t_dts, t_st_id, t_tt_id, t_is_cash,
 		// t_s_symb, t_qty, t_bid_price, t_ca_id, t_exec_name, t_trade_price,
 		// t_chrg, t_comm, t_tax, t_lifo) VALUES (...)
+		String sql = String.format("INSERT INTO trade (t_id, t_dts, t_st_id, t_tt_id, "
+				+ "t_is_cash, t_s_symb, t_qty, t_bid_price, t_ca_id, t_exec_name, "
+				+ "t_trade_price, t_chrg, t_comm, t_tax, t_lifo) VALUES (%d, %d, '%s', "
+				+ "'%s', %d, '%s', %d, %f, %d, '%s', %f, %f, %f, %f, %d)",
+				paramHelper.getTradeId(), currentTime, statusId, 
+				paramHelper.getTradeTypeId(), 1, paramHelper.getSymbol(),
+				paramHelper.getTradeQty(), marketPrice, paramHelper.getAcctId(), "exec_name",
+				paramHelper.getTradePrice(), 0.0, 0.0, 0.0, 1);
+		executeUpdate(sql);
 		
+		// TODO: Implement this (not in the simplified version)
 		// Record pending trade information in TRADE_REQUEST table 
 		// if this trade is a limit trade
 		// INSERT INTO trade_request (tr_t_id, tr_tt_id, tr_s_symb, tr_qty,
@@ -106,5 +181,8 @@ public class TradeOrderProc extends BasicStoredProcedure<TradeOrderParamHelper> 
 		
 		// Record trade information in TRADE_HISTORY table
 		// INSERT INTO trade_history (th_t_id, th_dts, th_st_id) VALUES (...)
+		sql = String.format("INSERT INTO trade_history (th_t_id, th_dts, th_st_id) VALUES "
+				+ "(%d, %d, '%s')",  paramHelper.getTradeId(), currentTime, statusId);
+		executeUpdate(sql);
 	}
 }

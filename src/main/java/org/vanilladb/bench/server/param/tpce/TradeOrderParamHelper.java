@@ -11,13 +11,19 @@ import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 
 public class TradeOrderParamHelper extends StoredProcedureParamHelper {
 	
-	protected long acctId;
-	protected int tradeQty;
-	protected String tradeTypeId;
-	protected boolean rollback;
-	protected double requestedPrice;
-	protected String coName, sSymb;
-
+	// Inputs
+	private long acctId;
+	private String coName, execFName, execLName, execTaxId, issue, stPendingId, 
+			stSubmittedId, symbol, tradeTypeId;
+	private int isLifo, tradeQty, typeIsMargin;
+	private double requestedPrice;
+	private boolean rollItBack;
+	
+	// Outputs
+	private double buyValue, sellValue, taxAmount;
+//	private long tradeId;
+	
+	// XXX: inputs that are not in the spec.
 	protected long customerId;
 	protected String customerName;
 	protected long brokerId;
@@ -34,8 +40,8 @@ public class TradeOrderParamHelper extends StoredProcedureParamHelper {
 		brokerId = (Long) pars[2];
 		coName = (String) pars[3];
 		requestedPrice = (Double) pars[4];
-		rollback = (Boolean) pars[5];
-		sSymb = (String) pars[6];
+		rollItBack = (Boolean) pars[5];
+		symbol = (String) pars[6];
 		tradeQty = (Integer) pars[7];
 		tradeTypeId = (String) pars[8];
 		tradeId = (Long) pars[9];
@@ -45,34 +51,19 @@ public class TradeOrderParamHelper extends StoredProcedureParamHelper {
 	public SpResultSet createResultSet() {
 		Schema sch = new Schema();
 		Type statusType = Type.VARCHAR(10);
-		Type nameType = Type.VARCHAR(46);
-		Type companyNameType = Type.VARCHAR(60);
-		Type securitySymbolType = Type.VARCHAR(15);
-		Type longType = Type.BIGINT;
-		Type doubleType = Type.DOUBLE;
 
-		sch.addField("c_id", longType);
-		sch.addField("c_name", nameType);
-		sch.addField("ac_id", longType);
-		sch.addField("b_id", longType);
-		sch.addField("co_name", companyNameType);
-		sch.addField("s_symbol", securitySymbolType);
-		sch.addField("mrkt_price", doubleType);
-		sch.addField("t_id", longType);
-		sch.addField("trade_price", doubleType);
+		sch.addField("buy_value", Type.DOUBLE);
+		sch.addField("sell_value", Type.DOUBLE);
+		sch.addField("tax_amount", Type.DOUBLE);
+		sch.addField("trade_id", Type.BIGINT);
 		sch.addField("status", Type.VARCHAR(10));
 
 		SpResultRecord rec = new SpResultRecord();
 		String status = isCommitted ? "committed" : "abort";
-		rec.setVal("c_id", new BigIntConstant(customerId));
-		rec.setVal("c_name", new VarcharConstant(customerName));
-		rec.setVal("ac_id", new BigIntConstant(acctId));
-		rec.setVal("b_id", new BigIntConstant(brokerId));
-		rec.setVal("co_name", new VarcharConstant(coName));
-		rec.setVal("s_symbol", new VarcharConstant(sSymb));
-		rec.setVal("mrkt_price", new DoubleConstant(marketPrice));
-		rec.setVal("trade_price", new DoubleConstant(tradePrice));
-		rec.setVal("t_id", new BigIntConstant(tradeId));
+		rec.setVal("buy_value", new DoubleConstant(buyValue));
+		rec.setVal("sell_value", new DoubleConstant(sellValue));
+		rec.setVal("tax_amount", new DoubleConstant(taxAmount));
+		rec.setVal("trade_id", new BigIntConstant(tradeId));
 		rec.setVal("status", new VarcharConstant(status, statusType));
 
 		return new SpResultSet(sch, rec);
@@ -82,102 +73,68 @@ public class TradeOrderParamHelper extends StoredProcedureParamHelper {
 		return acctId;
 	}
 
-	public void setAcctId(long acctId) {
-		this.acctId = acctId;
-	}
-
 	public int getTradeQty() {
 		return tradeQty;
-	}
-
-	public void setTradeQty(int tradeQty) {
-		this.tradeQty = tradeQty;
 	}
 
 	public String getTradeTypeId() {
 		return tradeTypeId;
 	}
 
-	public void setTradeTypeId(String tradeTypeId) {
-		this.tradeTypeId = tradeTypeId;
-	}
-
 	public boolean isRollback() {
-		return rollback;
-	}
-
-	public void setRollback(boolean rollback) {
-		this.rollback = rollback;
+		return rollItBack;
 	}
 
 	public double getRequestedPrice() {
 		return requestedPrice;
 	}
 
-	public void setRequestedPrice(double requestedPrice) {
-		this.requestedPrice = requestedPrice;
-	}
-
 	public String getCoName() {
 		return coName;
 	}
 
-	public void setCoName(String coName) {
-		this.coName = coName;
-	}
-
-	public String getsSymb() {
-		return sSymb;
-	}
-
-	public void setsSymb(String sSymb) {
-		this.sSymb = sSymb;
+	public String getSymbol() {
+		return symbol;
 	}
 
 	public long getCustomerId() {
 		return customerId;
 	}
 
-	public void setCustomerId(long customerId) {
-		this.customerId = customerId;
-	}
-
 	public String getCustomerName() {
 		return customerName;
-	}
-
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
 	}
 
 	public long getBrokerId() {
 		return brokerId;
 	}
 
-	public void setBrokerId(long brokerId) {
-		this.brokerId = brokerId;
-	}
-
 	public double getMarketPrice() {
 		return marketPrice;
-	}
-
-	public void setMarketPrice(double marketPrice) {
-		this.marketPrice = marketPrice;
 	}
 
 	public double getTradePrice() {
 		return tradePrice;
 	}
-
-	public void setTradePrice(double tradePrice) {
-		this.tradePrice = tradePrice;
-	}
-
+	
 	public long getTradeId() {
 		return tradeId;
 	}
+	
+	// Set outputs
+	
+	public void setBuyValue(double buyValue) {
+		this.buyValue = buyValue;
+	}
 
+	public void setSellValue(double sellValue) {
+		this.sellValue = sellValue;
+	}
+	
+	public void setTaxAmount(double taxAmount) {
+		this.taxAmount = taxAmount;
+	}
+	
 	public void setTradeId(long tradeId) {
 		this.tradeId = tradeId;
 	}
