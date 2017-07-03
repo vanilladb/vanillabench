@@ -3,15 +3,15 @@ package org.vanilladb.bench.server.procedure.tpce;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.vanilladb.bench.server.param.tpce.SchemaBuilderParamHelper;
+import org.vanilladb.bench.server.param.tpce.TpceSchemaBuilderParamHelper;
 import org.vanilladb.bench.server.procedure.BasicStoredProcedure;
 import org.vanilladb.core.server.VanillaDb;
 
-public class SchemaBuilderProc extends BasicStoredProcedure<SchemaBuilderParamHelper> {
-	private static Logger logger = Logger.getLogger(SchemaBuilderProc.class.getName());
+public class TpceSchemaBuilderProc extends BasicStoredProcedure<TpceSchemaBuilderParamHelper> {
+	private static Logger logger = Logger.getLogger(TpceSchemaBuilderProc.class.getName());
 
-	public SchemaBuilderProc() {
-		super(new SchemaBuilderParamHelper());
+	public TpceSchemaBuilderProc() {
+		super(new TpceSchemaBuilderParamHelper());
 	}
 
 	@Override

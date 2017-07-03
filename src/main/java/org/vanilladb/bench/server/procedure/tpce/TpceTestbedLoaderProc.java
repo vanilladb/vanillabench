@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,14 +16,14 @@ import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 import org.vanilladb.core.storage.tx.recovery.CheckpointTask;
 import org.vanilladb.core.storage.tx.recovery.RecoveryMgr;
 
-public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParamHelper> {
-	private static Logger logger = Logger.getLogger(TestbedLoaderProc.class.getName());
+public class TpceTestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParamHelper> {
+	private static Logger logger = Logger.getLogger(TpceTestbedLoaderProc.class.getName());
 	
 	private static interface RowProcessor {
 		void processRow(String[] columns);
 	}
 
-	public TestbedLoaderProc() {
+	public TpceTestbedLoaderProc() {
 		super(StoredProcedureParamHelper.DefaultParamHelper());
 	}
 
@@ -109,9 +108,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 						columns[12], columns[13], columns[14], columns[15], columns[16],
 						columns[17], columns[18], columns[19], columns[20], columns[21],
 						columns[22], columns[23]);
-				int result = VanillaDb.newPlanner().executeUpdate(sql, tx);
-				if (result <= 0)
-					throw new RuntimeException("Cannot insert into table customer");
+				executeUpdate(sql);
 			}
 			
 		});
@@ -126,9 +123,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 						+ "ca_c_id, ca_name, ca_tax_st, ca_bal) VALUES (%s, %s, %s, '%s', "
 						+ "%s, %s)", columns[0], columns[1], columns[2], columns[3], 
 						columns[4], columns[5]);
-				int result = VanillaDb.newPlanner().executeUpdate(sql, tx);
-				if (result <= 0)
-					throw new RuntimeException("Cannot insert into table customer_account");
+				executeUpdate(sql);
 			}
 			
 		});
@@ -142,9 +137,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 				String sql = String.format("INSERT INTO broker (b_id, b_st_id, b_name, "
 						+ "b_num_trades, b_comm_total) VALUES (%s, '%s', '%s', %s, %s)", 
 						columns[0], columns[1], columns[2], columns[3], columns[4]);
-				int result = VanillaDb.newPlanner().executeUpdate(sql, tx);
-				if (result <= 0)
-					throw new RuntimeException("Cannot insert into table broker");
+				executeUpdate(sql);
 			}
 			
 		});
@@ -158,9 +151,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 				String sql = String.format("INSERT INTO trade_type (tt_id, tt_name, "
 						+ "tt_is_sell, tt_is_mrkt) VALUES ('%s', '%s', %s, %s)", 
 						columns[0], columns[1], columns[2], columns[3]);
-				int result = VanillaDb.newPlanner().executeUpdate(sql, tx);
-				if (result <= 0)
-					throw new RuntimeException("Cannot insert into table trade_type");
+				executeUpdate(sql);
 			}
 			
 		});
@@ -178,9 +169,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 						+ "VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s, '%s', %d)", 
 						columns[0], columns[1], columns[2], columns[3], columns[4], 
 						columns[5], columns[6], columns[7], coOpenDate);
-				int result = VanillaDb.newPlanner().executeUpdate(sql, tx);
-				if (result <= 0)
-					throw new RuntimeException("Cannot execute: " + sql);
+				executeUpdate(sql);
 			}
 			
 		});
@@ -196,9 +185,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 				String sql = String.format("INSERT INTO last_trade (lt_s_symb, lt_dts, "
 						+ "lt_price, lt_open_price, lt_vol) VALUES ('%s', %d, %s, %s, %s)", 
 						columns[0], ltDts, columns[2], columns[3], columns[4]);
-				int result = VanillaDb.newPlanner().executeUpdate(sql, tx);
-				if (result <= 0)
-					throw new RuntimeException("Cannot insert into table last_trade");
+				executeUpdate(sql);
 			}
 			
 		});
@@ -216,15 +203,13 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 				
 				String sql = String.format("INSERT INTO security (s_symb, s_issue, s_st_id, "
 						+ "s_name, s_ex_id, s_co_id, s_num_out, s_start_date, s_exch_date, "
-						+ "s_pe, s_52wk_high, s_52wk_high_date, s_52wk_low, s_52wk_low_date "
+						+ "s_pe, s_52wk_high, s_52wk_high_date, s_52wk_low, s_52wk_low_date, "
 						+ "s_dividend, s_yield) VALUES ('%s', '%s', '%s', '%s', '%s', %s, "
-						+ "%s, '%s', '%s', %s, %s, '%s', %s, '%s', %s, %s)", columns[0], 
+						+ "%s, %d, %d, %s, %s, %d, %s, %d, %s, %s)", columns[0], 
 						columns[1], columns[2], columns[3], columns[4], columns[5], 
 						columns[6], sStartDate, sExchDate, columns[9], columns[10], 
 						s52wkHighDate, columns[12], s52wkLowDate, columns[14], columns[15]);
-				int result = VanillaDb.newPlanner().executeUpdate(sql, tx);
-				if (result <= 0)
-					throw new RuntimeException("Cannot insert into table security");
+				executeUpdate(sql);
 			}
 			
 		});
@@ -232,12 +217,24 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 	
 	// XXX: Maybe the StreamTokenizer will be faster
 	private void readRows(String fileName, String delimlier, RowProcessor processor) {
+		if (logger.isLoggable(Level.INFO))
+			logger.info("Start reading '" + fileName + "'");
+		
+		int count = 0;
+		
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(TpceDataManager.DATA_DIR + "\\" + fileName));
 			String line = null;
 			while ((line = br.readLine()) != null) {
-				processor.processRow(line.split(delimlier));
+				// replace ' with (nothing) to prevent SQL syntax error 
+				processor.processRow(line.replaceAll("'", "").split(delimlier));
+				count++;
+				
+				if (count % 10000 == 0) {
+					if (logger.isLoggable(Level.INFO))
+						logger.info(count + " rows have been processed.");
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -248,6 +245,9 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 				e.printStackTrace();
 			}
 		}
+		
+		if (logger.isLoggable(Level.INFO))
+			logger.info("'" + fileName + "' has been processed. (" + count + " rows in total)");
 	}
 	
 	private long parseDateString(String dateStr) {

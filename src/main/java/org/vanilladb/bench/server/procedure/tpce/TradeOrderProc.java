@@ -2,9 +2,6 @@ package org.vanilladb.bench.server.procedure.tpce;
 
 import org.vanilladb.bench.server.param.tpce.TradeOrderParamHelper;
 import org.vanilladb.bench.server.procedure.BasicStoredProcedure;
-import org.vanilladb.core.query.algebra.Plan;
-import org.vanilladb.core.query.algebra.Scan;
-import org.vanilladb.core.server.VanillaDb;
 
 /**
  * Inputs: acct_id, co_name, exec_f_name, exec_l_name, exec_tax_id, is_lifo
@@ -109,24 +106,5 @@ public class TradeOrderProc extends BasicStoredProcedure<TradeOrderParamHelper> 
 		
 		// Record trade information in TRADE_HISTORY table
 		// INSERT INTO trade_history (th_t_id, th_dts, th_st_id) VALUES (...)
-	}
-	
-	private Scan executeQuery(String sql) {
-		Plan p = VanillaDb.newPlanner().createQueryPlan(sql, tx);
-		Scan s = p.open();
-		s.beforeFirst();
-		if (s.next()) {
-			return s;
-		} else
-			throw new RuntimeException("Query: " + sql + " fails.");
-	}
-	
-	private void executeUpdate(String sql) {
-		int count = VanillaDb.newPlanner().executeUpdate(sql, tx);
-		
-		if (count > 1)
-			throw new RuntimeException("Update: " + sql + " affect more than 1 record.");
-		else if (count < 1)
-			throw new RuntimeException("Update: " + sql + " fails.");
 	}
 }

@@ -7,7 +7,7 @@ import org.vanilladb.core.sql.VarcharConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 
-public class SchemaBuilderParamHelper extends StoredProcedureParamHelper {
+public class TpceSchemaBuilderParamHelper extends StoredProcedureParamHelper {
 
 	private static final String TPCE_TABLES_DDL[] = {
 			// Customer Category

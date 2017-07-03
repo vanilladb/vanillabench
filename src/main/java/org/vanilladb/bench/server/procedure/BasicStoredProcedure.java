@@ -74,11 +74,16 @@ public abstract class BasicStoredProcedure<H extends StoredProcedureParamHelper>
 	}
 	
 	protected void executeUpdate(String sql) {
+		try {
 		int count = VanillaDb.newPlanner().executeUpdate(sql, tx);
 		
 		if (count > 1)
 			throw new RuntimeException("Update: " + sql + " affect more than 1 record.");
 		else if (count < 1)
 			throw new RuntimeException("Update: " + sql + " fails.");
+		} catch (Exception e) {
+			System.out.println(sql);
+			throw e;
+		}
 	}
 }
