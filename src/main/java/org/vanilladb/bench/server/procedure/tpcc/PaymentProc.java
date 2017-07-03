@@ -34,7 +34,8 @@ public class PaymentProc extends BasicStoredProcedure<PaymentProcParamHelper> {
 		s.close();
 		
 		// UPDATE warehouse SET w_ytd = (wYtd + hAmount) WHERE w_id = + wid;
-		sql = "UPDATE warehouse SET w_ytd = " + (wYtd + hAmount) +
+		sql = "UPDATE warehouse SET w_ytd = " + 
+				String.format("%f", wYtd + hAmount) +
 				" WHERE w_id = " + wid;
 		executeUpdate(sql);
 		
@@ -54,7 +55,8 @@ public class PaymentProc extends BasicStoredProcedure<PaymentProcParamHelper> {
 		s.close();
 		
 		// UPDATE district SET d_ytd = (dYtd + hAmount) WHERE d_w_id = wid AND d_id = did
-		sql = "UPDATE district SET d_ytd = " + (dYtd + hAmount) +
+		sql = "UPDATE district SET d_ytd = " + 
+				String.format("%f", dYtd + hAmount) +
 				" WHERE d_w_id = " + wid + " AND d_id = " + did;
 		executeUpdate(sql);
 		
@@ -111,14 +113,16 @@ public class PaymentProc extends BasicStoredProcedure<PaymentProcParamHelper> {
 			
 			// UPDATE customer SET c_balance = cBalance, c_data = 'cNewData'
 			// WHERE c_w_id = cwid AND c_d_id = cdid AND c_id = cid
-			sql = "UPDATE customer SET c_balance = " + cBalance +
+			sql = "UPDATE customer SET c_balance = " + 
+					String.format("%f", cBalance) +
 					", c_data = '" + cNewData + "' WHERE c_w_id = " + cwid +
 					" AND c_d_id = " + cdid + " AND c_id = " + cid;
 			executeUpdate(sql);
 		} else {
 			// UPDATE customer SET c_balance = cBalance
 			// WHERE c_w_id = cwid AND c_d_id = cdid AND c_id = cid
-			sql = "UPDATE customer SET c_balance = " + cBalance +
+			sql = "UPDATE customer SET c_balance = " + 
+					String.format("%f", cBalance) +
 					" WHERE c_w_id = " + cwid +
 					" AND c_d_id = " + cdid + " AND c_id = " + cid;
 			executeUpdate(sql);
