@@ -87,10 +87,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 
 			sql = "INSERT INTO item(i_id, i_im_id, i_name, i_price, i_data) VALUES (" + iid + ", " + iimid + ", '"
 					+ iname + "', " + DoublePlainPrinter.toPlainString(iprice) + ", '" + idata + "' )";
-
-			int result = VanillaDb.newPlanner().executeUpdate(sql, tx);
-			if (result <= 0)
-				throw new RuntimeException();
+			executeUpdate(sql);
 		}
 
 		if (logger.isLoggable(Level.FINE))
@@ -143,9 +140,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 		sb.append("', '").append(wcity).append("', '").append(wstate);
 		sb.append("', '").append(wzip).append("', ").append(DoublePlainPrinter.toPlainString(wtax));
 		sb.append(", ").append(DoublePlainPrinter.toPlainString(wytd)).append(" )");
-		int result = VanillaDb.newPlanner().executeUpdate(sb.toString(), tx);
-		if (result <= 0)
-			throw new RuntimeException();
+		executeUpdate(sb.toString());
 	}
 
 	private void generateStocks(int wid) {
@@ -177,9 +172,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 					+ "s_ytd, s_order_cnt, s_remote_cnt, s_data) VALUES (" + siid + ", " + swid + ", " + squantity
 					+ ", '" + sd1 + "', '" + sd2 + "', '" + sd3 + "', '" + sd4 + "', '" + sd5 + "', '" + sd6 + "', '"
 					+ sd7 + "', '" + sd8 + "', '" + sd9 + "', '" + sd10 + "', 0, 0, 0, '" + sdata + "')";
-			int result = VanillaDb.newPlanner().executeUpdate(sql, tx);
-			if (result <= 0)
-				throw new RuntimeException();
+			executeUpdate(sql);
 		}
 	}
 
@@ -205,9 +198,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 					+ "', '" + dst2 + "', '" + dcity + "', '" + dstate + "', '" + dzip + "', "
 					+ DoublePlainPrinter.toPlainString(dtax) + ", " + DoublePlainPrinter.toPlainString(dytd) + ", "
 					+ (TpccConstants.CUSTOMERS_PER_DISTRICT + 1) + ")";
-			int result = VanillaDb.newPlanner().executeUpdate(sql, tx);
-			if (result <= 0)
-				throw new RuntimeException();
+			executeUpdate(sql);
 		}
 	}
 
@@ -254,10 +245,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 					+ DoublePlainPrinter.toPlainString(ccl) + ", " + DoublePlainPrinter.toPlainString(cdiscount) + ", "
 					+ DoublePlainPrinter.toPlainString(cbal) + ", " + DoublePlainPrinter.toPlainString(cytdpay)
 					+ ", 1, 0, '" + cdata + "')";
-
-			int result = VanillaDb.newPlanner().executeUpdate(sql, tx);
-			if (result <= 0)
-				throw new RuntimeException();
+			executeUpdate(sql);
 		}
 		if (logger.isLoggable(Level.FINE))
 			logger.info("Finish populating customers for district " + did);
@@ -277,9 +265,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 					+ "h_d_id,h_w_id, h_date, h_amount, h_data ) VALUES (" + hcid + ", " + did + "," + wid + ","
 					+ did + "," + wid + "," + hdate + "," + DoublePlainPrinter.toPlainString(hamount) + ", '" + hdata
 					+ "')";
-			int result = VanillaDb.newPlanner().executeUpdate(sql, tx);
-			if (result <= 0)
-				throw new RuntimeException();
+			executeUpdate(sql);
 		}
 	}
 
@@ -301,10 +287,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 			String sql = "INSERT INTO ORDERS(o_id, o_c_id, o_d_id, "
 					+ "o_w_id, o_entry_d, o_carrier_id, o_ol_cnt, o_all_local) VALUES (" + oid + ", " + ocid + ", "
 					+ did + "," + wid + "," + oenrtyd + "," + ocarid + ", " + ol_cnt + ",1)";
-
-			int result = VanillaDb.newPlanner().executeUpdate(sql, tx);
-			if (result <= 0)
-				throw new RuntimeException();
+			executeUpdate(sql);
 
 			generateOrderLine(wid, did, i, ol_cnt, oenrtyd);
 		}
@@ -333,10 +316,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 					+ "ol_delivery_d, ol_quantity, ol_amount, ol_dist_info)" + " VALUES (" + orderId + "," + districtId
 					+ "," + warehouseId + "," + olnum + "," + oliid + ", " + warehouseId + ", " + oldeld + ", 5, "
 					+ DoublePlainPrinter.toPlainString(olamount) + ", '" + oldistinfo + "')";
-
-			int result = VanillaDb.newPlanner().executeUpdate(sql, tx);
-			if (result <= 0)
-				throw new RuntimeException();
+			executeUpdate(sql);
 		}
 	}
 
@@ -346,9 +326,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 			nooid = i;
 			String sql = "INSERT INTO new_order(no_o_id, no_d_id, no_w_id) VALUES (" + nooid + "," + did + "," + wid
 					+ ")";
-			int result = VanillaDb.newPlanner().executeUpdate(sql, tx);
-			if (result <= 0)
-				throw new RuntimeException();
+			executeUpdate(sql);
 		}
 	}
 
