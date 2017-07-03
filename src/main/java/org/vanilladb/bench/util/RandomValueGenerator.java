@@ -143,7 +143,7 @@ public class RandomValueGenerator {
 	}
 
 	/**
-	 * @returns a random numeric string with length in range [minimum_length,
+	 * @return a random numeric string with length in range [minimum_length,
 	 *          maximum_length].
 	 */
 	public String nstring(int minimum_length, int maximum_length) {
