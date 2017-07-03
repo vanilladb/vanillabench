@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -90,7 +91,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 	}
 	
 	private void loadCustomer() {
-		readRows("Customer.txt", "|", new RowProcessor() {
+		readRows("Customer.txt", "\\|", new RowProcessor() {
 
 			@Override
 			public void processRow(String[] columns) {
@@ -102,9 +103,9 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 						+ "c_local_2, c_ext_2, c_ctry_3, c_area_3, c_local_3, c_ext_3, "
 						+ "c_email_1, c_email_2) VALUES (%s, '%s', '%s', '%s', '%s', '%s',"
 						+ "'%s', %s, %d, %s, '%s', '%s', '%s', '%s', '%s', '%s', '%s',"
-						+ "'%s', '%s', '%s', '%s', '%s')", columns[0], columns[1],
-						columns[2], columns[3], columns[4], columns[5], columns[6],
-						columns[7], cDob, columns[9], columns[10], columns[11],
+						+ "'%s', '%s', '%s', '%s', '%s', '%s', '%s')", columns[0], 
+						columns[1], columns[2], columns[3], columns[4], columns[5], 
+						columns[6], columns[7], cDob, columns[9], columns[10], columns[11],
 						columns[12], columns[13], columns[14], columns[15], columns[16],
 						columns[17], columns[18], columns[19], columns[20], columns[21],
 						columns[22], columns[23]);
@@ -117,7 +118,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 	}
 	
 	private void loadCustomerAccount() {
-		readRows("CustomerAccount.txt", "|", new RowProcessor() {
+		readRows("CustomerAccount.txt", "\\|", new RowProcessor() {
 
 			@Override
 			public void processRow(String[] columns) {
@@ -134,7 +135,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 	}
 	
 	private void loadBroker() {
-		readRows("Broker.txt", "|", new RowProcessor() {
+		readRows("Broker.txt", "\\|", new RowProcessor() {
 
 			@Override
 			public void processRow(String[] columns) {
@@ -150,7 +151,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 	}
 	
 	private void loadTradeType() {
-		readRows("TradeType.txt", "|", new RowProcessor() {
+		readRows("TradeType.txt", "\\|", new RowProcessor() {
 
 			@Override
 			public void processRow(String[] columns) {
@@ -166,7 +167,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 	}
 	
 	private void loadCompany() {
-		readRows("Company.txt", "|", new RowProcessor() {
+		readRows("Company.txt", "\\|", new RowProcessor() {
 
 			@Override
 			public void processRow(String[] columns) {
@@ -174,19 +175,19 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 				
 				String sql = String.format("INSERT INTO company (co_id, co_st_id, co_name, "
 						+ "co_in_id, co_sp_rate, co_ceo, co_ad_id, co_desc, co_open_date) "
-						+ "VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s, '%s, %d)", 
+						+ "VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s, '%s', %d)", 
 						columns[0], columns[1], columns[2], columns[3], columns[4], 
 						columns[5], columns[6], columns[7], coOpenDate);
 				int result = VanillaDb.newPlanner().executeUpdate(sql, tx);
 				if (result <= 0)
-					throw new RuntimeException("Cannot insert into table company");
+					throw new RuntimeException("Cannot execute: " + sql);
 			}
 			
 		});
 	}
 	
 	private void loadLastTrade() {
-		readRows("LastTrade.txt", "|", new RowProcessor() {
+		readRows("LastTrade.txt", "\\|", new RowProcessor() {
 
 			@Override
 			public void processRow(String[] columns) {
@@ -204,7 +205,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 	}
 	
 	private void loadSecurity() {
-		readRows("Security.txt", "|", new RowProcessor() {
+		readRows("Security.txt", "\\|", new RowProcessor() {
 
 			@Override
 			public void processRow(String[] columns) {
@@ -233,7 +234,7 @@ public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParam
 	private void readRows(String fileName, String delimlier, RowProcessor processor) {
 		BufferedReader br = null;
 		try {
-			br = new BufferedReader(new FileReader(TpceDataManager.DATA_DIR + fileName));
+			br = new BufferedReader(new FileReader(TpceDataManager.DATA_DIR + "\\" + fileName));
 			String line = null;
 			while ((line = br.readLine()) != null) {
 				processor.processRow(line.split(delimlier));
