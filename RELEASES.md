@@ -16,10 +16,10 @@
 
 - Avoid scientific notation in TPC-C payment ([#7])
 
-[#6]: https://github.com/vanilladb/vanillacore/pull/6
-[#7]: https://github.com/vanilladb/vanillacore/pull/7
-[#8]: https://github.com/vanilladb/vanillacore/pull/8
-[#9]: https://github.com/vanilladb/vanillacore/pull/9
+[#6]: https://github.com/vanilladb/vanillabench/pull/6
+[#7]: https://github.com/vanilladb/vanillabench/pull/7
+[#8]: https://github.com/vanilladb/vanillabench/pull/8
+[#9]: https://github.com/vanilladb/vanillabench/pull/9
 
 # Version 0.1.0 (2017-06-10)
 
