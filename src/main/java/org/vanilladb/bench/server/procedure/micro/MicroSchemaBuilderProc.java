@@ -1,12 +1,12 @@
 package org.vanilladb.bench.server.procedure.micro;
 
-import org.vanilladb.bench.server.param.micro.SchemaBuilderProcParamHelper;
+import org.vanilladb.bench.server.param.micro.MicroSchemaBuilderProcParamHelper;
 import org.vanilladb.bench.server.procedure.BasicStoredProcedure;
 
-public class SchemaBuilderProc extends BasicStoredProcedure<SchemaBuilderProcParamHelper> {
+public class MicroSchemaBuilderProc extends BasicStoredProcedure<MicroSchemaBuilderProcParamHelper> {
 
-	public SchemaBuilderProc() {
-		super(new SchemaBuilderProcParamHelper());
+	public MicroSchemaBuilderProc() {
+		super(new MicroSchemaBuilderProcParamHelper());
 	}
 
 	@Override

@@ -13,10 +13,10 @@ public class TpccStoredProcFactory implements StoredProcedureFactory {
 		StoredProcedure sp;
 		switch (TpccTransactionType.fromProcedureId(pid)) {
 		case SCHEMA_BUILDER:
-			sp = new SchemaBuilderProc();
+			sp = new TpccSchemaBuilderProc();
 			break;
 		case TESTBED_LOADER:
-			sp = new TestbedLoaderProc();
+			sp = new TpccTestbedLoaderProc();
 			break;
 		case START_PROFILING:
 			sp = new StartProfilingProc();

@@ -7,7 +7,7 @@ import org.vanilladb.core.sql.VarcharConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 
-public class SchemaBuilderProcParamHelper extends StoredProcedureParamHelper {
+public class TpccSchemaBuilderProcParamHelper extends StoredProcedureParamHelper {
 
 	private final String TPCC_TABLES_DDL[] = {
 			"CREATE TABLE warehouse ( w_id INT, w_name VARCHAR(10), "

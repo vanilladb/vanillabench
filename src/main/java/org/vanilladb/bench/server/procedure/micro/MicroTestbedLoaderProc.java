@@ -11,10 +11,10 @@ import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 import org.vanilladb.core.storage.tx.recovery.CheckpointTask;
 import org.vanilladb.core.storage.tx.recovery.RecoveryMgr;
 
-public class TestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParamHelper> {
-	private static Logger logger = Logger.getLogger(TestbedLoaderProc.class.getName());
+public class MicroTestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParamHelper> {
+	private static Logger logger = Logger.getLogger(MicroTestbedLoaderProc.class.getName());
 
-	public TestbedLoaderProc() {
+	public MicroTestbedLoaderProc() {
 		super(StoredProcedureParamHelper.DefaultParamHelper());
 	}
 
