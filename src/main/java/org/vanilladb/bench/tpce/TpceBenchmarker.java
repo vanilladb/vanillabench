@@ -19,7 +19,8 @@ public class TpceBenchmarker extends Benchmarker {
 
 	public TpceBenchmarker(SutDriver sutDriver) {
 		super(sutDriver);
-		dataMgr = new TpceDataManager();
+		dataMgr = new TpceDataManager(TpceConstants.CUSTOMER_COUNT, 
+				TpceConstants.COMPANY_COUNT, TpceConstants.SECURITY_COUNT);
 	}
 
 	public Set<TransactionType> getBenchmarkingTxTypes() {
