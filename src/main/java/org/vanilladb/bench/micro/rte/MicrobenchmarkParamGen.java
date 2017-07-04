@@ -1,4 +1,4 @@
-package org.vanilladb.bench.rte.micro;
+package org.vanilladb.bench.micro.rte;
 
 import java.util.ArrayList;
 import java.util.Arrays;

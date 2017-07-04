@@ -1,4 +1,4 @@
-package org.vanilladb.bench.tpcc;
+package org.vanilladb.bench.tpce;
 
 import java.sql.SQLException;
 import java.util.HashSet;
@@ -10,19 +10,21 @@ import org.vanilladb.bench.TransactionType;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutDriver;
 import org.vanilladb.bench.rte.RemoteTerminalEmulator;
-import org.vanilladb.bench.tpcc.rte.TpccRte;
+import org.vanilladb.bench.tpce.data.TpceDataManager;
+import org.vanilladb.bench.tpce.rte.TpceRte;
 
-public class TpccBenchmarker extends Benchmarker {
+public class TpceBenchmarker extends Benchmarker {
 	
-	private int nextWid = 0;
-	
-	public TpccBenchmarker(SutDriver sutDriver) {
+	private TpceDataManager dataMgr;
+
+	public TpceBenchmarker(SutDriver sutDriver) {
 		super(sutDriver);
+		dataMgr = new TpceDataManager();
 	}
-	
+
 	public Set<TransactionType> getBenchmarkingTxTypes() {
 		Set<TransactionType> txTypes = new HashSet<TransactionType>();
-		for (TransactionType txType : TpccTransactionType.values()) {
+		for (TransactionType txType : TpceTransactionType.values()) {
 			if (txType.isBenchmarkingTx())
 				txTypes.add(txType);
 		}
@@ -30,21 +32,19 @@ public class TpccBenchmarker extends Benchmarker {
 	}
 
 	protected void executeLoadingProcedure(SutConnection conn) throws SQLException {
-		conn.callStoredProc(TpccTransactionType.SCHEMA_BUILDER.ordinal());
-		conn.callStoredProc(TpccTransactionType.TESTBED_LOADER.ordinal());
+		conn.callStoredProc(TpceTransactionType.SCHEMA_BUILDER.ordinal());
+		conn.callStoredProc(TpceTransactionType.TESTBED_LOADER.ordinal());
 	}
 	
 	protected RemoteTerminalEmulator createRte(SutConnection conn, StatisticMgr statMgr) {
-		RemoteTerminalEmulator rte = new TpccRte(conn, statMgr, nextWid + 1);
-		nextWid = (nextWid + 1) % TpccConstants.NUM_WAREHOUSES;
-		return rte;
+		return new TpceRte(conn, statMgr, dataMgr);
 	}
 	
 	protected void startProfilingProcedure(SutConnection conn) throws SQLException {
-		conn.callStoredProc(TpccTransactionType.START_PROFILING.ordinal());
+		conn.callStoredProc(TpceTransactionType.START_PROFILING.ordinal());
 	}
 	
 	protected void stopProfilingProcedure(SutConnection conn) throws SQLException {
-		conn.callStoredProc(TpccTransactionType.STOP_PROFILING.ordinal());
+		conn.callStoredProc(TpceTransactionType.STOP_PROFILING.ordinal());
 	}
 }

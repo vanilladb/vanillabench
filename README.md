@@ -11,7 +11,7 @@ VanillaBench is a benchmarking tool for testing the performance (throughput and 
 - Micro-benchmarks
   - Design (TBA)
 - TPC-C (New-Order, Payment)
-- TPC-E (TBA)
+- TPC-E (Simplified Trade-Order, Trade-Result)
 
 ## Getting Started
 
@@ -122,7 +122,7 @@ The project is a Maven project, which means you can do all the work for running 
 <dependency>
   <groupId>org.vanilladb</groupId>
   <artifactId>bench</artifactId>
-  <version>0.1.0</version>
+  <version>0.2.0</version>
 </dependency>
 ```
 

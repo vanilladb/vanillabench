@@ -7,10 +7,10 @@ import java.util.Set;
 import org.vanilladb.bench.Benchmarker;
 import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.TransactionType;
+import org.vanilladb.bench.micro.rte.MicrobenchmarkRte;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutDriver;
 import org.vanilladb.bench.rte.RemoteTerminalEmulator;
-import org.vanilladb.bench.rte.micro.MicrobenchmarkRte;
 
 public class MicroBenchmarker extends Benchmarker {
 	
