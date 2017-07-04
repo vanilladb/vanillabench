@@ -7,7 +7,7 @@ import org.vanilladb.core.sql.VarcharConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 
-public class SchemaBuilderProcParamHelper extends StoredProcedureParamHelper {
+public class MicroSchemaBuilderProcParamHelper extends StoredProcedureParamHelper {
 
 	private final String TABLES_DDL[] = {
 			"CREATE TABLE item ( i_id INT, i_im_id INT, i_name VARCHAR(24), "

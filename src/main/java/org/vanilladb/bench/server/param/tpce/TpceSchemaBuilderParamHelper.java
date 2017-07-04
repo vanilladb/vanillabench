@@ -9,7 +9,7 @@ import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 
 public class TpceSchemaBuilderParamHelper extends StoredProcedureParamHelper {
 
-	private static final String TPCE_TABLES_DDL[] = {
+	private static final String TABLES_DDL[] = {
 			// Customer Category
 			// TODO: watch_item, watch_list
 			"CREATE TABLE account_permission ( ap_ca_id LONG, ap_cal VARCHAR(4),"
@@ -67,7 +67,7 @@ public class TpceSchemaBuilderParamHelper extends StoredProcedureParamHelper {
 						
 	};
 
-	private static final String TPCE_INDEXES_DDL[] = {
+	private static final String INDEXES_DDL[] = {
 			"CREATE INDEX idx_customer_id ON customer (c_id)",
 			"CREATE INDEX idx_customer_account_id ON customer_account (ca_id)",
 			"CREATE INDEX idx_broker_id ON broker (b_id)",
@@ -75,20 +75,12 @@ public class TpceSchemaBuilderParamHelper extends StoredProcedureParamHelper {
 			"CREATE INDEX idx_last_trade_security_symbol ON last_trade (lt_s_symb)",
 			"CREATE INDEX idx_trade_type_id ON trade_type (tt_id)" };
 
-	private static final String TABLES[] = { "customer", "customer_account",
-			"holding", "holding_history", "broker", "trade", "trade_history",
-			"trade_type", "company", "last_trade", "security" };
-
 	public String[] getTableSchemas() {
-		return TPCE_TABLES_DDL;
+		return TABLES_DDL;
 	}
 
 	public String[] getIndexSchemas() {
-		return TPCE_INDEXES_DDL;
-	}
-	
-	public String[] getTableNames() {
-		return TABLES;
+		return INDEXES_DDL;
 	}
 
 	@Override

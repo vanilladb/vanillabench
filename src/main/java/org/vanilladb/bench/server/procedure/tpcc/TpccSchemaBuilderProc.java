@@ -1,12 +1,12 @@
 package org.vanilladb.bench.server.procedure.tpcc;
 
-import org.vanilladb.bench.server.param.tpcc.SchemaBuilderProcParamHelper;
+import org.vanilladb.bench.server.param.tpcc.TpccSchemaBuilderProcParamHelper;
 import org.vanilladb.bench.server.procedure.BasicStoredProcedure;
 
-public class SchemaBuilderProc extends BasicStoredProcedure<SchemaBuilderProcParamHelper> {
+public class TpccSchemaBuilderProc extends BasicStoredProcedure<TpccSchemaBuilderProcParamHelper> {
 
-	public SchemaBuilderProc() {
-		super(new SchemaBuilderProcParamHelper());
+	public TpccSchemaBuilderProc() {
+		super(new TpccSchemaBuilderProcParamHelper());
 	}
 
 	@Override
