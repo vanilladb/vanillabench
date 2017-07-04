@@ -122,7 +122,7 @@ The project is a Maven project, which means you can do all the work for running 
 <dependency>
   <groupId>org.vanilladb</groupId>
   <artifactId>bench</artifactId>
-  <version>0.2.0</version>
+  <version>0.2.1</version>
 </dependency>
 ```
 
