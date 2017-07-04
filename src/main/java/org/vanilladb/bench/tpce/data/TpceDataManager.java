@@ -9,7 +9,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.vanilladb.bench.tpce.TpceConstants;
 import org.vanilladb.bench.util.BenchProperties;
 import org.vanilladb.bench.util.RandomValueGenerator;
 
@@ -38,8 +37,14 @@ public class TpceDataManager {
 	// CustomerAccount(accountId, customerId, brokerId)>
 	private ConcurrentHashMap<Long, Customer> customerMap;
 	private ConcurrentLinkedQueue<Trade> tradeQueue = new ConcurrentLinkedQueue<Trade>();
-
-	public TpceDataManager() {
+	
+	private final int customerCount, companyCount, securityCount;
+	
+	public TpceDataManager(int customerCount, int companyCount, int securityCount) {
+		this.customerCount = customerCount;
+		this.companyCount = companyCount;
+		this.securityCount = securityCount;
+		
 		loadData();
 	}
 
@@ -63,7 +68,7 @@ public class TpceDataManager {
 		double fCW = rg.randomDoubleIncrRange(0.0001, 2000, 0.000000001);
 
 		// Generate a load unit across the entire range
-		iCHigh = (rg.randomLongRange(1 + _TIdentShift, _TIdentShift + TpceConstants.CUSTOMER_COUNT) - 1) / 1000;
+		iCHigh = (rg.randomLongRange(1 + _TIdentShift, _TIdentShift + customerCount) - 1) / 1000;
 
 		if (fCW <= 200) {
 			iCLow = (int) Math.ceil(Math.sqrt(22500 + 500 * fCW) - 151);
@@ -78,7 +83,7 @@ public class TpceDataManager {
 	}
 	
 	public String getRandomCompanyName() {
-		int companyIdx = rg.number(0, TpceConstants.COMPANY_COUNT - 1);
+		int companyIdx = rg.number(0, companyCount - 1);
 		return companyNames.get(companyIdx);
 	}
 
@@ -93,7 +98,7 @@ public class TpceDataManager {
 	}
 
 	public String getRandomSymbol() {
-		int symbolIdx = rg.number(0, TpceConstants.SECURITY_COUNT - 1);
+		int symbolIdx = rg.number(0, securityCount - 1);
 		return securitySymbols.get(symbolIdx);
 	}
 
