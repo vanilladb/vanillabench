@@ -11,6 +11,9 @@ public enum MicroTransactionType implements TransactionType {
 
 	// TPC-C procedures
 	MICRO,
+	
+	//CLAY
+	BROADCAST_MIGRAKEYS,
 
 	// Migration
 	START_MIGRATION, STOP_MIGRATION, MIGRATION_ANALYSIS, ASYNC_MIGRATE;
