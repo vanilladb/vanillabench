@@ -45,13 +45,13 @@ public class StatisticMgr {
 		if (!dir.exists())
 			dir.mkdir();
 		benchStartTime = System.nanoTime();
-		GRANULARITY = BenchProperties.getLoader()
-				.getPropertyAsInteger(StatisticMgr.class.getName() + ".GRANULARITY", 3000);
+		GRANULARITY = BenchProperties.getLoader().getPropertyAsInteger(StatisticMgr.class.getName() + ".GRANULARITY",
+				3000);
 		latencyHistory = new TreeMap<Long, ArrayList<Long>>();
 	}
-	
+
 	private List<TransactionType> allTxTypes;
-	
+
 	public StatisticMgr(Collection<TransactionType> txTypes) {
 		allTxTypes = new LinkedList<TransactionType>(txTypes);
 	}
@@ -67,7 +67,7 @@ public class StatisticMgr {
 
 	public synchronized void outputReport() {
 		HashMap<TransactionType, TxnStatistic> txnStatistics = new HashMap<TransactionType, TxnStatistic>();
-		
+		int l  = 0;
 		for (TransactionType type : allTxTypes)
 			txnStatistics.put(type, new TxnStatistic(type));
 
@@ -88,13 +88,16 @@ public class StatisticMgr {
 
 			// read all txn resultset
 			for (TxnResultSet resultSet : resultSets) {
-				bwrFile.write(resultSet.getTxnType() + ": "
-						+ TimeUnit.NANOSECONDS.toMillis(resultSet.getTxnResponseTime()) + " ms");
-				bwrFile.newLine();
-				TxnStatistic txnStatistic = txnStatistics.get(resultSet.getTxnType());
-				if (txnStatistic != null)
-					txnStatistic.addTxnResponseTime(resultSet.getTxnResponseTime());
-				addTxnLatency(resultSet);
+				if (resultSet.isTxnIsCommited()) {
+					bwrFile.write(resultSet.getTxnType() + ": "
+							+ TimeUnit.NANOSECONDS.toMillis(resultSet.getTxnResponseTime()) + " ms");
+					bwrFile.newLine();
+					TxnStatistic txnStatistic = txnStatistics.get(resultSet.getTxnType());
+					if (txnStatistic != null)
+						txnStatistic.addTxnResponseTime(resultSet.getTxnResponseTime());
+					addTxnLatency(resultSet);
+					l++;
+				}
 
 			}
 			bwrFile.newLine();
@@ -112,7 +115,7 @@ public class StatisticMgr {
 				bwrFile.newLine();
 			}
 			// TOTAL
-			int l = resultSets.size();
+			
 			if (l > 0) {
 				double avgResTimeMs = 0;
 
