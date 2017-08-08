@@ -67,7 +67,7 @@ public class StatisticMgr {
 
 	public synchronized void outputReport() {
 		HashMap<TransactionType, TxnStatistic> txnStatistics = new HashMap<TransactionType, TxnStatistic>();
-		int l  = 0;
+		int l = 0;
 		for (TransactionType type : allTxTypes)
 			txnStatistics.put(type, new TxnStatistic(type));
 
@@ -115,16 +115,19 @@ public class StatisticMgr {
 				bwrFile.newLine();
 			}
 			// TOTAL
-			
+
 			if (l > 0) {
 				double avgResTimeMs = 0;
 
 				for (TxnResultSet rs : resultSets) {
-					avgResTimeMs += rs.getTxnResponseTime() / l;
+					if (rs.isTxnIsCommited())
+						avgResTimeMs += rs.getTxnResponseTime() / l;
 				}
-				bwrFile.write(String.format("TOTAL %d avg latency: %d ms", l, Math.round(avgResTimeMs / 1000000)));
+
+				bwrFile.write(String.format("Total %d Aborted %d Commited %d avg Commited latency: %d ms",
+						resultSets.size(), resultSets.size() - l, l, Math.round(avgResTimeMs / 1000000)));
 			} else {
-				bwrFile.write("TOTAL " + l + " avg latency: 0 ms");
+				bwrFile.write("Total " + l + " avg latency: 0 ms");
 			}
 
 			bwrFile.close();
@@ -136,10 +139,18 @@ public class StatisticMgr {
 			bwrFile.write(
 					"time(sec), throughput(txs), avg_latency(ms), min(ms), max(ms), 25th_lat(ms), median_lat(ms), 75th_lat(ms)");
 			bwrFile.newLine();
-			for (Map.Entry<Long, ArrayList<Long>> e : latencyHistory.entrySet()) {
-				bwrFile.write(makeStatString(e));
+			long st, ed;
+			st = BenchmarkerParameters.WARM_UP_INTERVAL / 1000;
+			ed = (BenchmarkerParameters.WARM_UP_INTERVAL + BenchmarkerParameters.BENCHMARK_INTERVAL) / 1000;
+	
+			for (long i = st; i <= ed; i = i + GRANULARITY / 1000) {
+				if (latencyHistory.containsKey(i))
+					bwrFile.write(makeStatString(i, latencyHistory.get(i)));
+				else
+					bwrFile.write(i + ",0,0,0,0,0,0,0");
 				bwrFile.newLine();
 			}
+
 			bwrFile.close();
 
 		} catch (IOException e) {
@@ -153,7 +164,8 @@ public class StatisticMgr {
 	public void addTxnLatency(TxnResultSet rs) {
 
 		long t = TimeUnit.NANOSECONDS.toMillis(rs.getTxnEndTime() - benchStartTime);
-		t = (t / GRANULARITY) * GRANULARITY / 1000;
+		t = (((t - BenchmarkerParameters.WARM_UP_INTERVAL) / GRANULARITY) * GRANULARITY
+				+ BenchmarkerParameters.WARM_UP_INTERVAL) / 1000;
 
 		if (!latencyHistory.containsKey(t))
 			latencyHistory.put(t, new ArrayList<Long>());
@@ -162,9 +174,9 @@ public class StatisticMgr {
 
 	}
 
-	private String makeStatString(Map.Entry<Long, ArrayList<Long>> e) {
+	private String makeStatString(Long t, ArrayList<Long> arr) {
 
-		Long[] datas = e.getValue().toArray(new Long[e.getValue().size()]);
+		Long[] datas = arr.toArray(new Long[arr.size()]);
 		Arrays.sort(datas);
 
 		int len = datas.length;
@@ -182,11 +194,11 @@ public class StatisticMgr {
 			upperQ = calcMedian(Arrays.copyOfRange(datas, mid + 1, len));
 		}
 
-		Long min = Collections.min(e.getValue());
-		Long max = Collections.max(e.getValue());
+		Long min = Collections.min(arr);
+		Long max = Collections.max(arr);
 
-		return e.getKey().toString() + ',' + Integer.toString(len) + ',' + mean + ',' + min + ',' + max + ',' + lowerQ
-				+ ',' + median + ',' + upperQ;
+		return t.toString() + ',' + Integer.toString(len) + ',' + mean + ',' + min + ',' + max + ',' + lowerQ + ','
+				+ median + ',' + upperQ;
 
 	}
 
