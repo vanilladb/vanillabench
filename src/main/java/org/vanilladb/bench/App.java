@@ -5,6 +5,7 @@ import org.vanilladb.bench.remote.SutDriver;
 import org.vanilladb.bench.remote.sp.VanillaDbSpDriver;
 import org.vanilladb.bench.tpcc.TpccBenchmarker;
 import org.vanilladb.bench.tpce.TpceBenchmarker;
+import org.vanilladb.bench.ycsb.YcsbBenchmarker;
 
 public class App {
 	
@@ -41,6 +42,9 @@ public class App {
 			break;
 		case TPCE:
 			benchmarker = new TpceBenchmarker(driver);
+			break;
+		case YCSB:
+			benchmarker = new YcsbBenchmarker(driver);
 			break;
 		}
 		
