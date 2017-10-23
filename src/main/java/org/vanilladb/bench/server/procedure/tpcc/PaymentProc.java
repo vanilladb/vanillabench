@@ -2,9 +2,7 @@ package org.vanilladb.bench.server.procedure.tpcc;
 
 import org.vanilladb.bench.server.param.tpcc.PaymentProcParamHelper;
 import org.vanilladb.bench.server.procedure.BasicStoredProcedure;
-import org.vanilladb.core.query.algebra.Plan;
 import org.vanilladb.core.query.algebra.Scan;
-import org.vanilladb.core.server.VanillaDb;
 
 public class PaymentProc extends BasicStoredProcedure<PaymentProcParamHelper> {
 
@@ -36,7 +34,8 @@ public class PaymentProc extends BasicStoredProcedure<PaymentProcParamHelper> {
 		s.close();
 		
 		// UPDATE warehouse SET w_ytd = (wYtd + hAmount) WHERE w_id = + wid;
-		sql = "UPDATE warehouse SET w_ytd = " + (wYtd + hAmount) +
+		sql = "UPDATE warehouse SET w_ytd = " + 
+				String.format("%f", wYtd + hAmount) +
 				" WHERE w_id = " + wid;
 		executeUpdate(sql);
 		
@@ -56,7 +55,8 @@ public class PaymentProc extends BasicStoredProcedure<PaymentProcParamHelper> {
 		s.close();
 		
 		// UPDATE district SET d_ytd = (dYtd + hAmount) WHERE d_w_id = wid AND d_id = did
-		sql = "UPDATE district SET d_ytd = " + (dYtd + hAmount) +
+		sql = "UPDATE district SET d_ytd = " + 
+				String.format("%f", dYtd + hAmount) +
 				" WHERE d_w_id = " + wid + " AND d_id = " + did;
 		executeUpdate(sql);
 		
@@ -113,14 +113,16 @@ public class PaymentProc extends BasicStoredProcedure<PaymentProcParamHelper> {
 			
 			// UPDATE customer SET c_balance = cBalance, c_data = 'cNewData'
 			// WHERE c_w_id = cwid AND c_d_id = cdid AND c_id = cid
-			sql = "UPDATE customer SET c_balance = " + cBalance +
+			sql = "UPDATE customer SET c_balance = " + 
+					String.format("%f", cBalance) +
 					", c_data = '" + cNewData + "' WHERE c_w_id = " + cwid +
 					" AND c_d_id = " + cdid + " AND c_id = " + cid;
 			executeUpdate(sql);
 		} else {
 			// UPDATE customer SET c_balance = cBalance
 			// WHERE c_w_id = cwid AND c_d_id = cdid AND c_id = cid
-			sql = "UPDATE customer SET c_balance = " + cBalance +
+			sql = "UPDATE customer SET c_balance = " + 
+					String.format("%f", cBalance) +
 					" WHERE c_w_id = " + cwid +
 					" AND c_d_id = " + cdid + " AND c_id = " + cid;
 			executeUpdate(sql);
@@ -138,24 +140,5 @@ public class PaymentProc extends BasicStoredProcedure<PaymentProcParamHelper> {
 				+ "%d, %d, %f, '%s')",
 				cid, cdid, cwid, did, wid, hDate, hAmount, hData);
 		executeUpdate(sql);
-	}
-	
-	private Scan executeQuery(String sql) {
-		Plan p = VanillaDb.newPlanner().createQueryPlan(sql, tx);
-		Scan s = p.open();
-		s.beforeFirst();
-		if (s.next()) {
-			return s;
-		} else
-			throw new RuntimeException("Query: " + sql + " fails.");
-	}
-	
-	private void executeUpdate(String sql) {
-		int count = VanillaDb.newPlanner().executeUpdate(sql, tx);
-		
-		if (count > 1)
-			throw new RuntimeException("Update: " + sql + " affect more than 1 record.");
-		else if (count < 1)
-			throw new RuntimeException("Update: " + sql + " fails.");
 	}
 }

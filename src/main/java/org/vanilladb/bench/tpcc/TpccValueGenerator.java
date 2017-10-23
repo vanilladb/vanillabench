@@ -4,26 +4,24 @@ import java.util.Random;
 
 /** A TPC-C random generator. */
 public class TpccValueGenerator {
-	public static final int NU_CLAST_LOAD = 0, NU_CLAST_RUN = 1, NU_CID = 2,
-			NU_OLIID = 3;
-	private static final String CHARSET = new String(
-			"QAa0bcLdUK2eHfJgTP8XhiFj61DOklNm9nBoI5pGqYVrs3CtSuMZvwWx4yE7zR");
-	private static final String TOKENS[] = { "BAR", "OUGHT", "ABLE", "PRI",
-			"PRES", "ESE", "ANTI", "CALLY", "ATION", "EING", };
+	public static final int NU_CLAST_LOAD = 0, NU_CLAST_RUN = 1, NU_CID = 2, NU_OLIID = 3;
+	private static final String CHARSET = new String("QAa0bcLdUK2eHfJgTP8XhiFj61DOklNm9nBoI5pGqYVrs3CtSuMZvwWx4yE7zR");
+	private static final String TOKENS[] = { "BAR", "OUGHT", "ABLE", "PRI", "PRES", "ESE", "ANTI", "CALLY", "ATION",
+			"EING", };
 
 	private Random rng = new Random();
 	private NURandGenerator nug = new NURandGenerator();
-	
+
 	public static void main(String[] args) {
 		TpccValueGenerator ranValGen = new TpccValueGenerator(100);
-		
+
 		System.out.println(ranValGen.nextDouble());
 		System.out.println(ranValGen.nstring(10));
 		System.out.println(ranValGen.randomAString(10));
 		System.out.println(ranValGen.fixedDecimalNumber(10, 0.1, 1.0));
-		
+
 		ranValGen = new TpccValueGenerator(100);
-		
+
 		System.out.println(ranValGen.nextDouble());
 		System.out.println(ranValGen.nstring(10));
 		System.out.println(ranValGen.randomAString(10));
@@ -44,6 +42,10 @@ public class TpccValueGenerator {
 
 	/**
 	 * Return an integer in the (inclusive) range [min, max].
+	 * 
+	 * @param min
+	 * @param max
+	 * @return
 	 */
 	public int number(int min, int max) {
 		if (min > max)
@@ -161,8 +163,11 @@ public class TpccValueGenerator {
 	}
 
 	/**
-	 * @returns a random numeric string with length in range [minimum_length,
-	 *          maximum_length].
+	 * 
+	 * @param minimum_length
+	 * @param maximum_length
+	 * @return a random numeric string with length in range [minimum_length,
+	 *         maximum_length].
 	 */
 	public String nstring(int minimum_length, int maximum_length) {
 		return randomString(minimum_length, maximum_length, '0', 10);
@@ -179,8 +184,7 @@ public class TpccValueGenerator {
 		return sb.toString();
 	}
 
-	private String randomString(int minimum_length, int maximum_length,
-			char base, int numCharacters) {
+	private String randomString(int minimum_length, int maximum_length, char base, int numCharacters) {
 		int length = number(minimum_length, maximum_length);
 		return randomString(length, base, numCharacters);
 	}
@@ -255,16 +259,13 @@ public class TpccValueGenerator {
 				throw new IllegalArgumentException();
 			}
 
-			return (((number(0, a) | number(min, max)) + c) % (max - min + 1))
-					+ min;
+			return (((number(0, a) | number(min, max)) + c) % (max - min + 1)) + min;
 		}
 
 		public String toString() {
-			return "NURand with aForCLast = " + aForCLast + ", aForCId = "
-					+ aForCId + ", aForOrderLineIId = " + aForOrderLineIId
-					+ ", cLoadForCLast = " + cLoadForCLast
-					+ ", cRunForCLast = " + cRunForCLast + ", cForCId = "
-					+ cForCId + ", cForOrderLineIId=" + cForOrderLineIId;
+			return "NURand with aForCLast = " + aForCLast + ", aForCId = " + aForCId + ", aForOrderLineIId = "
+					+ aForOrderLineIId + ", cLoadForCLast = " + cLoadForCLast + ", cRunForCLast = " + cRunForCLast
+					+ ", cForCId = " + cForCId + ", cForOrderLineIId=" + cForOrderLineIId;
 		}
 
 		private void generateC() {
@@ -283,8 +284,7 @@ public class TpccValueGenerator {
 
 		private boolean isValidCRun() {
 			int cDelta = Math.abs(cRunForCLast - cLoadForCLast);
-			return 65 <= cDelta && cDelta <= 119 && cDelta != 96
-					&& cDelta != 112;
+			return 65 <= cDelta && cDelta <= 119 && cDelta != 96 && cDelta != 112;
 		}
 
 	}

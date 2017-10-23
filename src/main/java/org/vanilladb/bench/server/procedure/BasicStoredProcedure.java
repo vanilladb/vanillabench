@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.vanilladb.core.query.algebra.Plan;
+import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 import org.vanilladb.core.server.VanillaDb;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
@@ -61,4 +63,17 @@ public abstract class BasicStoredProcedure<H extends StoredProcedureParamHelper>
 	
 	protected abstract void executeSql();
 	
+	protected Scan executeQuery(String sql) {
+		Plan p = VanillaDb.newPlanner().createQueryPlan(sql, tx);
+		Scan s = p.open();
+		s.beforeFirst();
+		if (s.next()) {
+			return s;
+		} else
+			throw new RuntimeException("Query: '" + sql + "' fails.");
+	}
+	
+	protected void executeUpdate(String sql) {
+		VanillaDb.newPlanner().executeUpdate(sql, tx);
+	}
 }

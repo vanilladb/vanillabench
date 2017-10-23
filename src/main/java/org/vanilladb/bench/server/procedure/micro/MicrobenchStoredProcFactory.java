@@ -13,10 +13,10 @@ public class MicrobenchStoredProcFactory implements StoredProcedureFactory {
 		StoredProcedure sp;
 		switch (MicroTransactionType.fromProcedureId(pid)) {
 		case SCHEMA_BUILDER:
-			sp = new SchemaBuilderProc();
+			sp = new MicroSchemaBuilderProc();
 			break;
 		case TESTBED_LOADER:
-			sp = new TestbedLoaderProc();
+			sp = new MicroTestbedLoaderProc();
 			break;
 		case START_PROFILING:
 			sp = new StartProfilingProc();

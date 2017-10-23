@@ -4,6 +4,8 @@ import org.vanilladb.bench.micro.MicroBenchmarker;
 import org.vanilladb.bench.remote.SutDriver;
 import org.vanilladb.bench.remote.sp.VanillaDbSpDriver;
 import org.vanilladb.bench.tpcc.TpccBenchmarker;
+import org.vanilladb.bench.tpce.TpceBenchmarker;
+import org.vanilladb.bench.ycsb.YcsbBenchmarker;
 
 public class App {
 	
@@ -15,8 +17,8 @@ public class App {
 		try {
 			parseArguments(args);
 		} catch (IllegalArgumentException e) {
-			System.out.println("Error: " + e.getMessage());
-			System.out.println("Usage: ./app [Action]");
+			System.err.println("Error: " + e.getMessage());
+			System.err.println("Usage: ./app [Action]");
 		}
 		
 		// Create a driver for connection
@@ -39,7 +41,11 @@ public class App {
 			benchmarker = new TpccBenchmarker(driver);
 			break;
 		case TPCE:
-			throw new UnsupportedOperationException("No TPC-E for now");
+			benchmarker = new TpceBenchmarker(driver);
+			break;
+		case YCSB:
+			benchmarker = new YcsbBenchmarker(driver);
+			break;
 		}
 		
 		switch (action) {

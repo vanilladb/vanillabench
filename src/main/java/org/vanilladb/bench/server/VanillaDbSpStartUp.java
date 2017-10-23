@@ -6,6 +6,8 @@ import java.util.logging.Logger;
 import org.vanilladb.bench.BenchmarkerParameters;
 import org.vanilladb.bench.server.procedure.micro.MicrobenchStoredProcFactory;
 import org.vanilladb.bench.server.procedure.tpcc.TpccStoredProcFactory;
+import org.vanilladb.bench.server.procedure.tpce.TpceStoredProcFactory;
+import org.vanilladb.bench.server.procedure.ycsb.YcsbStoredProcFactory;
 import org.vanilladb.core.remote.storedprocedure.SpStartUp;
 import org.vanilladb.core.server.VanillaDb;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureFactory;
@@ -24,7 +26,7 @@ public class VanillaDbSpStartUp implements SutStartUp {
 			logger.info("VanillaBench server ready");
 		
 		try {
-			SpStartUp.startUp();
+			SpStartUp.startUp(1099);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -44,7 +46,15 @@ public class VanillaDbSpStartUp implements SutStartUp {
 			factory = new TpccStoredProcFactory();
 			break;
 		case TPCE:
-			throw new UnsupportedOperationException("No TPC-E for now");
+			if (logger.isLoggable(Level.INFO))
+				logger.info("using TPC-E stored procedures");
+			factory = new TpceStoredProcFactory();
+			break;
+		case YCSB:
+			if (logger.isLoggable(Level.INFO))
+				logger.info("using YCSB stored procedures");
+			factory = new YcsbStoredProcFactory();
+			break;
 		}
 		return factory;
 	}

@@ -4,10 +4,57 @@
 
 	<groupId>org.vanilladb</groupId>
 	<artifactId>bench</artifactId>
-	<version>0.1.0</version>
+	<version>0.2.1</version>
+	<packaging>jar</packaging>
 
 	<name>vanillabench</name>
+	<description>The benchmarker for VanillaCore</description>
 	<url>http://www.vanilladb.org</url>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>VanillaDB Organization</name>
+		<url>http://www.vanilladb.org</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<name>Shan-Hung Wu</name>
+			<email>shwu@cs.nthu.edu.tw</email>
+		</developer>
+		<developer>
+			<name>Tsai-Yu Feng</name>
+			<email>tyfeng@netdb.cs.nthu.edu.tw</email>
+		</developer>
+		<developer>
+			<name>Meng-Kai Liao</name>
+			<email>mkliao@netdb.cs.nthu.edu.tw</email>
+		</developer>
+		<developer>
+			<name>Shao-Kan Pi</name>
+			<email>skpi@netdb.cs.nthu.edu.tw</email>
+		</developer>
+		<developer>
+			<name>Yu-Shan Lin</name>
+			<email>yslin@netdb.cs.nthu.edu.tw</email>
+		</developer>
+		<developer>
+			<name>Ching Tsai</name>
+			<email>ctsai@netdb.cs.nthu.edu.tw</email>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git://github.com/vanilladb/vanillabench.git</connection>
+		<developerConnection>scm:git:ssh://github.com:vanilladb/vanillabench.git</developerConnection>
+		<url>http://github.com/vanilladb/vanillabench/tree/master</url>
+	</scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,10 +70,22 @@
 		<dependency>
 			<groupId>org.vanilladb</groupId>
 			<artifactId>core</artifactId>
-			<version>0.2.1</version>
+			<version>0.2.2</version>
 		</dependency>
 	</dependencies>
-	
+
+	<!-- For deploying to the central repository -->
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+		</repository>
+	</distributionManagement>
+
 	<build>
 		<plugins>
 			<!-- Use JDK 1.7, instead of the default one (JDK 1.5) -->
@@ -40,6 +99,74 @@
 				</configuration>
 			</plugin>
 
+			<!-- Testing Settings -->
+			<!-- TODO: Load properties for testing -->
+
+			<!-- Generate the source jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Generate JavaDoc -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Generate Scripts -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>appassembler-maven-plugin</artifactId>
+				<version>1.10</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>assemble</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- Set alternative assemble directory -->
+					<assembleDirectory>${project.build.directory}/stand-alone</assembleDirectory>
+					<!-- VM Arguments -->
+					<extraJvmArguments>-Djava.util.logging.config.file=properties/logging.properties
+						-Dorg.vanilladb.bench.config.file=properties/vanillabench.properties
+						-Dorg.vanilladb.core.config.file=properties/vanilladb.properties</extraJvmArguments>
+					<programs>
+						<!-- Server -->
+						<program>
+							<mainClass>org.vanilladb.bench.server.StartUp</mainClass>
+							<id>server</id>
+						</program>
+						<!-- Client -->
+						<program>
+							<mainClass>org.vanilladb.bench.App</mainClass>
+							<id>client</id>
+						</program>
+					</programs>
+				</configuration>
+			</plugin>
+
 			<!-- Copy the properties files to a different directory -->
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -49,14 +176,19 @@
 						<id>copy-resources</id>
 						<phase>validate</phase>
 						<goals>
-							<goal>copy-resources</goal>
+							<goal>resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${basedir}/target/properties</outputDirectory>
+							<outputDirectory>${project.build.directory}/stand-alone/properties</outputDirectory>
 							<resources>
 								<resource>
-									<directory>src/main/resources</directory>
-									<filtering>true</filtering>
+									<directory>src/main/resources/java/util/logging/</directory>
+								</resource>
+								<resource>
+									<directory>src/main/resources/org/vanilladb/bench/</directory>
+								</resource>
+								<resource>
+									<directory>src/main/resources/org/vanilladb/core/</directory>
 								</resource>
 							</resources>
 						</configuration>
@@ -66,4 +198,53 @@
 
 		</plugins>
 	</build>
+
+	<profiles>
+		<!-- Make sure release only happening when I need it (To avoid error when 
+			others try to run 'mvn install', like Travis CI) -->
+		<profile>
+			<id>release-sign-artifacts</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<!-- Sign with GPG keys -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.5</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<keyname>vanilladb</keyname>
+						</configuration>
+					</plugin>
+
+					<!-- Deploy to the central repository -->
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.7</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
