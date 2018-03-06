@@ -26,7 +26,7 @@ public class VanillaDbSpStartUp implements SutStartUp {
 			logger.info("VanillaBench server ready");
 		
 		try {
-			SpStartUp.startUp(1099);
+			SpStartUp.startUp();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

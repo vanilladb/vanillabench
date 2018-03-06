@@ -10,7 +10,13 @@ public enum YcsbTransactionType implements TransactionType {
 	START_PROFILING, STOP_PROFILING,
 	
 	// TPC-C procedures
-	YCSB;
+	YCSB,
+	
+	// CLAY
+	LAUNCH_CLAY, BROADCAST_MIGRAKEYS,
+
+	// Migration
+	START_MIGRATION, STOP_MIGRATION, MIGRATION_ANALYSIS, ASYNC_MIGRATE;
 	
 	public static YcsbTransactionType fromProcedureId(int pid) {
 		return YcsbTransactionType.values()[pid];

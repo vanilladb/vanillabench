@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
@@ -72,7 +73,7 @@ public class StatisticMgr {
 			txnStatistics.put(type, new TxnStatistic(type));
 
 		try {
-
+			Random random = new Random();
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd-HHmmss");
 			String timeString = formatter.format(Calendar.getInstance().getTime());
 			String fileName = timeString + ".txt";
@@ -126,7 +127,7 @@ public class StatisticMgr {
 
 			bwrFile.close();
 
-			fileName = timeString + ".csv";
+			fileName = timeString + "-" + random.nextInt() + ".csv";
 			outputFile = new File(dir.getAbsoluteFile(), fileName);
 			wrFile = new FileWriter(outputFile);
 			bwrFile = new BufferedWriter(wrFile);
