@@ -30,8 +30,6 @@ public class StatisticMgr {
 
 	private List<TxnResultSet> resultSets = new ArrayList<TxnResultSet>();
 
-	private static long benchStartTime;
-
 	private static int GRANULARITY;
 
 	private static TreeMap<Long, ArrayList<Long>> latencyHistory;
@@ -45,7 +43,6 @@ public class StatisticMgr {
 		File dir = new File(OUTPUT_DIR);
 		if (!dir.exists())
 			dir.mkdir();
-		benchStartTime = System.nanoTime();
 		GRANULARITY = BenchProperties.getLoader()
 				.getPropertyAsInteger(StatisticMgr.class.getName() + ".GRANULARITY", 3000);
 		latencyHistory = new TreeMap<Long, ArrayList<Long>>();
@@ -150,7 +147,7 @@ public class StatisticMgr {
 
 	public void addTxnLatency(TxnResultSet rs) {
 
-		long t = TimeUnit.NANOSECONDS.toMillis(rs.getTxnEndTime() - benchStartTime);
+		long t = TimeUnit.NANOSECONDS.toMillis(rs.getTxnEndTime() - Benchmarker.BENCH_START_TIME);
 		t = (t / GRANULARITY) * GRANULARITY / 1000;
 
 		if (!latencyHistory.containsKey(t))
