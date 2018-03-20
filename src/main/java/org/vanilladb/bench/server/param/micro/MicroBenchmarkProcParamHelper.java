@@ -77,10 +77,6 @@ public class MicroBenchmarkProcParamHelper extends StoredProcedureParamHelper {
 
 	@Override
 	public SpResultSet createResultSet() {
-		/*
-		 * TODO The output information is not strictly followed the TPC-C
-		 * definition. See the session 2.4.3.5 in TPC-C 5.11 document.
-		 */
 		Schema sch = new Schema();
 		Type statusType = Type.VARCHAR(10);
 		Type intType = Type.INTEGER;
