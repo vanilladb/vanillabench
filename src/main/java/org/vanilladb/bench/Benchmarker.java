@@ -29,7 +29,7 @@ public abstract class Benchmarker {
 	
 	protected abstract void stopProfilingProcedure(SutConnection conn) throws SQLException;
 	
-	protected abstract RemoteTerminalEmulator createRte(SutConnection conn, StatisticMgr statMgr);
+	protected abstract RemoteTerminalEmulator<?> createRte(SutConnection conn, StatisticMgr statMgr);
 	
 	public void loadTestbed() {
 		if (logger.isLoggable(Level.INFO))
@@ -53,7 +53,7 @@ public abstract class Benchmarker {
 			if (logger.isLoggable(Level.INFO))
 				logger.info("creating " + BenchmarkerParameters.NUM_RTES + " emulators...");
 			
-			RemoteTerminalEmulator[] emulators = new RemoteTerminalEmulator[BenchmarkerParameters.NUM_RTES];
+			RemoteTerminalEmulator<?>[] emulators = new RemoteTerminalEmulator[BenchmarkerParameters.NUM_RTES];
 			for (int i = 0; i < emulators.length; i++)
 				emulators[i] = createRte(getConnection(), statMgr);
 			

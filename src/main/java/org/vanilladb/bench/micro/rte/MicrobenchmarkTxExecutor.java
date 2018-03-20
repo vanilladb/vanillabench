@@ -1,14 +1,15 @@
 package org.vanilladb.bench.micro.rte;
 
 import org.vanilladb.bench.TxnResultSet;
+import org.vanilladb.bench.micro.MicroTransactionType;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.rte.TransactionExecutor;
-import org.vanilladb.bench.rte.TxParamGenerator;
+import org.vanilladb.bench.rte.jdbc.JdbcExecutor;
 
-public class MicrobenchmarkTxExecutor extends TransactionExecutor {
+public class MicrobenchmarkTxExecutor extends TransactionExecutor<MicroTransactionType> {
 
-	public MicrobenchmarkTxExecutor(TxParamGenerator pg) {
+	public MicrobenchmarkTxExecutor(MicrobenchmarkParamGen pg) {
 		this.pg = pg;
 	}
 
@@ -22,7 +23,8 @@ public class MicrobenchmarkTxExecutor extends TransactionExecutor {
 
 			// send txn request and start measure txn response time
 			long txnRT = System.nanoTime();
-			SutResultSet result = callStoredProc(conn, params);
+			
+			SutResultSet result = executeTxn(conn, params);
 
 			// measure txn response time
 			txnRT = System.nanoTime() - txnRT;
@@ -41,5 +43,10 @@ public class MicrobenchmarkTxExecutor extends TransactionExecutor {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());
 		}
+	}
+	
+	@Override
+	protected JdbcExecutor<MicroTransactionType> getJdbcExecutor() {
+		throw new UnsupportedOperationException("no JDCB implementation for the micro-benchmarks");
 	}
 }

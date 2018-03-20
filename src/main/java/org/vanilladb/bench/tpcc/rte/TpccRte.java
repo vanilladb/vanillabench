@@ -8,11 +8,10 @@ import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.TransactionType;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.rte.RemoteTerminalEmulator;
-import org.vanilladb.bench.rte.TransactionExecutor;
 import org.vanilladb.bench.tpcc.TpccConstants;
 import org.vanilladb.bench.tpcc.TpccTransactionType;
 
-public class TpccRte extends RemoteTerminalEmulator {
+public class TpccRte extends RemoteTerminalEmulator<TpccTransactionType> {
 	
 	private static final Random TX_TYPE_RANDOM = new Random();
 	
@@ -30,7 +29,7 @@ public class TpccRte extends RemoteTerminalEmulator {
 		executors.put(TpccTransactionType.STOCK_LEVEL, new TpccTxExecutor(new StockLevelParamGen(homeWid)));
 	}
 	
-	protected TransactionType getNextTxType() {
+	protected TpccTransactionType getNextTxType() {
 		int index = TX_TYPE_RANDOM.nextInt(TpccConstants.FREQUENCY_TOTAL);
 		if (index < TpccConstants.RANGE_NEW_ORDER)
 			return TpccTransactionType.NEW_ORDER;
@@ -44,7 +43,7 @@ public class TpccRte extends RemoteTerminalEmulator {
 			return TpccTransactionType.STOCK_LEVEL;
 	}
 	
-	protected TransactionExecutor getTxExeutor(TransactionType type) {
+	protected TpccTxExecutor getTxExeutor(TpccTransactionType type) {
 		return executors.get(type);
 	}
 }

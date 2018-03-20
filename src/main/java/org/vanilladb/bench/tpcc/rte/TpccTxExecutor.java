@@ -4,9 +4,11 @@ import org.vanilladb.bench.TxnResultSet;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.rte.TransactionExecutor;
+import org.vanilladb.bench.rte.jdbc.JdbcExecutor;
+import org.vanilladb.bench.tpcc.TpccTransactionType;
 import org.vanilladb.bench.util.BenchProperties;
 
-public class TpccTxExecutor extends TransactionExecutor {
+public class TpccTxExecutor extends TransactionExecutor<TpccTransactionType> {
 
 	private final static boolean ENABLE_THINK_AND_KEYING_TIME;
 
@@ -42,7 +44,8 @@ public class TpccTxExecutor extends TransactionExecutor {
 
 			// send txn request and start measure txn response time
 			long txnRT = System.nanoTime();
-			SutResultSet result = callStoredProc(conn, params);
+			
+			SutResultSet result = executeTxn(conn, params);
 
 			// measure txn Sresponse time
 			txnRT = System.nanoTime() - txnRT;
@@ -70,5 +73,10 @@ public class TpccTxExecutor extends TransactionExecutor {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());
 		}
+	}
+	
+	@Override
+	protected JdbcExecutor<TpccTransactionType> getJdbcExecutor() {
+		throw new UnsupportedOperationException("no JDCB implementation for TPC-C");
 	}
 }

@@ -1,17 +1,15 @@
 package org.vanilladb.bench.tpce.rte;
 
 import org.vanilladb.bench.StatisticMgr;
-import org.vanilladb.bench.TransactionType;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.rte.RemoteTerminalEmulator;
-import org.vanilladb.bench.rte.TransactionExecutor;
 import org.vanilladb.bench.tpce.TpceConstants;
 import org.vanilladb.bench.tpce.TpceTransactionType;
 import org.vanilladb.bench.tpce.data.TpceDataManager;
 import org.vanilladb.bench.tpce.data.Trade;
 import org.vanilladb.bench.util.RandomValueGenerator;
 
-public class TpceRte extends RemoteTerminalEmulator {
+public class TpceRte extends RemoteTerminalEmulator<TpceTransactionType> {
 	
 	private static final RandomValueGenerator TX_TYPE_RANDOM = new RandomValueGenerator();
 	
@@ -23,7 +21,7 @@ public class TpceRte extends RemoteTerminalEmulator {
 	}
 
 	@Override
-	protected TransactionType getNextTxType() {
+	protected TpceTransactionType getNextTxType() {
 		boolean isTradeOrder = TX_TYPE_RANDOM.randomChooseFromDistribution(
 				TpceConstants.TARDE_ORDER_PERCENTAGE, 1 - TpceConstants.TARDE_ORDER_PERCENTAGE)
 				== 0 ? true : false;
@@ -35,7 +33,7 @@ public class TpceRte extends RemoteTerminalEmulator {
 	}
 
 	@Override
-	protected TransactionExecutor getTxExeutor(TransactionType type) {
+	protected TpceTxExecutor getTxExeutor(TpceTransactionType type) {
 		if (type == TpceTransactionType.TRADE_ORDER) {
 			return new TpceTxExecutor(new TradeOrderParamGen(dataMgr));
 		} else if (type == TpceTransactionType.TRADE_RESULT) {

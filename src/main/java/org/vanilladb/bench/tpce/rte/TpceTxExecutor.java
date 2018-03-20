@@ -4,8 +4,10 @@ import org.vanilladb.bench.TxnResultSet;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.rte.TransactionExecutor;
+import org.vanilladb.bench.rte.jdbc.JdbcExecutor;
+import org.vanilladb.bench.tpce.TpceTransactionType;
 
-public class TpceTxExecutor extends TransactionExecutor {
+public class TpceTxExecutor extends TransactionExecutor<TpceTransactionType> {
 	
 	private TpceTxParamGenerator paramGen;
 
@@ -25,7 +27,8 @@ public class TpceTxExecutor extends TransactionExecutor {
 
 			// send tx request and start measure tx response time
 			long txnRT = System.nanoTime();
-			SutResultSet result = callStoredProc(conn, params);
+			
+			SutResultSet result = executeTxn(conn, params);
 
 			// measure txn Sresponse time
 			txnRT = System.nanoTime() - txnRT;
@@ -48,5 +51,9 @@ public class TpceTxExecutor extends TransactionExecutor {
 			throw new RuntimeException(e.getMessage());
 		}
 	}
-
+	
+	@Override
+	protected JdbcExecutor<TpceTransactionType> getJdbcExecutor() {
+		throw new UnsupportedOperationException("no JDCB implementation for TPC-E");
+	}
 }

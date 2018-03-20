@@ -8,6 +8,8 @@ public class BenchmarkerParameters {
 	public static final long BENCHMARK_INTERVAL;
 	public static final int NUM_RTES;
 	
+	public static final String SERVER_IP;
+	
 	// JDBC = 1, SP = 2
 	public static enum ConnectionMode { JDBC, SP };
 	public static final ConnectionMode CONNECTION_MODE;
@@ -28,6 +30,9 @@ public class BenchmarkerParameters {
 
 		NUM_RTES = BenchProperties.getLoader().getPropertyAsInteger(
 				BenchmarkerParameters.class.getName() + ".NUM_RTES", 1);
+		
+		SERVER_IP = BenchProperties.getLoader().getPropertyAsString(
+				BenchmarkerParameters.class.getName() + ".SERVER_IP", "127.0.0.1");
 		
 		int conMode = BenchProperties.getLoader().getPropertyAsInteger(
 				BenchmarkerParameters.class.getName() + ".CONNECTION_MODE", 1);

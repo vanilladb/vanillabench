@@ -1,6 +1,5 @@
 package org.vanilladb.bench.tpce.rte;
 
-import org.vanilladb.bench.TransactionType;
 import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.tpce.TpceTransactionType;
 import org.vanilladb.bench.tpce.data.Trade;
@@ -14,7 +13,7 @@ public class TradeResultParamGen implements TpceTxParamGenerator {
 	}
 
 	@Override
-	public TransactionType getTxnType() {
+	public TpceTransactionType getTxnType() {
 		return TpceTransactionType.TRADE_RESULT;
 	}
 

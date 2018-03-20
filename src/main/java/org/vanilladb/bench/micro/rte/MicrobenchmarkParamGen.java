@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import org.vanilladb.bench.TransactionType;
 import org.vanilladb.bench.micro.MicroTransactionType;
 import org.vanilladb.bench.micro.MicrobenchConstants;
 import org.vanilladb.bench.rte.TxParamGenerator;
@@ -13,7 +12,7 @@ import org.vanilladb.bench.tpcc.TpccValueGenerator;
 import org.vanilladb.bench.util.BenchProperties;
 import org.vanilladb.bench.util.RandomNonRepeatGenerator;
 
-public class MicrobenchmarkParamGen implements TxParamGenerator {
+public class MicrobenchmarkParamGen implements TxParamGenerator<MicroTransactionType> {
 	
 	// Transaaction Type
 	private static final double RW_TX_RATE;
@@ -65,7 +64,7 @@ public class MicrobenchmarkParamGen implements TxParamGenerator {
 	}
 
 	@Override
-	public TransactionType getTxnType() {
+	public MicroTransactionType getTxnType() {
 		return MicroTransactionType.MICRO;
 	}
 

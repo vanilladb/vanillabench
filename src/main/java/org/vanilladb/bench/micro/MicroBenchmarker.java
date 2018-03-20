@@ -32,7 +32,7 @@ public class MicroBenchmarker extends Benchmarker {
 		conn.callStoredProc(MicroTransactionType.TESTBED_LOADER.ordinal());
 	}
 	
-	protected RemoteTerminalEmulator createRte(SutConnection conn, StatisticMgr statMgr) {
+	protected RemoteTerminalEmulator<MicroTransactionType> createRte(SutConnection conn, StatisticMgr statMgr) {
 		return new MicrobenchmarkRte(conn, statMgr);
 	}
 	

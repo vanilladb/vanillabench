@@ -1,13 +1,11 @@
 package org.vanilladb.bench.micro.rte;
 
 import org.vanilladb.bench.StatisticMgr;
-import org.vanilladb.bench.TransactionType;
 import org.vanilladb.bench.micro.MicroTransactionType;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.rte.RemoteTerminalEmulator;
-import org.vanilladb.bench.rte.TransactionExecutor;
 
-public class MicrobenchmarkRte extends RemoteTerminalEmulator {
+public class MicrobenchmarkRte extends RemoteTerminalEmulator<MicroTransactionType> {
 	
 	private MicrobenchmarkTxExecutor executor;
 
@@ -16,11 +14,11 @@ public class MicrobenchmarkRte extends RemoteTerminalEmulator {
 		executor = new MicrobenchmarkTxExecutor(new MicrobenchmarkParamGen());
 	}
 	
-	protected TransactionType getNextTxType() {
+	protected MicroTransactionType getNextTxType() {
 		return MicroTransactionType.MICRO;
 	}
 	
-	protected TransactionExecutor getTxExeutor(TransactionType type) {
+	protected MicrobenchmarkTxExecutor getTxExeutor(MicroTransactionType type) {
 		return executor;
 	}
 }

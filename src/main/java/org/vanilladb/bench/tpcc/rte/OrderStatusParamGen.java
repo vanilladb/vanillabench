@@ -1,6 +1,5 @@
 package org.vanilladb.bench.tpcc.rte;
 
-import org.vanilladb.bench.TransactionType;
 import org.vanilladb.bench.tpcc.TpccConstants;
 import org.vanilladb.bench.tpcc.TpccTransactionType;
 import org.vanilladb.bench.tpcc.TpccValueGenerator;
@@ -15,7 +14,7 @@ public class OrderStatusParamGen implements TpccTxParamGenerator {
 	}
 
 	@Override
-	public TransactionType getTxnType() {
+	public TpccTransactionType getTxnType() {
 		return TpccTransactionType.ORDER_STATUS;
 	}
 

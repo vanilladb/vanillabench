@@ -9,7 +9,6 @@ import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.TransactionType;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutDriver;
-import org.vanilladb.bench.rte.RemoteTerminalEmulator;
 import org.vanilladb.bench.tpce.data.TpceDataManager;
 import org.vanilladb.bench.tpce.rte.TpceRte;
 
@@ -37,7 +36,7 @@ public class TpceBenchmarker extends Benchmarker {
 		conn.callStoredProc(TpceTransactionType.TESTBED_LOADER.ordinal());
 	}
 	
-	protected RemoteTerminalEmulator createRte(SutConnection conn, StatisticMgr statMgr) {
+	protected TpceRte createRte(SutConnection conn, StatisticMgr statMgr) {
 		return new TpceRte(conn, statMgr, dataMgr);
 	}
 	

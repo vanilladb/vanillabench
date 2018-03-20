@@ -7,7 +7,7 @@ import org.vanilladb.bench.TransactionType;
 import org.vanilladb.bench.TxnResultSet;
 import org.vanilladb.bench.remote.SutConnection;
 
-public abstract class RemoteTerminalEmulator extends Thread {
+public abstract class RemoteTerminalEmulator<T extends TransactionType> extends Thread {
 
 	private static AtomicInteger rteCount = new AtomicInteger(0);
 
@@ -41,13 +41,13 @@ public abstract class RemoteTerminalEmulator extends Thread {
 		stopBenchmark = true;
 	}
 
-	protected abstract TransactionType getNextTxType();
+	protected abstract T getNextTxType();
 	
-	protected abstract TransactionExecutor getTxExeutor(TransactionType type);
+	protected abstract TransactionExecutor<T> getTxExeutor(T type);
 
 	private TxnResultSet executeTxnCycle(SutConnection conn) {
-		TransactionType txType = getNextTxType();
-		TransactionExecutor executor = getTxExeutor(txType);
+		T txType = getNextTxType();
+		TransactionExecutor<T> executor = getTxExeutor(txType);
 		return executor.execute(conn);
 	}
 }
