@@ -12,15 +12,18 @@ import org.vanilladb.bench.remote.jdbc.VanillaDbJdbcResultSet;
 import org.vanilladb.bench.rte.jdbc.JdbcJob;
 
 public class MicrobenchJdbcJob implements JdbcJob {
-	private static Logger logger = Logger.getLogger(MicrobenchJdbcJob.class.getName());
-
+	private static Logger logger = Logger.getLogger(MicrobenchJdbcJob.class
+			.getName());
+	
 	@Override
 	public SutResultSet execute(Connection conn, Object[] pars) throws SQLException {
 		// Parse parameters
 		int readCount = (Integer) pars[0];
 		int[] itemIds = new int[readCount];
-		for (int i = 1; i <= readCount; i++)
-			itemIds[i] = (Integer) pars[i++];
+		for (int i = 0; i < readCount; i++)
+			itemIds[i] = (Integer) pars[i + 1];
+		
+		// TODO: Process update ids
 		
 		// Output message
 		StringBuilder outputMsg = new StringBuilder("[");
@@ -34,21 +37,20 @@ public class MicrobenchJdbcJob implements JdbcJob {
 				rs = statement.executeQuery(sql);
 				rs.beforeFirst();
 				if (rs.next()) {
-					outputMsg.append(String.format("item_name_%d = '%s',", i, rs.getString("i_name")));
+					outputMsg.append(String.format("'%s', ", rs.getString("i_name")));
 				} else
-					throw new RuntimeException();
+					throw new RuntimeException("cannot find the record with i_id = " + itemIds[i]);
 				rs.close();
 			}
 			conn.commit();
 			
-			outputMsg.deleteCharAt(outputMsg.length() - 1);
+			outputMsg.deleteCharAt(outputMsg.length() - 2);
 			outputMsg.append("]");
 			
 			return new VanillaDbJdbcResultSet(true, outputMsg.toString());
 		} catch (Exception e) {
 			if (logger.isLoggable(Level.WARNING))
-				logger.warning(e.getMessage());
-			
+				logger.warning(e.toString());
 			return new VanillaDbJdbcResultSet(false, "");
 		}
 	}

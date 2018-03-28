@@ -1,6 +1,7 @@
 package org.vanilladb.bench.rte;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import org.vanilladb.bench.BenchmarkerParameters;
 import org.vanilladb.bench.TransactionType;
@@ -25,25 +26,20 @@ public abstract class TransactionExecutor<T extends TransactionType> {
 	
 	protected abstract JdbcExecutor<T> getJdbcExecutor();
 	
-	protected SutResultSet executeTxn(SutConnection conn, Object[] pars) {
-		try {
-			SutResultSet result = null;
-			
-			switch (BenchmarkerParameters.CONNECTION_MODE) {
-			case JDBC:
-				Connection jdbcConn = conn.toJdbcConnection();
-				jdbcConn.setAutoCommit(false);
-				result = getJdbcExecutor().execute(jdbcConn, pg.getTxnType(), pars);
-				break;
-			case SP:
-				result = conn.callStoredProc(pg.getTxnType().getProcedureId(), pars);
-				break;
-			}
-			
-			return result;
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException(e.getMessage());
+	protected SutResultSet executeTxn(SutConnection conn, Object[] pars) throws SQLException {
+		SutResultSet result = null;
+		
+		switch (BenchmarkerParameters.CONNECTION_MODE) {
+		case JDBC:
+			Connection jdbcConn = conn.toJdbcConnection();
+			jdbcConn.setAutoCommit(false);
+			result = getJdbcExecutor().execute(jdbcConn, pg.getTxnType(), pars);
+			break;
+		case SP:
+			result = conn.callStoredProc(pg.getTxnType().getProcedureId(), pars);
+			break;
 		}
+		
+		return result;
 	}
 }

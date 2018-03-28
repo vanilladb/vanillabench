@@ -2,12 +2,15 @@ package org.vanilladb.bench.micro.rte;
 
 import org.vanilladb.bench.TxnResultSet;
 import org.vanilladb.bench.micro.MicroTransactionType;
+import org.vanilladb.bench.micro.rte.jdbc.MicrobenchJdbcExecutor;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.rte.TransactionExecutor;
 import org.vanilladb.bench.rte.jdbc.JdbcExecutor;
 
 public class MicrobenchmarkTxExecutor extends TransactionExecutor<MicroTransactionType> {
+	
+	private MicrobenchJdbcExecutor jdbcExecutor = new MicrobenchJdbcExecutor();
 
 	public MicrobenchmarkTxExecutor(MicrobenchmarkParamGen pg) {
 		this.pg = pg;
@@ -47,6 +50,6 @@ public class MicrobenchmarkTxExecutor extends TransactionExecutor<MicroTransacti
 	
 	@Override
 	protected JdbcExecutor<MicroTransactionType> getJdbcExecutor() {
-		throw new UnsupportedOperationException("no JDCB implementation for the micro-benchmarks");
+		return jdbcExecutor;
 	}
 }
