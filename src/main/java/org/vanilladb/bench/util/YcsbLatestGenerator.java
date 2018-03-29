@@ -12,6 +12,11 @@ public class YcsbLatestGenerator {
 		zipfian = new YcsbZipfianGenerator(1, recordCount, skewParameter);
 		nextValue();
 	}
+	
+	public YcsbLatestGenerator(YcsbLatestGenerator origin) {
+		this.zipfian = new YcsbZipfianGenerator(origin.zipfian);
+		this.recordCount = origin.recordCount;
+	}
 
 	/**
 	 * Generate the next string in the distribution, skewed Zipfian favoring the

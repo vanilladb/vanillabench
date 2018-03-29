@@ -104,6 +104,20 @@ public class YcsbZipfianGenerator {
 		nextValue();
 		//System.out.println("XXXX 4 XXXX");
 	}
+	
+	public YcsbZipfianGenerator(YcsbZipfianGenerator origin) {
+		this.items = origin.items;
+		this.base = origin.base;
+		this.zipfianconstant = origin.zipfianconstant;
+		this.alpha = origin.alpha;
+		this.zetan = origin.zetan;
+		this.eta = origin.eta;
+		this.theta = origin.theta;
+		this.zeta2theta = origin.zeta2theta;
+		this.countforzeta = origin.countforzeta;
+		this.allowitemcountdecrease = origin.allowitemcountdecrease;
+		this.random = new Random();
+	}
 
 	/**************************************************************************/
 
@@ -157,7 +171,7 @@ public class YcsbZipfianGenerator {
 		countforzeta = n;
 		return zetastatic(st, n, theta, initialsum);
 	}
-
+	
 	/**
 	 * Compute the zeta constant needed for the distribution. Do this
 	 * incrementally for a distribution that has n items now but used to have st
@@ -176,12 +190,8 @@ public class YcsbZipfianGenerator {
 	static double zetastatic(long st, long n, double theta, double initialsum) {
 		double sum = initialsum;
 		for (long i = st; i < n; i++) {
-
 			sum += 1 / (Math.pow(i + 1, theta));
 		}
-
-		// System.out.println("countforzeta="+countforzeta);
-
 		return sum;
 	}
 
