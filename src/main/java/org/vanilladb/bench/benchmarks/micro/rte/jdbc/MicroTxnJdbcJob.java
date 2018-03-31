@@ -10,20 +10,16 @@ import java.util.logging.Logger;
 import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.remote.jdbc.VanillaDbJdbcResultSet;
 import org.vanilladb.bench.rte.jdbc.JdbcJob;
+import org.vanilladb.bench.server.param.micro.MicroTxnProcParamHelper;
 
-public class MicrobenchJdbcJob implements JdbcJob {
-	private static Logger logger = Logger.getLogger(MicrobenchJdbcJob.class
+public class MicroTxnJdbcJob implements JdbcJob {
+	private static Logger logger = Logger.getLogger(MicroTxnJdbcJob.class
 			.getName());
 	
 	@Override
 	public SutResultSet execute(Connection conn, Object[] pars) throws SQLException {
-		// Parse parameters
-		int readCount = (Integer) pars[0];
-		int[] itemIds = new int[readCount];
-		for (int i = 0; i < readCount; i++)
-			itemIds[i] = (Integer) pars[i + 1];
-		
-		// TODO: Process update ids
+		MicroTxnProcParamHelper paramHelper = new MicroTxnProcParamHelper();
+		paramHelper.prepareParameters(pars);
 		
 		// Output message
 		StringBuilder outputMsg = new StringBuilder("[");
@@ -32,16 +28,31 @@ public class MicrobenchJdbcJob implements JdbcJob {
 		try {
 			Statement statement = conn.createStatement();
 			ResultSet rs = null;
-			for (int i = 0; i < 10; i++) {
-				String sql = "SELECT i_name FROM item WHERE i_id = " + itemIds[i];
+			
+			// SELECT
+			for (int i = 0; i < paramHelper.getReadCount(); i++) {
+				int iid = paramHelper.getReadItemId(i);
+				String sql = "SELECT i_name FROM item WHERE i_id = " + iid;
 				rs = statement.executeQuery(sql);
 				rs.beforeFirst();
 				if (rs.next()) {
 					outputMsg.append(String.format("'%s', ", rs.getString("i_name")));
 				} else
-					throw new RuntimeException("cannot find the record with i_id = " + itemIds[i]);
+					throw new RuntimeException("cannot find the record with i_id = " + iid);
 				rs.close();
 			}
+			
+			// UPDATE
+			for (int i = 0; i < paramHelper.getWriteCount(); i++) {
+				int iid = paramHelper.getWriteItemId(i);
+				double newPrice = paramHelper.getNewItemPrice(i);
+				String sql = "UPDATE item SET i_price = " + newPrice + " WHERE i_id =" + iid;
+				int count = statement.executeUpdate(sql);
+				
+				if (count < 1)
+					throw new RuntimeException("cannot update the record with i_id = " + iid);
+			}
+			
 			conn.commit();
 			
 			outputMsg.deleteCharAt(outputMsg.length() - 2);

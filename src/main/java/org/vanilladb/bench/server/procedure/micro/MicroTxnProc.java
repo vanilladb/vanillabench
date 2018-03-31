@@ -1,18 +1,18 @@
 package org.vanilladb.bench.server.procedure.micro;
 
-import org.vanilladb.bench.server.param.micro.MicroBenchmarkProcParamHelper;
+import org.vanilladb.bench.server.param.micro.MicroTxnProcParamHelper;
 import org.vanilladb.bench.server.procedure.BasicStoredProcedure;
 import org.vanilladb.core.query.algebra.Scan;
 
-public class MicroBenchmarkProc extends BasicStoredProcedure<MicroBenchmarkProcParamHelper> {
+public class MicroTxnProc extends BasicStoredProcedure<MicroTxnProcParamHelper> {
 
-	public MicroBenchmarkProc() {
-		super(new MicroBenchmarkProcParamHelper());
+	public MicroTxnProc() {
+		super(new MicroTxnProcParamHelper());
 	}
 
 	@Override
 	protected void executeSql() {
-
+		// SELECT
 		for (int idx = 0; idx < paramHelper.getReadCount(); idx++) {
 			int iid = paramHelper.getReadItemId(idx);
 			Scan s = executeQuery("SELECT i_name, i_price FROM item WHERE i_id = " + iid);
@@ -28,7 +28,8 @@ public class MicroBenchmarkProc extends BasicStoredProcedure<MicroBenchmarkProcP
 
 			s.close();
 		}
-
+		
+		// UPDATE
 		for (int idx = 0; idx < paramHelper.getWriteCount(); idx++) {
 			int iid = paramHelper.getWriteItemId(idx);
 			double newPrice = paramHelper.getNewItemPrice(idx);

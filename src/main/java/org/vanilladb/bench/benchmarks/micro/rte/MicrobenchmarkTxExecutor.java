@@ -1,18 +1,19 @@
 package org.vanilladb.bench.benchmarks.micro.rte;
 
 import org.vanilladb.bench.TxnResultSet;
-import org.vanilladb.bench.benchmarks.micro.MicroTransactionType;
+import org.vanilladb.bench.benchmarks.micro.MicrobenchmarkTxnType;
 import org.vanilladb.bench.benchmarks.micro.rte.jdbc.MicrobenchJdbcExecutor;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.rte.TransactionExecutor;
+import org.vanilladb.bench.rte.TxParamGenerator;
 import org.vanilladb.bench.rte.jdbc.JdbcExecutor;
 
-public class MicrobenchmarkTxExecutor extends TransactionExecutor<MicroTransactionType> {
+public class MicrobenchmarkTxExecutor extends TransactionExecutor<MicrobenchmarkTxnType> {
 	
 	private MicrobenchJdbcExecutor jdbcExecutor = new MicrobenchJdbcExecutor();
 
-	public MicrobenchmarkTxExecutor(MicrobenchmarkParamGen pg) {
+	public MicrobenchmarkTxExecutor(TxParamGenerator<MicrobenchmarkTxnType> pg) {
 		this.pg = pg;
 	}
 
@@ -49,7 +50,7 @@ public class MicrobenchmarkTxExecutor extends TransactionExecutor<MicroTransacti
 	}
 	
 	@Override
-	protected JdbcExecutor<MicroTransactionType> getJdbcExecutor() {
+	protected JdbcExecutor<MicrobenchmarkTxnType> getJdbcExecutor() {
 		return jdbcExecutor;
 	}
 }

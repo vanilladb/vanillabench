@@ -1,6 +1,6 @@
 package org.vanilladb.bench.server.procedure.micro;
 
-import org.vanilladb.bench.benchmarks.micro.MicroTransactionType;
+import org.vanilladb.bench.benchmarks.micro.MicrobenchmarkTxnType;
 import org.vanilladb.bench.server.procedure.StartProfilingProc;
 import org.vanilladb.bench.server.procedure.StopProfilingProc;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
@@ -11,10 +11,7 @@ public class MicrobenchStoredProcFactory implements StoredProcedureFactory {
 	@Override
 	public StoredProcedure getStroredProcedure(int pid) {
 		StoredProcedure sp;
-		switch (MicroTransactionType.fromProcedureId(pid)) {
-		case SCHEMA_BUILDER:
-			sp = new MicroSchemaBuilderProc();
-			break;
+		switch (MicrobenchmarkTxnType.fromProcedureId(pid)) {
 		case TESTBED_LOADER:
 			sp = new MicroTestbedLoaderProc();
 			break;
@@ -24,8 +21,8 @@ public class MicrobenchStoredProcFactory implements StoredProcedureFactory {
 		case STOP_PROFILING:
 			sp = new StopProfilingProc();
 			break;
-		case MICRO:
-			sp = new MicroBenchmarkProc();
+		case MICRO_TXN:
+			sp = new MicroTxnProc();
 			break;
 		default:
 			sp = null;

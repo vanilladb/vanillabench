@@ -7,15 +7,15 @@ import org.vanilladb.core.sql.VarcharConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 
-public class MicroSchemaBuilderProcParamHelper extends StoredProcedureParamHelper {
+public class TestbedLoaderParamHelper extends StoredProcedureParamHelper {
 
-	private final String TABLES_DDL[] = {
+	private static final String TABLES_DDL[] = {
 			"CREATE TABLE item ( i_id INT, i_im_id INT, i_name VARCHAR(24), "
 					+ "i_price DOUBLE, i_data VARCHAR(50) )" };
-	private final String INDEXES_DDL[] = {
+	private static final String INDEXES_DDL[] = {
 			"CREATE INDEX idx_item ON item (i_id)" };
-
-	private final String TABLES_NAMES[] = { "item" };
+	
+	private int numOfItems = 0;
 
 	public String[] getTableSchemas() {
 		return TABLES_DDL;
@@ -25,13 +25,13 @@ public class MicroSchemaBuilderProcParamHelper extends StoredProcedureParamHelpe
 		return INDEXES_DDL;
 	}
 	
-	public String[] getTableNames() {
-		return TABLES_NAMES;
+	public int getNumberOfItems() {
+		return numOfItems;
 	}
 
 	@Override
 	public void prepareParameters(Object... pars) {
-		// nothing to do
+		numOfItems = (Integer) pars[0];
 	}
 
 	@Override

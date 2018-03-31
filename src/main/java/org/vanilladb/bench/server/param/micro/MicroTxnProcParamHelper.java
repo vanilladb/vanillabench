@@ -9,7 +9,7 @@ import org.vanilladb.core.sql.VarcharConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 
-public class MicroBenchmarkProcParamHelper extends StoredProcedureParamHelper {
+public class MicroTxnProcParamHelper extends StoredProcedureParamHelper {
 
 	private int readCount;
 	private int writeCount;

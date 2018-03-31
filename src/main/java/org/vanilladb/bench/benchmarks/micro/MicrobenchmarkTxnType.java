@@ -2,18 +2,18 @@ package org.vanilladb.bench.benchmarks.micro;
 
 import org.vanilladb.bench.TransactionType;
 
-public enum MicroTransactionType implements TransactionType {
+public enum MicrobenchmarkTxnType implements TransactionType {
 	// Loading procedures
-	SCHEMA_BUILDER, TESTBED_LOADER,
+	TESTBED_LOADER,
 	
 	// Profiling
 	START_PROFILING, STOP_PROFILING,
 	
-	// TPC-C procedures
-	MICRO;
+	// Benchmarking procedures
+	MICRO_TXN;
 	
-	public static MicroTransactionType fromProcedureId(int pid) {
-		return MicroTransactionType.values()[pid];
+	public static MicrobenchmarkTxnType fromProcedureId(int pid) {
+		return MicrobenchmarkTxnType.values()[pid];
 	}
 	
 	public int getProcedureId() {
@@ -21,7 +21,7 @@ public enum MicroTransactionType implements TransactionType {
 	}
 	
 	public boolean isBenchmarkingTx() {
-		if (this == MICRO)
+		if (this == MICRO_TXN)
 			return true;
 		return false;
 	}
