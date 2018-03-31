@@ -3,9 +3,9 @@ package org.vanilladb.bench.server.procedure.micro;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.vanilladb.bench.micro.MicrobenchConstants;
+import org.vanilladb.bench.benchmarks.micro.MicrobenchConstants;
+import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
 import org.vanilladb.bench.server.procedure.BasicStoredProcedure;
-import org.vanilladb.bench.tpcc.TpccConstants;
 import org.vanilladb.core.server.VanillaDb;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 import org.vanilladb.core.storage.tx.recovery.CheckpointTask;

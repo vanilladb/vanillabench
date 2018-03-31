@@ -3,9 +3,9 @@ package org.vanilladb.bench.server.procedure.tpcc;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
+import org.vanilladb.bench.benchmarks.tpcc.TpccValueGenerator;
 import org.vanilladb.bench.server.procedure.BasicStoredProcedure;
-import org.vanilladb.bench.tpcc.TpccConstants;
-import org.vanilladb.bench.tpcc.TpccValueGenerator;
 import org.vanilladb.bench.util.DoublePlainPrinter;
 import org.vanilladb.bench.util.RandomPermutationGenerator;
 import org.vanilladb.core.server.VanillaDb;

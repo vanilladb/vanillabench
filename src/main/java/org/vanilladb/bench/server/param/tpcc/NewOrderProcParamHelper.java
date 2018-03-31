@@ -1,6 +1,6 @@
 package org.vanilladb.bench.server.param.tpcc;
 
-import org.vanilladb.bench.tpcc.TpccConstants;
+import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
 import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 import org.vanilladb.core.sql.BigIntConstant;
 import org.vanilladb.core.sql.DoubleConstant;

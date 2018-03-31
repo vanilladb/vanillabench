@@ -1,6 +1,6 @@
 package org.vanilladb.bench.server.procedure.micro;
 
-import org.vanilladb.bench.micro.MicroTransactionType;
+import org.vanilladb.bench.benchmarks.micro.MicroTransactionType;
 import org.vanilladb.bench.server.procedure.StartProfilingProc;
 import org.vanilladb.bench.server.procedure.StopProfilingProc;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
