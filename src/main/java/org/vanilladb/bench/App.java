@@ -4,8 +4,9 @@ import org.vanilladb.bench.benchmarks.micro.MicroBenchmarker;
 import org.vanilladb.bench.benchmarks.tpcc.TpccBenchmarker;
 import org.vanilladb.bench.benchmarks.tpce.TpceBenchmarker;
 import org.vanilladb.bench.remote.SutDriver;
-import org.vanilladb.bench.remote.jdbc.VanillaDbJdbcDriver;
-import org.vanilladb.bench.remote.sp.VanillaDbSpDriver;
+import org.vanilladb.bench.remote.postgresql.PostgresqlDriver;
+import org.vanilladb.bench.remote.vanillacore.jdbc.VanillaDbJdbcDriver;
+import org.vanilladb.bench.remote.vanillacore.sp.VanillaDbSpDriver;
 
 public class App {
 	
@@ -25,7 +26,14 @@ public class App {
 		SutDriver driver = null;
 		switch (BenchmarkerParameters.CONNECTION_MODE) {
 		case JDBC:
-			driver = new VanillaDbJdbcDriver();
+			switch (BenchmarkerParameters.JDBC_DRIVER) {
+			case VANILLACORE:
+				driver = new VanillaDbJdbcDriver();
+				break;
+			case POSTGRESQL:
+				driver = new PostgresqlDriver();
+				break;
+			}
 			break;
 		case SP:
 			driver = new VanillaDbSpDriver();

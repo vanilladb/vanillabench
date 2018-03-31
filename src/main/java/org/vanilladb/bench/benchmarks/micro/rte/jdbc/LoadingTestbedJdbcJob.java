@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
 import org.vanilladb.bench.remote.SutResultSet;
-import org.vanilladb.bench.remote.jdbc.VanillaDbJdbcResultSet;
 import org.vanilladb.bench.rte.jdbc.JdbcJob;
 import org.vanilladb.bench.server.param.micro.TestbedLoaderParamHelper;
 
@@ -31,11 +30,11 @@ public class LoadingTestbedJdbcJob implements JdbcJob {
 			generateItems(stat, 1, paramHelper.getNumberOfItems());
 			conn.commit();
 			
-			return new VanillaDbJdbcResultSet(true, "Success");
+			return new SutResultSet(true, "Success");
 		} catch (Exception e) {
 			if (logger.isLoggable(Level.WARNING))
 				logger.warning(e.toString());
-			return new VanillaDbJdbcResultSet(false, "");
+			return new SutResultSet(false, "");
 		}
 	}
 	

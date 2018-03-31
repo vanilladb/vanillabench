@@ -8,7 +8,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.vanilladb.bench.remote.SutResultSet;
-import org.vanilladb.bench.remote.jdbc.VanillaDbJdbcResultSet;
 import org.vanilladb.bench.rte.jdbc.JdbcJob;
 import org.vanilladb.bench.server.param.micro.MicroTxnProcParamHelper;
 
@@ -58,11 +57,11 @@ public class MicroTxnJdbcJob implements JdbcJob {
 			outputMsg.deleteCharAt(outputMsg.length() - 2);
 			outputMsg.append("]");
 			
-			return new VanillaDbJdbcResultSet(true, outputMsg.toString());
+			return new SutResultSet(true, outputMsg.toString());
 		} catch (Exception e) {
 			if (logger.isLoggable(Level.WARNING))
 				logger.warning(e.toString());
-			return new VanillaDbJdbcResultSet(false, "");
+			return new SutResultSet(false, "");
 		}
 	}
 }

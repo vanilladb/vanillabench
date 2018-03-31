@@ -8,11 +8,22 @@ public class BenchmarkerParameters {
 	public static final long BENCHMARK_INTERVAL;
 	public static final int NUM_RTES;
 	
-	public static final String SERVER_IP;
+	// Connection information
+	public static final String CONNECTION_HOST;
+	public static final int CONNECTION_PORT;
+	public static final String CONNECTION_DBNAME;
+	public static final String CONNECTION_USER;
+	public static final String CONNECTION_PASSWORD;
+	public static final boolean CONNECTION_SSL;
 	
 	// JDBC = 1, SP = 2
 	public static enum ConnectionMode { JDBC, SP };
 	public static final ConnectionMode CONNECTION_MODE;
+	
+	// JDBC Driver type
+	// VanillaCore = 1, PostgreSQL = 2
+	public static enum JdbcDriverType { VANILLACORE, POSTGRESQL };
+	public static final JdbcDriverType JDBC_DRIVER;
 	
 	// Micro = 1, TPC-C = 2, TPC-E = 3
 	public static enum BenchType { MICRO, TPCC, TPCE };
@@ -31,8 +42,23 @@ public class BenchmarkerParameters {
 		NUM_RTES = BenchProperties.getLoader().getPropertyAsInteger(
 				BenchmarkerParameters.class.getName() + ".NUM_RTES", 1);
 		
-		SERVER_IP = BenchProperties.getLoader().getPropertyAsString(
-				BenchmarkerParameters.class.getName() + ".SERVER_IP", "127.0.0.1");
+		CONNECTION_HOST = BenchProperties.getLoader().getPropertyAsString(
+				BenchmarkerParameters.class.getName() + ".CONNECTION_HOST", "127.0.0.1");
+		
+		CONNECTION_PORT = BenchProperties.getLoader().getPropertyAsInteger(
+				BenchmarkerParameters.class.getName() + ".CONNECTION_PORT", -1);
+		
+		CONNECTION_DBNAME = BenchProperties.getLoader().getPropertyAsString(
+				BenchmarkerParameters.class.getName() + ".CONNECTION_DBNAME", "");
+		
+		CONNECTION_USER = BenchProperties.getLoader().getPropertyAsString(
+				BenchmarkerParameters.class.getName() + ".CONNECTION_USER", "");
+		
+		CONNECTION_PASSWORD = BenchProperties.getLoader().getPropertyAsString(
+				BenchmarkerParameters.class.getName() + ".CONNECTION_PASSWORD", "");
+		
+		CONNECTION_SSL = BenchProperties.getLoader().getPropertyAsBoolean(
+				BenchmarkerParameters.class.getName() + ".CONNECTION_SSL", true);
 		
 		int conMode = BenchProperties.getLoader().getPropertyAsInteger(
 				BenchmarkerParameters.class.getName() + ".CONNECTION_MODE", 1);
@@ -45,6 +71,19 @@ public class BenchmarkerParameters {
 			break;
 		default:
 			throw new IllegalArgumentException("The connection mode should be 1 (JDBC) or 2 (SP)");
+		}
+		
+		int driverType = BenchProperties.getLoader().getPropertyAsInteger(
+				BenchmarkerParameters.class.getName() + ".JDBC_DRIVER", 1);
+		switch (driverType) {
+		case 1:
+			JDBC_DRIVER = JdbcDriverType.VANILLACORE;
+			break;
+		case 2:
+			JDBC_DRIVER = JdbcDriverType.POSTGRESQL;
+			break;
+		default:
+			throw new IllegalArgumentException("The JDBC driver should be 1 (VanillaCore) or 2 (PostgreSQL)");
 		}
 
 		int benchType = BenchProperties.getLoader().getPropertyAsInteger(

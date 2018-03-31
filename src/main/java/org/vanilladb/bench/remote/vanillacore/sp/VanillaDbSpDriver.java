@@ -1,4 +1,4 @@
-package org.vanilladb.bench.remote.sp;
+package org.vanilladb.bench.remote.vanillacore.sp;
 
 import java.sql.SQLException;
 
@@ -12,6 +12,6 @@ public class VanillaDbSpDriver implements SutDriver {
 	@Override
 	public SutConnection connectToSut() throws SQLException {
 		SpDriver driver = new SpDriver();
-		return new VanillaDbSpConnection(driver.connect(BenchmarkerParameters.SERVER_IP, null));
+		return new VanillaDbSpConnection(driver.connect(BenchmarkerParameters.CONNECTION_HOST, null));
 	}
 }
