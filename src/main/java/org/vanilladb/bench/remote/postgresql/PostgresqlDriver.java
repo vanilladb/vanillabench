@@ -19,6 +19,8 @@ public class PostgresqlDriver implements SutDriver {
 		
 		if (BenchmarkerParameters.CONNECTION_PORT > 0)
 			sb.append(String.format(":%d", BenchmarkerParameters.CONNECTION_PORT));
+		else
+			sb.append(":5432");
 		
 		sb.append("/");
 		

@@ -33,7 +33,8 @@ public class MicroTxnJdbcJob implements JdbcJob {
 				int iid = paramHelper.getReadItemId(i);
 				String sql = "SELECT i_name FROM item WHERE i_id = " + iid;
 				rs = statement.executeQuery(sql);
-				rs.beforeFirst();
+				if (!rs.isBeforeFirst())
+					rs.beforeFirst();
 				if (rs.next()) {
 					outputMsg.append(String.format("'%s', ", rs.getString("i_name")));
 				} else
@@ -59,6 +60,7 @@ public class MicroTxnJdbcJob implements JdbcJob {
 			
 			return new SutResultSet(true, outputMsg.toString());
 		} catch (Exception e) {
+			e.printStackTrace();
 			if (logger.isLoggable(Level.WARNING))
 				logger.warning(e.toString());
 			return new SutResultSet(false, "");

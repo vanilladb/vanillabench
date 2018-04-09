@@ -11,7 +11,7 @@ public class TestbedLoaderParamHelper extends StoredProcedureParamHelper {
 
 	private static final String TABLES_DDL[] = {
 			"CREATE TABLE item ( i_id INT, i_im_id INT, i_name VARCHAR(24), "
-					+ "i_price DOUBLE, i_data VARCHAR(50) )" };
+					+ "i_price REAL, i_data VARCHAR(50) )" };
 	private static final String INDEXES_DDL[] = {
 			"CREATE INDEX idx_item ON item (i_id)" };
 	

@@ -33,6 +33,7 @@ public abstract class TransactionExecutor<T extends TransactionType> {
 		case JDBC:
 			Connection jdbcConn = conn.toJdbcConnection();
 			jdbcConn.setAutoCommit(false);
+			jdbcConn.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
 			result = getJdbcExecutor().execute(jdbcConn, pg.getTxnType(), pars);
 			break;
 		case SP:
