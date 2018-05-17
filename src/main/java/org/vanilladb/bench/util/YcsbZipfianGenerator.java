@@ -204,7 +204,7 @@ public class YcsbZipfianGenerator {
 	 *            The number of items in the distribution.
 	 * @return The next item in the sequence.
 	 */
-	long nextLong(long itemcount) {
+	public long nextLong(long itemcount) {
 		// from "Quickly Generating Billion-Record Synthetic Databases", Jim
 		// Gray et al, SIGMOD 1994
 
