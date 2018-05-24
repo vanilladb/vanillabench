@@ -23,6 +23,11 @@ public abstract class Benchmarker {
 		driver = sutDriver;
 	}
 	
+	public Benchmarker(SutDriver sutDriver, String reportPostfix) {
+		statMgr = new StatisticMgr(getBenchmarkingTxTypes(), reportPostfix);
+		driver = sutDriver;
+	}
+	
 	public abstract Set<TransactionType> getBenchmarkingTxTypes();
 	
 	protected abstract void executeLoadingProcedure(SutConnection conn) throws SQLException;

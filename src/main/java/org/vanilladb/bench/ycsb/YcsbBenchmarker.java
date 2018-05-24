@@ -18,6 +18,10 @@ public class YcsbBenchmarker extends Benchmarker {
 		super(sutDriver);
 	}
 	
+	public YcsbBenchmarker(SutDriver sutDriver, String reportPostfix) {
+		super(sutDriver, "ycsb-" + reportPostfix);
+	}
+	
 	public Set<TransactionType> getBenchmarkingTxTypes() {
 		Set<TransactionType> txTypes = new HashSet<TransactionType>();
 		for (TransactionType txType : YcsbTransactionType.values()) {

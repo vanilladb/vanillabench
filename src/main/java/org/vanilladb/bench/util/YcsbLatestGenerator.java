@@ -30,9 +30,12 @@ public class YcsbLatestGenerator {
 	public static void main(String[] args) {
 		YcsbLatestGenerator gen = new YcsbLatestGenerator(YcsbConstants.NUM_ITEMS, 0.9);
 		
-		int numOfTimes = 100;
-		int countPerSeg = YcsbConstants.NUM_ITEMS / 100;
-		int[] times = new int[numOfTimes];
+//		for (int i = 0; i < 100; i++)
+//			System.out.println(gen.nextValue());
+		
+		int numOfSegs = 1000;
+		int countPerSeg = YcsbConstants.NUM_ITEMS / numOfSegs;
+		int[] times = new int[numOfSegs];
 		
 		for (int i = 0; i < YcsbConstants.NUM_ITEMS; i++) {
 			int seg = (int) ((gen.nextValue() - 1) / countPerSeg);
