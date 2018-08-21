@@ -20,6 +20,10 @@ public class MicroBenchmarker extends Benchmarker {
 		super(sutDriver, "microbench");
 	}
 	
+	public MicroBenchmarker(SutDriver sutDriver, String reportPostfix) {
+		super(sutDriver, "microbench-" + reportPostfix);
+	}
+	
 	public Set<TransactionType> getBenchmarkingTxTypes() {
 		Set<TransactionType> txTypes = new HashSet<TransactionType>();
 		for (TransactionType txType : MicrobenchmarkTxnType.values()) {

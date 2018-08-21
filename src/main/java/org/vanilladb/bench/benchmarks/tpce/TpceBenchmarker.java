@@ -22,6 +22,12 @@ public class TpceBenchmarker extends Benchmarker {
 				TpceConstants.COMPANY_COUNT, TpceConstants.SECURITY_COUNT);
 	}
 
+	public TpceBenchmarker(SutDriver sutDriver, String reportPostfix) {
+		super(sutDriver, "tpce-" + reportPostfix);
+		dataMgr = new TpceDataManager(TpceConstants.CUSTOMER_COUNT, 
+				TpceConstants.COMPANY_COUNT, TpceConstants.SECURITY_COUNT);
+	}
+
 	public Set<TransactionType> getBenchmarkingTxTypes() {
 		Set<TransactionType> txTypes = new HashSet<TransactionType>();
 		for (TransactionType txType : TpceTransactionType.values()) {

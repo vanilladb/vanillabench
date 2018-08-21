@@ -18,6 +18,10 @@ public class TpccBenchmarker extends Benchmarker {
 	public TpccBenchmarker(SutDriver sutDriver) {
 		super(sutDriver, "tpcc");
 	}
+
+	public TpccBenchmarker(SutDriver sutDriver, String reportPostfix) {
+		super(sutDriver, "tpcc-" + reportPostfix);
+	}
 	
 	public Set<TransactionType> getBenchmarkingTxTypes() {
 		Set<TransactionType> txTypes = new HashSet<TransactionType>();
