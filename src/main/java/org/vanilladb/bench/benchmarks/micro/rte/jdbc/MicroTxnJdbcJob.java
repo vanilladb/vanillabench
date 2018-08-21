@@ -24,6 +24,11 @@ public class MicroTxnJdbcJob implements JdbcJob {
 		// Output message
 		StringBuilder outputMsg = new StringBuilder("[");
 		
+		if (paramHelper.getWriteCount() == 0)
+			conn.setReadOnly(true);
+		else
+			conn.setReadOnly(false);
+		
 		// Execute logic
 		try {
 			Statement statement = conn.createStatement();
