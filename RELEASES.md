@@ -1,3 +1,25 @@
+# Version 0.3.0 (2018-08-21)
+
+## Enhancements
+
+- Added JDBC connection utility tools ([#20])
+- Added JDBC support for micro-benchmarks ([#20])
+- Added benchmark name at the end of the filename of reports ([#20])
+
+## Code Refactoring
+
+- Moved benchmark-spcecific classes to `org.vanilladb.bench.benchmarks` ([#20])
+- Refactored `StatisticMgr` for readability ([#20])
+- Made `RemoteTerminalEmulator`, `TransactionExecutor` and `TxParamGenerator` generic to `TransactionType` ([#20])
+- Merged `SchemaBuilder` into `TestbedLoader` ([#20])
+
+## Bug Fixes
+
+- Fixed the bug casuing RuntimeException during updating ([#15])
+
+[#15]: https://github.com/vanilladb/vanillabench/pull/15
+[#20]: https://github.com/vanilladb/vanillabench/pull/20
+
 # Version 0.2.1 (2017-07-04)
 
 ## Refactoring
@@ -8,7 +30,7 @@
 
 ## Bug Fixes
 
--	Fixed a bug that makes the loader cannot find the TPC-E data ([#12])
+- Fixed a bug that makes the loader cannot find the TPC-E data ([#12])
 
 [#12]: https://github.com/vanilladb/vanillabench/pull/12
 
