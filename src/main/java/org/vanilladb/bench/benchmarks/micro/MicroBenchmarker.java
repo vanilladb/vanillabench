@@ -17,7 +17,7 @@ import org.vanilladb.bench.rte.RemoteTerminalEmulator;
 public class MicroBenchmarker extends Benchmarker {
 	
 	public MicroBenchmarker(SutDriver sutDriver) {
-		super(sutDriver);
+		super(sutDriver, "microbench");
 	}
 	
 	public Set<TransactionType> getBenchmarkingTxTypes() {

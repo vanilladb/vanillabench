@@ -17,7 +17,7 @@ public class TpceBenchmarker extends Benchmarker {
 	private TpceDataManager dataMgr;
 
 	public TpceBenchmarker(SutDriver sutDriver) {
-		super(sutDriver);
+		super(sutDriver, "tpce");
 		dataMgr = new TpceDataManager(TpceConstants.CUSTOMER_COUNT, 
 				TpceConstants.COMPANY_COUNT, TpceConstants.SECURITY_COUNT);
 	}

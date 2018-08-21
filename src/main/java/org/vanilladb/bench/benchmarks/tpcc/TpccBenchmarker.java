@@ -16,7 +16,7 @@ public class TpccBenchmarker extends Benchmarker {
 	private int nextWid = 0;
 	
 	public TpccBenchmarker(SutDriver sutDriver) {
-		super(sutDriver);
+		super(sutDriver, "tpcc");
 	}
 	
 	public Set<TransactionType> getBenchmarkingTxTypes() {

@@ -13,11 +13,13 @@ public abstract class Benchmarker {
 	private static Logger logger = Logger.getLogger(Benchmarker.class
 			.getName());
 	
+	public static final long BENCH_START_TIME = System.nanoTime();
+	
 	private StatisticMgr statMgr;
 	private SutDriver driver;
 	
-	public Benchmarker(SutDriver sutDriver) {
-		statMgr = new StatisticMgr(getBenchmarkingTxTypes());
+	public Benchmarker(SutDriver sutDriver, String reportPostfix) {
+		statMgr = new StatisticMgr(getBenchmarkingTxTypes(), reportPostfix);
 		driver = sutDriver;
 	}
 	
