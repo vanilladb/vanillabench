@@ -1,21 +1,35 @@
+/*******************************************************************************
+ * Copyright 2016, 2018 vanilladb.org contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
 package org.vanilladb.bench.server.procedure.micro;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.vanilladb.bench.micro.MicrobenchConstants;
+import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
+import org.vanilladb.bench.server.param.micro.TestbedLoaderParamHelper;
 import org.vanilladb.bench.server.procedure.BasicStoredProcedure;
-import org.vanilladb.bench.tpcc.TpccConstants;
 import org.vanilladb.core.server.VanillaDb;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 import org.vanilladb.core.storage.tx.recovery.CheckpointTask;
 import org.vanilladb.core.storage.tx.recovery.RecoveryMgr;
 
-public class MicroTestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParamHelper> {
+public class MicroTestbedLoaderProc extends BasicStoredProcedure<TestbedLoaderParamHelper> {
 	private static Logger logger = Logger.getLogger(MicroTestbedLoaderProc.class.getName());
 
 	public MicroTestbedLoaderProc() {
-		super(StoredProcedureParamHelper.DefaultParamHelper());
+		super(new TestbedLoaderParamHelper());
 	}
 
 	@Override
@@ -26,9 +40,12 @@ public class MicroTestbedLoaderProc extends BasicStoredProcedure<StoredProcedure
 		// turn off logging set value to speed up loading process
 		// TODO: remove this hack code in the future
 		RecoveryMgr.enableLogging(false);
+		
+		dropOldData();
+		createSchemas();
 
 		// Generate item records
-		generateItems(1, MicrobenchConstants.NUM_ITEMS);
+		generateItems(1, paramHelper.getNumberOfItems());
 
 		if (logger.isLoggable(Level.INFO))
 			logger.info("Loading completed. Flush all loading data to disks...");
@@ -46,6 +63,29 @@ public class MicroTestbedLoaderProc extends BasicStoredProcedure<StoredProcedure
 		if (logger.isLoggable(Level.INFO))
 			logger.info("Loading procedure finished.");
 
+	}
+	
+	private void dropOldData() {
+		// TODO: Implement this
+		if (logger.isLoggable(Level.WARNING))
+			logger.warning("Dropping is skipped.");
+	}
+	
+	private void createSchemas() {
+		if (logger.isLoggable(Level.FINE))
+			logger.info("Create tables...");
+		
+		for (String cmd : paramHelper.getTableSchemas())
+			executeUpdate(cmd);
+		
+		if (logger.isLoggable(Level.FINE))
+			logger.info("Create indexes...");
+
+		for (String cmd : paramHelper.getIndexSchemas())
+			executeUpdate(cmd);
+		
+		if (logger.isLoggable(Level.FINE))
+			logger.info("Finish creating schemas.");
 	}
 
 	private void generateItems(int startIId, int endIId) {

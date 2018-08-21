@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2016, 2018 vanilladb.org contributors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
 package org.vanilladb.bench;
 
 import java.sql.SQLException;
@@ -13,11 +28,13 @@ public abstract class Benchmarker {
 	private static Logger logger = Logger.getLogger(Benchmarker.class
 			.getName());
 	
+	public static final long BENCH_START_TIME = System.nanoTime();
+	
 	private StatisticMgr statMgr;
 	private SutDriver driver;
 	
-	public Benchmarker(SutDriver sutDriver) {
-		statMgr = new StatisticMgr(getBenchmarkingTxTypes());
+	public Benchmarker(SutDriver sutDriver, String reportPostfix) {
+		statMgr = new StatisticMgr(getBenchmarkingTxTypes(), reportPostfix);
 		driver = sutDriver;
 	}
 	
@@ -29,7 +46,7 @@ public abstract class Benchmarker {
 	
 	protected abstract void stopProfilingProcedure(SutConnection conn) throws SQLException;
 	
-	protected abstract RemoteTerminalEmulator createRte(SutConnection conn, StatisticMgr statMgr);
+	protected abstract RemoteTerminalEmulator<?> createRte(SutConnection conn, StatisticMgr statMgr);
 	
 	public void loadTestbed() {
 		if (logger.isLoggable(Level.INFO))
@@ -53,7 +70,7 @@ public abstract class Benchmarker {
 			if (logger.isLoggable(Level.INFO))
 				logger.info("creating " + BenchmarkerParameters.NUM_RTES + " emulators...");
 			
-			RemoteTerminalEmulator[] emulators = new RemoteTerminalEmulator[BenchmarkerParameters.NUM_RTES];
+			RemoteTerminalEmulator<?>[] emulators = new RemoteTerminalEmulator[BenchmarkerParameters.NUM_RTES];
 			for (int i = 0; i < emulators.length; i++)
 				emulators[i] = createRte(getConnection(), statMgr);
 			
