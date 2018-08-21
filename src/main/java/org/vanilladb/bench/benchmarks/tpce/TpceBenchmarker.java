@@ -7,10 +7,12 @@ import java.util.Set;
 import org.vanilladb.bench.Benchmarker;
 import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.TransactionType;
+import org.vanilladb.bench.benchmarks.tpcc.TpccTransactionType;
 import org.vanilladb.bench.benchmarks.tpce.data.TpceDataManager;
 import org.vanilladb.bench.benchmarks.tpce.rte.TpceRte;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutDriver;
+import org.vanilladb.bench.rte.RemoteTerminalEmulator;
 
 public class TpceBenchmarker extends Benchmarker {
 	
@@ -42,7 +44,7 @@ public class TpceBenchmarker extends Benchmarker {
 		conn.callStoredProc(TpceTransactionType.TESTBED_LOADER.ordinal());
 	}
 	
-	protected TpceRte createRte(SutConnection conn, StatisticMgr statMgr) {
+	protected RemoteTerminalEmulator<TpceTransactionType> createRte(SutConnection conn, StatisticMgr statMgr) {
 		return new TpceRte(conn, statMgr, dataMgr);
 	}
 	

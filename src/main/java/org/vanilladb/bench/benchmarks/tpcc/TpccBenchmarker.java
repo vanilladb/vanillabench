@@ -10,6 +10,7 @@ import org.vanilladb.bench.TransactionType;
 import org.vanilladb.bench.benchmarks.tpcc.rte.TpccRte;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutDriver;
+import org.vanilladb.bench.rte.RemoteTerminalEmulator;
 
 public class TpccBenchmarker extends Benchmarker {
 	
@@ -37,7 +38,7 @@ public class TpccBenchmarker extends Benchmarker {
 		conn.callStoredProc(TpccTransactionType.TESTBED_LOADER.ordinal());
 	}
 	
-	protected TpccRte createRte(SutConnection conn, StatisticMgr statMgr) {
+	protected RemoteTerminalEmulator<TpccTransactionType> createRte(SutConnection conn, StatisticMgr statMgr) {
 		TpccRte rte = new TpccRte(conn, statMgr, nextWid + 1);
 		nextWid = (nextWid + 1) % TpccConstants.NUM_WAREHOUSES;
 		return rte;
