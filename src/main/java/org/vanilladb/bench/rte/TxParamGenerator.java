@@ -2,9 +2,9 @@ package org.vanilladb.bench.rte;
 
 import org.vanilladb.bench.TransactionType;
 
-public interface TxParamGenerator {
+public interface TxParamGenerator<T extends TransactionType> {
 	
-	TransactionType getTxnType();
+	T getTxnType();
 
 	Object[] generateParameter();
 	

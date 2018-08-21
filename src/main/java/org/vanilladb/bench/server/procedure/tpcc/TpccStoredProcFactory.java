@@ -1,8 +1,8 @@
 package org.vanilladb.bench.server.procedure.tpcc;
 
+import org.vanilladb.bench.benchmarks.tpcc.TpccTransactionType;
 import org.vanilladb.bench.server.procedure.StartProfilingProc;
 import org.vanilladb.bench.server.procedure.StopProfilingProc;
-import org.vanilladb.bench.tpcc.TpccTransactionType;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureFactory;
 

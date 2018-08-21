@@ -1,5 +1,6 @@
 package org.vanilladb.bench.remote.sp;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.vanilladb.bench.remote.SutConnection;
@@ -18,5 +19,10 @@ public class VanillaDbSpConnection implements SutConnection {
 	public SutResultSet callStoredProc(int pid, Object... pars) throws SQLException {
 		SpResultSet r = conn.callStoredProc(pid, pars);
 		return new VanillaDbSpResultSet(r);
+	}
+	
+	@Override
+	public Connection toJdbcConnection() {
+		throw new RuntimeException("cannot convert a stored procedure connection to a JDBC connection");
 	}
 }

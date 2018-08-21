@@ -1,10 +1,11 @@
 package org.vanilladb.bench;
 
-import org.vanilladb.bench.micro.MicroBenchmarker;
+import org.vanilladb.bench.benchmarks.micro.MicroBenchmarker;
+import org.vanilladb.bench.benchmarks.tpcc.TpccBenchmarker;
+import org.vanilladb.bench.benchmarks.tpce.TpceBenchmarker;
 import org.vanilladb.bench.remote.SutDriver;
+import org.vanilladb.bench.remote.jdbc.VanillaDbJdbcDriver;
 import org.vanilladb.bench.remote.sp.VanillaDbSpDriver;
-import org.vanilladb.bench.tpcc.TpccBenchmarker;
-import org.vanilladb.bench.tpce.TpceBenchmarker;
 
 public class App {
 	
@@ -24,8 +25,8 @@ public class App {
 		SutDriver driver = null;
 		switch (BenchmarkerParameters.CONNECTION_MODE) {
 		case JDBC:
-			// TODO: There is no JDBC driver for now
-			throw new UnsupportedOperationException("No JDBC implementation");
+			driver = new VanillaDbJdbcDriver();
+			break;
 		case SP:
 			driver = new VanillaDbSpDriver();
 			break;
