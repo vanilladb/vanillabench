@@ -93,11 +93,9 @@ public class MicroTxnProcParamHelper extends StoredProcedureParamHelper {
 	@Override
 	public SpResultSet createResultSet() {
 		Schema sch = new Schema();
-		Type statusType = Type.VARCHAR(10);
 		Type intType = Type.INTEGER;
 		Type itemPriceType = Type.DOUBLE;
 		Type itemNameType = Type.VARCHAR(24);
-		sch.addField("status", statusType);
 		sch.addField("rc", intType);
 		int l = itemName.length;
 		for (int i = 0; i < l; i++) {
@@ -106,15 +104,13 @@ public class MicroTxnProcParamHelper extends StoredProcedureParamHelper {
 		}
 
 		SpResultRecord rec = new SpResultRecord();
-		String status = isCommitted ? "committed" : "abort";
-		rec.setVal("status", new VarcharConstant(status, statusType));
 		rec.setVal("rc", new IntegerConstant(l));
 		for (int i = 0; i < l; i++) {
 			rec.setVal("i_name_" + i, new VarcharConstant(itemName[i], itemNameType));
 			rec.setVal("i_price_" + i, new DoubleConstant(itemPrice[i]));
 		}
 
-		return new SpResultSet(sch, rec);
+		return new SpResultSet(isCommitted, sch, rec);
 	}
 
 }

@@ -52,10 +52,8 @@ public class OrderStatusProcParamHelper extends StoredProcedureParamHelper {
 		 * definition. See the session 2.6.3.4 in TPC-C 5.11 document.
 		 */
 		Schema sch = new Schema();
-		Type statusType = Type.VARCHAR(10);
 		Type var16 = Type.VARCHAR(16);
 		Type var2 = Type.VARCHAR(2);
-		sch.addField("status", statusType);
 		sch.addField("cid", Type.INTEGER);
 		sch.addField("c_first", var16);
 		sch.addField("c_last", var16);
@@ -65,8 +63,6 @@ public class OrderStatusProcParamHelper extends StoredProcedureParamHelper {
 		sch.addField("o_carrier_id", Type.INTEGER);
 
 		SpResultRecord rec = new SpResultRecord();
-		String status = isCommitted ? "committed" : "abort";
-		rec.setVal("status", new VarcharConstant(status, statusType));
 		rec.setVal("cid", new IntegerConstant(cid));
 		rec.setVal("c_first", new VarcharConstant(cFirst, var16));
 		rec.setVal("c_last", new VarcharConstant(cLast, var16));
@@ -75,7 +71,7 @@ public class OrderStatusProcParamHelper extends StoredProcedureParamHelper {
 		rec.setVal("o_entry_date", new BigIntConstant(oEntryDate));
 		rec.setVal("o_carrier_id", new IntegerConstant(carrierId));
 
-		return new SpResultSet(sch, rec);
+		return new SpResultSet(isCommitted, sch, rec);
 	}
 
 	public boolean isSelectByCLast() {

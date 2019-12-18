@@ -59,9 +59,6 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 		 * definition. See the session 2.5.3.4 in TPC-C 5.11 document.
 		 */
 		Schema sch = new Schema();
-		
-		Type statusType = Type.VARCHAR(10);
-		sch.addField("status", statusType);
 		sch.addField("cid", Type.INTEGER);
 		sch.addField("c_first", Type.VARCHAR(16));
 		sch.addField("c_last", Type.VARCHAR(16));
@@ -82,8 +79,6 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 			sch.addField("c_data", Type.VARCHAR(200));
 
 		SpResultRecord rec = new SpResultRecord();
-		String status = isCommitted ? "committed" : "abort";
-		rec.setVal("status", new VarcharConstant(status, statusType));
 		rec.setVal("cid", new IntegerConstant(cid));
 		rec.setVal("c_first", new VarcharConstant(cFirst, Type.VARCHAR(16)));
 		rec.setVal("c_last", new VarcharConstant(cLast, Type.VARCHAR(16)));
@@ -102,7 +97,8 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 		rec.setVal("h_date", new BigIntConstant(hDateLong));
 		if (isBadCredit)
 			rec.setVal("c_data", new VarcharConstant(cDataStr, Type.VARCHAR(200)));
-		return new SpResultSet(sch, rec);
+
+		return new SpResultSet(isCommitted, sch, rec);
 	}
 
 	public int getWid() {

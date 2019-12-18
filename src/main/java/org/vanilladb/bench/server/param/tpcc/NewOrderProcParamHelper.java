@@ -62,11 +62,9 @@ public class NewOrderProcParamHelper extends StoredProcedureParamHelper {
 		 * definition. See the session 2.4.3.5 in TPC-C 5.11 document.
 		 */
 		Schema sch = new Schema();
-		Type statusType = Type.VARCHAR(10);
 		Type cLastType = Type.VARCHAR(16);
 		Type cCreditType = Type.VARCHAR(2);
 		Type statusMsgType = Type.VARCHAR(30);
-		sch.addField("status", statusType);
 		sch.addField("w_tax", Type.DOUBLE);
 		sch.addField("d_tax", Type.DOUBLE);
 		sch.addField("c_discount", Type.DOUBLE);
@@ -77,8 +75,6 @@ public class NewOrderProcParamHelper extends StoredProcedureParamHelper {
 		sch.addField("status_msg", statusMsgType);
 
 		SpResultRecord rec = new SpResultRecord();
-		String status = isCommitted ? "committed" : "abort";
-		rec.setVal("status", new VarcharConstant(status, statusType));
 		rec.setVal("w_tax", new DoubleConstant(wTax));
 		rec.setVal("d_tax", new DoubleConstant(dTax));
 		rec.setVal("c_discount", new DoubleConstant(cDiscount));
@@ -90,7 +86,7 @@ public class NewOrderProcParamHelper extends StoredProcedureParamHelper {
 				: " ";
 		rec.setVal("status_msg", new VarcharConstant(statusMsg, statusMsgType));
 
-		return new SpResultSet(sch, rec);
+		return new SpResultSet(isCommitted, sch, rec);
 	}
 
 	public int getWid() {
