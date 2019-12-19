@@ -18,14 +18,14 @@ package org.vanilladb.bench.benchmarks.micro.rte.jdbc;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import org.vanilladb.bench.benchmarks.micro.MicrobenchmarkTxnType;
+import org.vanilladb.bench.benchmarks.micro.MicrobenchTransactionType;
 import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.rte.jdbc.JdbcExecutor;
 
-public class MicrobenchJdbcExecutor implements JdbcExecutor<MicrobenchmarkTxnType> {
+public class MicrobenchJdbcExecutor implements JdbcExecutor<MicrobenchTransactionType> {
 
 	@Override
-	public SutResultSet execute(Connection conn, MicrobenchmarkTxnType txType, Object[] pars)
+	public SutResultSet execute(Connection conn, MicrobenchTransactionType txType, Object[] pars)
 			throws SQLException {
 		switch (txType) {
 		case TESTBED_LOADER:

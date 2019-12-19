@@ -15,7 +15,7 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure.micro;
 
-import org.vanilladb.bench.benchmarks.micro.MicrobenchmarkTxnType;
+import org.vanilladb.bench.benchmarks.micro.MicrobenchTransactionType;
 import org.vanilladb.bench.server.procedure.StartProfilingProc;
 import org.vanilladb.bench.server.procedure.StopProfilingProc;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
@@ -26,7 +26,7 @@ public class MicrobenchStoredProcFactory implements StoredProcedureFactory {
 	@Override
 	public StoredProcedure getStroredProcedure(int pid) {
 		StoredProcedure sp;
-		switch (MicrobenchmarkTxnType.fromProcedureId(pid)) {
+		switch (MicrobenchTransactionType.fromProcedureId(pid)) {
 		case TESTBED_LOADER:
 			sp = new MicroTestbedLoaderProc();
 			break;

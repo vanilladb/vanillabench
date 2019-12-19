@@ -17,7 +17,7 @@ package org.vanilladb.bench.benchmarks.micro;
 
 import org.vanilladb.bench.TransactionType;
 
-public enum MicrobenchmarkTxnType implements TransactionType {
+public enum MicrobenchTransactionType implements TransactionType {
 	// Loading procedures
 	TESTBED_LOADER,
 	
@@ -27,8 +27,8 @@ public enum MicrobenchmarkTxnType implements TransactionType {
 	// Benchmarking procedures
 	MICRO_TXN;
 	
-	public static MicrobenchmarkTxnType fromProcedureId(int pid) {
-		return MicrobenchmarkTxnType.values()[pid];
+	public static MicrobenchTransactionType fromProcedureId(int pid) {
+		return MicrobenchTransactionType.values()[pid];
 	}
 	
 	public int getProcedureId() {

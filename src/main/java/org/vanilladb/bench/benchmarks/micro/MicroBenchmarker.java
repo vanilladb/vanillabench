@@ -41,7 +41,7 @@ public class MicroBenchmarker extends Benchmarker {
 	
 	public Set<TransactionType> getBenchmarkingTxTypes() {
 		Set<TransactionType> txTypes = new HashSet<TransactionType>();
-		for (TransactionType txType : MicrobenchmarkTxnType.values()) {
+		for (TransactionType txType : MicrobenchTransactionType.values()) {
 			if (txType.isBenchmarkingTx())
 				txTypes.add(txType);
 		}
@@ -53,15 +53,15 @@ public class MicroBenchmarker extends Benchmarker {
 		loader.execute(conn);
 	}
 	
-	protected RemoteTerminalEmulator<MicrobenchmarkTxnType> createRte(SutConnection conn, StatisticMgr statMgr) {
+	protected RemoteTerminalEmulator<MicrobenchTransactionType> createRte(SutConnection conn, StatisticMgr statMgr) {
 		return new MicrobenchmarkRte(conn, statMgr);
 	}
 	
 	protected void startProfilingProcedure(SutConnection conn) throws SQLException {
-		conn.callStoredProc(MicrobenchmarkTxnType.START_PROFILING.ordinal());
+		conn.callStoredProc(MicrobenchTransactionType.START_PROFILING.ordinal());
 	}
 	
 	protected void stopProfilingProcedure(SutConnection conn) throws SQLException {
-		conn.callStoredProc(MicrobenchmarkTxnType.STOP_PROFILING.ordinal());
+		conn.callStoredProc(MicrobenchTransactionType.STOP_PROFILING.ordinal());
 	}
 }

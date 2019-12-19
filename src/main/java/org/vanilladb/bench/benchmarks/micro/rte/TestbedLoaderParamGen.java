@@ -15,15 +15,15 @@
  *******************************************************************************/
 package org.vanilladb.bench.benchmarks.micro.rte;
 
-import org.vanilladb.bench.benchmarks.micro.MicrobenchmarkTxnType;
+import org.vanilladb.bench.benchmarks.micro.MicrobenchTransactionType;
 import org.vanilladb.bench.benchmarks.micro.MicrobenchConstants;
 import org.vanilladb.bench.rte.TxParamGenerator;
 
-public class TestbedLoaderParamGen implements TxParamGenerator<MicrobenchmarkTxnType> {
+public class TestbedLoaderParamGen implements TxParamGenerator<MicrobenchTransactionType> {
 
 	@Override
-	public MicrobenchmarkTxnType getTxnType() {
-		return MicrobenchmarkTxnType.TESTBED_LOADER;
+	public MicrobenchTransactionType getTxnType() {
+		return MicrobenchTransactionType.TESTBED_LOADER;
 	}
 
 	@Override
