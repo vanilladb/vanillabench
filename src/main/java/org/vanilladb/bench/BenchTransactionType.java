@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016, 2018 vanilladb.org contributors
+ * Copyright 2016, 2017 vanilladb.org contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,33 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.vanilladb.bench.benchmarks.micro;
+package org.vanilladb.bench;
 
-import org.vanilladb.bench.BenchTransactionType;
-
-public enum MicrobenchTransactionType implements BenchTransactionType {
-	// Loading procedures
-	TESTBED_LOADER(true),
+public interface BenchTransactionType {
 	
-	// Benchmarking procedures
-	MICRO_TXN(false);
+	int getProcedureId();
 	
-	public static MicrobenchTransactionType fromProcedureId(int pid) {
-		return MicrobenchTransactionType.values()[pid];
-	}
-	
-	private boolean isLoadProc;
-	
-	MicrobenchTransactionType(boolean isLoadProc) {
-		this.isLoadProc = isLoadProc;
-	}
-	
-	@Override
-	public int getProcedureId() {
-		return this.ordinal();
-	}
-	
-	public boolean isLoadingProcedure() {
-		return isLoadProc;
-	}
 }

@@ -18,11 +18,11 @@ package org.vanilladb.bench.rte;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.vanilladb.bench.StatisticMgr;
-import org.vanilladb.bench.TransactionType;
+import org.vanilladb.bench.BenchTransactionType;
 import org.vanilladb.bench.TxnResultSet;
 import org.vanilladb.bench.remote.SutConnection;
 
-public abstract class RemoteTerminalEmulator<T extends TransactionType> extends Thread {
+public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> extends Thread {
 
 	private static AtomicInteger rteCount = new AtomicInteger(0);
 

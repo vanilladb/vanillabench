@@ -61,15 +61,15 @@ public class StatisticMgr {
 	}
 
 	private static class TxnStatistic {
-		private TransactionType mType;
+		private BenchTransactionType mType;
 		private int txnCount = 0;
 		private long totalResponseTimeNs = 0;
 
-		public TxnStatistic(TransactionType txnType) {
+		public TxnStatistic(BenchTransactionType txnType) {
 			this.mType = txnType;
 		}
 
-		public TransactionType getmType() {
+		public BenchTransactionType getmType() {
 			return mType;
 		}
 
@@ -89,15 +89,15 @@ public class StatisticMgr {
 
 	private List<TxnResultSet> resultSets = new ArrayList<TxnResultSet>();
 	private TreeMap<Long, ArrayList<Long>> latencyHistory = new TreeMap<Long, ArrayList<Long>>();
-	private List<TransactionType> allTxTypes;
+	private List<BenchTransactionType> allTxTypes;
 	private String fileNamePostfix = "";
 	
-	public StatisticMgr(Collection<TransactionType> txTypes) {
-		allTxTypes = new LinkedList<TransactionType>(txTypes);
+	public StatisticMgr(Collection<BenchTransactionType> txTypes) {
+		allTxTypes = new LinkedList<BenchTransactionType>(txTypes);
 	}
 	
-	public StatisticMgr(Collection<TransactionType> txTypes, String namePostfix) {
-		allTxTypes = new LinkedList<TransactionType>(txTypes);
+	public StatisticMgr(Collection<BenchTransactionType> txTypes, String namePostfix) {
+		allTxTypes = new LinkedList<BenchTransactionType>(txTypes);
 		fileNamePostfix = namePostfix;
 	}
 
@@ -129,10 +129,10 @@ public class StatisticMgr {
 	}
 	
 	private void outputDetailReport(String fileName) throws IOException {
-		Map<TransactionType, TxnStatistic> txnStatistics = new HashMap<TransactionType, TxnStatistic>();
-		Map<TransactionType, Integer> abortedCounts = new HashMap<TransactionType, Integer>();
+		Map<BenchTransactionType, TxnStatistic> txnStatistics = new HashMap<BenchTransactionType, TxnStatistic>();
+		Map<BenchTransactionType, Integer> abortedCounts = new HashMap<BenchTransactionType, Integer>();
 		
-		for (TransactionType type : allTxTypes) {
+		for (BenchTransactionType type : allTxTypes) {
 			txnStatistics.put(type, new TxnStatistic(type));
 			abortedCounts.put(type, 0);
 		}
@@ -169,7 +169,7 @@ public class StatisticMgr {
 			
 			// Last few lines: show the statistics for each type of transactions
 			int abortedTotal = 0;
-			for (Entry<TransactionType, TxnStatistic> entry : txnStatistics.entrySet()) {
+			for (Entry<BenchTransactionType, TxnStatistic> entry : txnStatistics.entrySet()) {
 				TxnStatistic value = entry.getValue();
 				int abortedCount = abortedCounts.get(entry.getKey());
 				abortedTotal += abortedCount;

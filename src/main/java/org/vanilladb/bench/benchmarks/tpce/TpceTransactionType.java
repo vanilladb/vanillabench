@@ -15,37 +15,33 @@
  *******************************************************************************/
 package org.vanilladb.bench.benchmarks.tpce;
 
-import org.vanilladb.bench.TransactionType;
+import org.vanilladb.bench.BenchTransactionType;
 
-public enum TpceTransactionType implements TransactionType {
+public enum TpceTransactionType implements BenchTransactionType {
 	// Loading procedures
-	SCHEMA_BUILDER, TESTBED_LOADER,
-	
-	// Profiling
-	START_PROFILING, STOP_PROFILING,
+	SCHEMA_BUILDER(true), TESTBED_LOADER(true),
 	
 	// TPC-E procedures
-	BROKER_VOLUME, CUSTOMER_POSITION, MARKET_FEED, MARKET_WATCH,
-	SECURITY_DETAIL, TRADE_LOOKUP, TRADE_ORDER, TRADE_RESULT,
-	TRADE_STATUS, TRADE_UPDATE, DATA_MAINTENANCE, TRADE_CLEANUP;
+	BROKER_VOLUME(false), CUSTOMER_POSITION(false), MARKET_FEED(false), MARKET_WATCH(false),
+	SECURITY_DETAIL(false), TRADE_LOOKUP(false), TRADE_ORDER(false), TRADE_RESULT(false),
+	TRADE_STATUS(false), TRADE_UPDATE(false), DATA_MAINTENANCE(false), TRADE_CLEANUP(false);
 	
 	public static TpceTransactionType fromProcedureId(int pid) {
 		return TpceTransactionType.values()[pid];
 	}
 	
+	private boolean isLoadProc;
+	
+	TpceTransactionType(boolean isLoadProc) {
+		this.isLoadProc = isLoadProc;
+	}
+	
+	@Override
 	public int getProcedureId() {
 		return this.ordinal();
 	}
 	
-	public boolean isBenchmarkingTx() {
-		switch (this) {
-		case SCHEMA_BUILDER:
-		case TESTBED_LOADER:
-		case START_PROFILING:
-		case STOP_PROFILING:
-			return false;
-		default:
-			return true;
-		}
+	public boolean isLoadingProcedure() {
+		return isLoadProc;
 	}
 }

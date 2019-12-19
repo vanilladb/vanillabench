@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.vanilladb.bench.Benchmarker;
 import org.vanilladb.bench.StatisticMgr;
-import org.vanilladb.bench.TransactionType;
+import org.vanilladb.bench.BenchTransactionType;
 import org.vanilladb.bench.benchmarks.tpcc.rte.TpccRte;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutDriver;
@@ -39,31 +39,26 @@ public class TpccBenchmarker extends Benchmarker {
 		super(sutDriver, "tpcc-" + reportPostfix);
 	}
 	
-	public Set<TransactionType> getBenchmarkingTxTypes() {
-		Set<TransactionType> txTypes = new HashSet<TransactionType>();
-		for (TransactionType txType : TpccTransactionType.values()) {
-			if (txType.isBenchmarkingTx())
+	@Override
+	public Set<BenchTransactionType> getBenchmarkingTxTypes() {
+		Set<BenchTransactionType> txTypes = new HashSet<BenchTransactionType>();
+		for (TpccTransactionType txType : TpccTransactionType.values()) {
+			if (!txType.isLoadingProcedure())
 				txTypes.add(txType);
 		}
 		return txTypes;
 	}
 
+	@Override
 	protected void executeLoadingProcedure(SutConnection conn) throws SQLException {
-		conn.callStoredProc(TpccTransactionType.SCHEMA_BUILDER.ordinal());
-		conn.callStoredProc(TpccTransactionType.TESTBED_LOADER.ordinal());
+		conn.callStoredProc(TpccTransactionType.SCHEMA_BUILDER.getProcedureId());
+		conn.callStoredProc(TpccTransactionType.TESTBED_LOADER.getProcedureId());
 	}
-	
+
+	@Override
 	protected RemoteTerminalEmulator<TpccTransactionType> createRte(SutConnection conn, StatisticMgr statMgr) {
 		TpccRte rte = new TpccRte(conn, statMgr, nextWid + 1);
 		nextWid = (nextWid + 1) % TpccConstants.NUM_WAREHOUSES;
 		return rte;
-	}
-	
-	protected void startProfilingProcedure(SutConnection conn) throws SQLException {
-		conn.callStoredProc(TpccTransactionType.START_PROFILING.ordinal());
-	}
-	
-	protected void stopProfilingProcedure(SutConnection conn) throws SQLException {
-		conn.callStoredProc(TpccTransactionType.STOP_PROFILING.ordinal());
 	}
 }

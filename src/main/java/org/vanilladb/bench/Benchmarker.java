@@ -38,13 +38,9 @@ public abstract class Benchmarker {
 		driver = sutDriver;
 	}
 	
-	public abstract Set<TransactionType> getBenchmarkingTxTypes();
+	public abstract Set<BenchTransactionType> getBenchmarkingTxTypes();
 	
 	protected abstract void executeLoadingProcedure(SutConnection conn) throws SQLException;
-	
-	protected abstract void startProfilingProcedure(SutConnection conn) throws SQLException;
-	
-	protected abstract void stopProfilingProcedure(SutConnection conn) throws SQLException;
 	
 	protected abstract RemoteTerminalEmulator<?> createRte(SutConnection conn, StatisticMgr statMgr);
 	
@@ -147,5 +143,13 @@ public abstract class Benchmarker {
 	
 	private SutConnection getConnection() throws SQLException {
 		return driver.connectToSut();
+	}
+	
+	private void startProfilingProcedure(SutConnection conn) throws SQLException {
+		conn.callStoredProc(ControlTransactionType.START_PROFILING.getProcedureId());
+	}
+	
+	private void stopProfilingProcedure(SutConnection conn) throws SQLException {
+		conn.callStoredProc(ControlTransactionType.STOP_PROFILING.getProcedureId());
 	}
 }

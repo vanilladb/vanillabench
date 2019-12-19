@@ -19,14 +19,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.vanilladb.bench.BenchmarkerParameters;
-import org.vanilladb.bench.TransactionType;
+import org.vanilladb.bench.BenchTransactionType;
 import org.vanilladb.bench.TxnResultSet;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.rte.jdbc.JdbcExecutor;
 import org.vanilladb.bench.util.BenchProperties;
 
-public abstract class TransactionExecutor<T extends TransactionType> {
+public abstract class TransactionExecutor<T extends BenchTransactionType> {
 
 	public static final boolean DISPLAY_RESULT;
 

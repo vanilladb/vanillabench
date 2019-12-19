@@ -15,35 +15,31 @@
  *******************************************************************************/
 package org.vanilladb.bench.benchmarks.tpcc;
 
-import org.vanilladb.bench.TransactionType;
+import org.vanilladb.bench.BenchTransactionType;
 
-public enum TpccTransactionType implements TransactionType {
+public enum TpccTransactionType implements BenchTransactionType {
 	// Loading procedures
-	SCHEMA_BUILDER, TESTBED_LOADER,
-	
-	// Profiling
-	START_PROFILING, STOP_PROFILING,
+	SCHEMA_BUILDER(true), TESTBED_LOADER(true),
 	
 	// TPC-C procedures
-	NEW_ORDER, PAYMENT, ORDER_STATUS, DELIVERY, STOCK_LEVEL;
+	NEW_ORDER(false), PAYMENT(false), ORDER_STATUS(false), DELIVERY(false), STOCK_LEVEL(false);
 	
 	public static TpccTransactionType fromProcedureId(int pid) {
 		return TpccTransactionType.values()[pid];
 	}
 	
+	private boolean isLoadProc;
+	
+	TpccTransactionType(boolean isLoadProc) {
+		this.isLoadProc = isLoadProc;
+	}
+	
+	@Override
 	public int getProcedureId() {
 		return this.ordinal();
 	}
 	
-	public boolean isBenchmarkingTx() {
-		switch (this) {
-		case SCHEMA_BUILDER:
-		case TESTBED_LOADER:
-		case START_PROFILING:
-		case STOP_PROFILING:
-			return false;
-		default:
-			return true;
-		}
+	public boolean isLoadingProcedure() {
+		return isLoadProc;
 	}
 }

@@ -16,13 +16,13 @@
 package org.vanilladb.bench;
 
 public class TxnResultSet {
-	private TransactionType txnType;
+	private BenchTransactionType txnType;
 	private long respTime; // in ns
 	private long endTime; // in ns
 	private boolean isCommitted;
 	private String outputMessage;
 
-	public TxnResultSet(TransactionType txnType, long respTime, long endTime,
+	public TxnResultSet(BenchTransactionType txnType, long respTime, long endTime,
 			boolean isCommitted, String outputMessage) {
 		this.txnType = txnType;
 		this.respTime = respTime;
@@ -31,7 +31,7 @@ public class TxnResultSet {
 		this.outputMessage = outputMessage;
 	}
 
-	public TransactionType getTxnType() {
+	public BenchTransactionType getTxnType() {
 		return txnType;
 	}
 
