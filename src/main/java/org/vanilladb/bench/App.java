@@ -18,6 +18,7 @@ package org.vanilladb.bench;
 import org.vanilladb.bench.benchmarks.micro.MicroBenchmarker;
 import org.vanilladb.bench.benchmarks.tpcc.TpccBenchmarker;
 import org.vanilladb.bench.benchmarks.tpce.TpceBenchmarker;
+import org.vanilladb.bench.benchmarks.ycsb.YcsbBenchmarker;
 import org.vanilladb.bench.remote.SutDriver;
 import org.vanilladb.bench.remote.jdbc.VanillaDbJdbcDriver;
 import org.vanilladb.bench.remote.sp.VanillaDbSpDriver;
@@ -57,6 +58,9 @@ public class App {
 			break;
 		case TPCE:
 			benchmarker = new TpceBenchmarker(driver);
+			break;
+		case YCSB:
+			benchmarker = new YcsbBenchmarker(driver);
 			break;
 		}
 		

@@ -15,7 +15,6 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure.tpce;
 
-import org.vanilladb.bench.benchmarks.tpcc.TpccTransactionType;
 import org.vanilladb.bench.benchmarks.tpce.TpceTransactionType;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureFactory;
