@@ -20,15 +20,17 @@ import java.util.logging.Logger;
 
 import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
 import org.vanilladb.bench.benchmarks.tpcc.TpccValueGenerator;
-import org.vanilladb.bench.server.procedure.BasicStoredProcedure;
+import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
 import org.vanilladb.bench.util.DoublePlainPrinter;
 import org.vanilladb.bench.util.RandomPermutationGenerator;
 import org.vanilladb.core.server.VanillaDb;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.storage.tx.Transaction;
 import org.vanilladb.core.storage.tx.recovery.CheckpointTask;
 import org.vanilladb.core.storage.tx.recovery.RecoveryMgr;
 
-public class TpccTestbedLoaderProc extends BasicStoredProcedure<StoredProcedureParamHelper> {
+public class TpccTestbedLoaderProc extends StoredProcedure<StoredProcedureParamHelper> {
 	private static Logger logger = Logger.getLogger(TpccTestbedLoaderProc.class.getName());
 
 	private TpccValueGenerator rg = new TpccValueGenerator();
@@ -79,6 +81,7 @@ public class TpccTestbedLoaderProc extends BasicStoredProcedure<StoredProcedureP
 		String iname, idata;
 		double iprice;
 		String sql;
+		Transaction tx = getTransaction();
 		for (int i = startIId; i <= endIId; i++) {
 			iid = i;
 
@@ -102,7 +105,7 @@ public class TpccTestbedLoaderProc extends BasicStoredProcedure<StoredProcedureP
 
 			sql = "INSERT INTO item(i_id, i_im_id, i_name, i_price, i_data) VALUES (" + iid + ", " + iimid + ", '"
 					+ iname + "', " + DoublePlainPrinter.toPlainString(iprice) + ", '" + idata + "' )";
-			executeUpdate(sql);
+			StoredProcedureHelper.executeUpdate(sql, tx);
 		}
 
 		if (logger.isLoggable(Level.FINE))
@@ -138,6 +141,7 @@ public class TpccTestbedLoaderProc extends BasicStoredProcedure<StoredProcedureP
 	}
 
 	private void generateWarehouse(int wid) {
+		Transaction tx = getTransaction();
 		double wtax, wytd;
 		String wname, wst1, wst2, wcity, wstate, wzip;
 		wname = rg.randomAString(6, 10);
@@ -155,10 +159,11 @@ public class TpccTestbedLoaderProc extends BasicStoredProcedure<StoredProcedureP
 		sb.append("', '").append(wcity).append("', '").append(wstate);
 		sb.append("', '").append(wzip).append("', ").append(DoublePlainPrinter.toPlainString(wtax));
 		sb.append(", ").append(DoublePlainPrinter.toPlainString(wytd)).append(" )");
-		executeUpdate(sb.toString());
+		StoredProcedureHelper.executeUpdate(sb.toString(), tx);
 	}
 
 	private void generateStocks(int wid) {
+		Transaction tx = getTransaction();
 		int swid = wid, siid, squantity;
 		String sd1, sd2, sd3, sd4, sd5, sd6, sd7, sd8, sd9, sd10, sdata;
 
@@ -187,11 +192,12 @@ public class TpccTestbedLoaderProc extends BasicStoredProcedure<StoredProcedureP
 					+ "s_ytd, s_order_cnt, s_remote_cnt, s_data) VALUES (" + siid + ", " + swid + ", " + squantity
 					+ ", '" + sd1 + "', '" + sd2 + "', '" + sd3 + "', '" + sd4 + "', '" + sd5 + "', '" + sd6 + "', '"
 					+ sd7 + "', '" + sd8 + "', '" + sd9 + "', '" + sd10 + "', 0, 0, 0, '" + sdata + "')";
-			executeUpdate(sql);
+			StoredProcedureHelper.executeUpdate(sql, tx);
 		}
 	}
 
 	private void generateDistricts(int wid) {
+		Transaction tx = getTransaction();
 		int did;
 		double dtax, dytd;
 		dytd = TpccConstants.INITIAL_D_YTD;
@@ -213,11 +219,12 @@ public class TpccTestbedLoaderProc extends BasicStoredProcedure<StoredProcedureP
 					+ "', '" + dst2 + "', '" + dcity + "', '" + dstate + "', '" + dzip + "', "
 					+ DoublePlainPrinter.toPlainString(dtax) + ", " + DoublePlainPrinter.toPlainString(dytd) + ", "
 					+ (TpccConstants.CUSTOMERS_PER_DISTRICT + 1) + ")";
-			executeUpdate(sql);
+			StoredProcedureHelper.executeUpdate(sql, tx);
 		}
 	}
 
 	private void generateCustomers(int wid, int did) {
+		Transaction tx = getTransaction();
 		int cid;
 		String clast, cmiddle = TpccConstants.MIDDLE, cfirst, cst1, cst2, ccity, cstate, czip, cphone, ccredit, cdata;
 		long csince;
@@ -260,13 +267,14 @@ public class TpccTestbedLoaderProc extends BasicStoredProcedure<StoredProcedureP
 					+ DoublePlainPrinter.toPlainString(ccl) + ", " + DoublePlainPrinter.toPlainString(cdiscount) + ", "
 					+ DoublePlainPrinter.toPlainString(cbal) + ", " + DoublePlainPrinter.toPlainString(cytdpay)
 					+ ", 1, 0, '" + cdata + "')";
-			executeUpdate(sql);
+			StoredProcedureHelper.executeUpdate(sql, tx);
 		}
 		if (logger.isLoggable(Level.FINE))
 			logger.info("Finish populating customers for district " + did);
 	}
 
 	private void generateCustomerHistory(int wid, int did) {
+		Transaction tx = getTransaction();
 		int hcid;
 		Long hdate;
 		double hamount = TpccConstants.INITIAL_AMOUNT;
@@ -280,11 +288,12 @@ public class TpccTestbedLoaderProc extends BasicStoredProcedure<StoredProcedureP
 					+ "h_d_id,h_w_id, h_date, h_amount, h_data ) VALUES (" + hcid + ", " + did + "," + wid + ","
 					+ did + "," + wid + "," + hdate + "," + DoublePlainPrinter.toPlainString(hamount) + ", '" + hdata
 					+ "')";
-			executeUpdate(sql);
+			StoredProcedureHelper.executeUpdate(sql, tx);
 		}
 	}
 
 	private void generateOrders(int wid, int did) {
+		Transaction tx = getTransaction();
 		int oid, ocid, ocarid, ol_cnt;
 		long oenrtyd;
 		RandomPermutationGenerator rpg = new RandomPermutationGenerator(TpccConstants.CUSTOMERS_PER_DISTRICT);
@@ -302,13 +311,14 @@ public class TpccTestbedLoaderProc extends BasicStoredProcedure<StoredProcedureP
 			String sql = "INSERT INTO ORDERS(o_id, o_c_id, o_d_id, "
 					+ "o_w_id, o_entry_d, o_carrier_id, o_ol_cnt, o_all_local) VALUES (" + oid + ", " + ocid + ", "
 					+ did + "," + wid + "," + oenrtyd + "," + ocarid + ", " + ol_cnt + ",1)";
-			executeUpdate(sql);
+			StoredProcedureHelper.executeUpdate(sql, tx);
 
 			generateOrderLine(wid, did, i, ol_cnt, oenrtyd);
 		}
 	}
 
 	public void generateOrderLine(int warehouseId, int districtId, int orderId, int ol_cnt, long date) {
+		Transaction tx = getTransaction();
 		int olnum, oliid;
 		long oldeld;
 		double olamount;
@@ -331,17 +341,18 @@ public class TpccTestbedLoaderProc extends BasicStoredProcedure<StoredProcedureP
 					+ "ol_delivery_d, ol_quantity, ol_amount, ol_dist_info)" + " VALUES (" + orderId + "," + districtId
 					+ "," + warehouseId + "," + olnum + "," + oliid + ", " + warehouseId + ", " + oldeld + ", 5, "
 					+ DoublePlainPrinter.toPlainString(olamount) + ", '" + oldistinfo + "')";
-			executeUpdate(sql);
+			StoredProcedureHelper.executeUpdate(sql, tx);
 		}
 	}
 
 	private void generateNewOrders(int wid, int did) {
+		Transaction tx = getTransaction();
 		int nooid;
 		for (int i = TpccConstants.NEW_ORDER_START_ID; i <= TpccConstants.CUSTOMERS_PER_DISTRICT; i++) {
 			nooid = i;
 			String sql = "INSERT INTO new_order(no_o_id, no_d_id, no_w_id) VALUES (" + nooid + "," + did + "," + wid
 					+ ")";
-			executeUpdate(sql);
+			StoredProcedureHelper.executeUpdate(sql, tx);
 		}
 	}
 

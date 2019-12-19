@@ -15,18 +15,25 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure;
 
+import org.vanilladb.core.query.algebra.Plan;
+import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.server.VanillaDb;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.storage.tx.Transaction;
 
-public class StartProfilingProc extends StoredProcedure<StoredProcedureParamHelper> {
-
-	public StartProfilingProc() {
-		super(StoredProcedureParamHelper.DefaultParamHelper());
+public class StoredProcedureHelper {
+	
+	public static Scan executeQuery(String sql, Transaction tx) {
+		Plan p = VanillaDb.newPlanner().createQueryPlan(sql, tx);
+		Scan s = p.open();
+		
+		s.beforeFirst();
+		if (s.next()) {
+			return s;
+		} else
+			throw new RuntimeException("Query: '" + sql + "' fails.");
 	}
-
-	@Override
-	protected void executeSql() {
-		VanillaDb.initAndStartProfiler();
+	
+	public static int executeUpdate(String sql, Transaction tx) {
+		return VanillaDb.newPlanner().executeUpdate(sql, tx);
 	}
 }
