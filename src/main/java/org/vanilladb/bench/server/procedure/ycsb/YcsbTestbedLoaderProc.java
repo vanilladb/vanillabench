@@ -54,7 +54,7 @@ public class YcsbTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 		int endId = startId + recordCount - 1;
 		
 		if (logger.isLoggable(Level.FINE))
-			logger.info("Start populating YCSB table from i_id=" + startId + " to i_id=" + endId);
+			logger.info("Start populating YCSB table from ycsb_id=" + startId + " to ycsb_id=" + endId);
 		
 		// Generate the field names of YCSB table
 		String sqlPrefix = "INSERT INTO ycsb (ycsb_id";
