@@ -71,7 +71,7 @@ public class OrderStatusProcParamHelper extends StoredProcedureParamHelper {
 		rec.setVal("o_entry_date", new BigIntConstant(oEntryDate));
 		rec.setVal("o_carrier_id", new IntegerConstant(carrierId));
 
-		return new SpResultSet(isCommitted, sch, rec);
+		return new SpResultSet(isCommitted(), sch, rec);
 	}
 
 	public boolean isSelectByCLast() {

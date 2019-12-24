@@ -75,7 +75,7 @@ public class TradeOrderParamHelper extends StoredProcedureParamHelper {
 		rec.setVal("tax_amount", new DoubleConstant(taxAmount));
 		rec.setVal("trade_id", new BigIntConstant(tradeId));
 
-		return new SpResultSet(isCommitted, sch, rec);
+		return new SpResultSet(isCommitted(), sch, rec);
 	}
 
 	public long getAcctId() {

@@ -110,7 +110,7 @@ public class MicroTxnProcParamHelper extends StoredProcedureParamHelper {
 			rec.setVal("i_price_" + i, new DoubleConstant(itemPrice[i]));
 		}
 
-		return new SpResultSet(isCommitted, sch, rec);
+		return new SpResultSet(isCommitted(), sch, rec);
 	}
 
 }

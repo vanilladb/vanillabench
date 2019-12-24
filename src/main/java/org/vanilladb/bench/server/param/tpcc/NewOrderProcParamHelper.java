@@ -86,7 +86,7 @@ public class NewOrderProcParamHelper extends StoredProcedureParamHelper {
 				: " ";
 		rec.setVal("status_msg", new VarcharConstant(statusMsg, statusMsgType));
 
-		return new SpResultSet(isCommitted, sch, rec);
+		return new SpResultSet(isCommitted(), sch, rec);
 	}
 
 	public int getWid() {

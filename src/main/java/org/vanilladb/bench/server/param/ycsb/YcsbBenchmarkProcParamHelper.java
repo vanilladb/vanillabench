@@ -127,6 +127,6 @@ public class YcsbBenchmarkProcParamHelper extends StoredProcedureParamHelper {
 		for (int i = 0; i < readCount; i++)
 			rec.setVal("ycsb1_" + i, new VarcharConstant(ycsb_1[i], ycsb1Type));
 
-		return new SpResultSet(isCommitted, sch, rec);
+		return new SpResultSet(isCommitted(), sch, rec);
 	}
 }

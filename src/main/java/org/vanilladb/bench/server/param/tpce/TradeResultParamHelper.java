@@ -62,7 +62,7 @@ public class TradeResultParamHelper extends StoredProcedureParamHelper {
 		rec.setVal("acct_id", new BigIntConstant(acctId));
 		rec.setVal("load_unit", new IntegerConstant(loadUnit));
 
-		return new SpResultSet(isCommitted, sch, rec);
+		return new SpResultSet(isCommitted(), sch, rec);
 	}
 
 	public long getCustomerId() {

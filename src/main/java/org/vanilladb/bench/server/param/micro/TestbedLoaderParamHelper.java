@@ -49,7 +49,7 @@ public class TestbedLoaderParamHelper extends StoredProcedureParamHelper {
 
 	@Override
 	public SpResultSet createResultSet() {
-		return new SpResultSet(isCommitted, new Schema(), new SpResultRecord());
+		return new SpResultSet(isCommitted(), new Schema(), new SpResultRecord());
 	}
 
 }
