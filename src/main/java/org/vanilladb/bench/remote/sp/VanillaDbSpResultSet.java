@@ -25,7 +25,10 @@ public class VanillaDbSpResultSet implements SutResultSet {
 
 	public VanillaDbSpResultSet(SpResultSet result) {
 		Record[] records = result.getRecords();
-		message = records[0].toString();
+		if (records.length > 0)
+			message = records[0].toString();
+		else
+			message = "";
 		isCommitted = result.isCommitted();
 	}
 	
