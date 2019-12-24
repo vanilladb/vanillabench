@@ -47,7 +47,8 @@ public class MicroBenchmarker extends Benchmarker {
 	}
 
 	protected void executeLoadingProcedure(SutConnection conn) throws SQLException {
-		conn.callStoredProc(MicrobenchTransactionType.TESTBED_LOADER.getProcedureId());
+		conn.callStoredProc(MicrobenchTransactionType.TESTBED_LOADER.getProcedureId(),
+				MicrobenchConstants.NUM_ITEMS);
 	}
 	
 	protected RemoteTerminalEmulator<MicrobenchTransactionType> createRte(SutConnection conn, StatisticMgr statMgr) {
