@@ -46,7 +46,7 @@ public abstract class Benchmarker {
 	
 	public void loadTestbed() {
 		if (logger.isLoggable(Level.INFO))
-			logger.info("loading the testbed of tpcc benchmark...");
+			logger.info("loading the testbed of the benchmark...");
 		
 		try {
 			SutConnection con = getConnection();
