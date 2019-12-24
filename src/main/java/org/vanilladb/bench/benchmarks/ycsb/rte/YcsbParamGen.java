@@ -19,9 +19,9 @@ public class YcsbParamGen implements TxParamGenerator<YcsbTransactionType> {
 	
 	static {
 		RW_TX_RATE = BenchProperties.getLoader()
-				.getPropertyAsDouble(YcsbParamGen.class.getName() + ".RW_TX_RATE", 0.0);
+				.getPropertyAsDouble(YcsbParamGen.class.getName() + ".RW_TX_RATE", 0.15);
 		SKEW_PARAMETER = BenchProperties.getLoader()
-				.getPropertyAsDouble(YcsbParamGen.class.getName() + ".SKEW_PARAMETER", 0.0);
+				.getPropertyAsDouble(YcsbParamGen.class.getName() + ".SKEW_PARAMETER", 0.99);
 	}
 	
 	private static int getNextInsertId() {
