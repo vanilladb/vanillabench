@@ -36,7 +36,7 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 
 	protected long hDateLong;
 	protected double hAmount;
-	protected boolean isCommitted = true, isBadCredit = false;
+	protected boolean isBadCredit = false;
 
 	@Override
 	public void prepareParameters(Object... pars) {
@@ -98,7 +98,7 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 		if (isBadCredit)
 			rec.setVal("c_data", new VarcharConstant(cDataStr, Type.VARCHAR(200)));
 
-		return new SpResultSet(isCommitted, sch, rec);
+		return new SpResultSet(isCommitted(), sch, rec);
 	}
 
 	public int getWid() {
