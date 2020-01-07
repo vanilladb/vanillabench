@@ -3,7 +3,6 @@ package org.vanilladb.bench.server.param.ycsb;
 import java.util.HashMap;
 
 import org.vanilladb.bench.benchmarks.ycsb.YcsbConstants;
-import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 import org.vanilladb.core.sql.Constant;
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Type;
@@ -117,16 +116,20 @@ public class YcsbBenchmarkProcParamHelper extends StoredProcedureParamHelper {
 	}
 
 	@Override
-	public SpResultSet createResultSet() {
+	public Schema getResultSetSchema() {
 		Schema sch = new Schema();
 		Type ycsb1Type = Type.VARCHAR(YcsbConstants.CHARS_PER_FIELD);
 		for (int i = 0; i < readCount; i++)
 			sch.addField("ycsb1_" + i, ycsb1Type);
+		return sch;
+	}
 
+	@Override
+	public SpResultRecord newResultSetRecord() {
 		SpResultRecord rec = new SpResultRecord();
+		Type ycsb1Type = Type.VARCHAR(YcsbConstants.CHARS_PER_FIELD);
 		for (int i = 0; i < readCount; i++)
 			rec.setVal("ycsb1_" + i, new VarcharConstant(ycsb_1[i], ycsb1Type));
-
-		return new SpResultSet(isCommitted(), sch, rec);
+		return rec;
 	}
 }

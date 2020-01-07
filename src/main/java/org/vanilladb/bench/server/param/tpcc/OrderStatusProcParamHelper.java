@@ -15,7 +15,6 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.param.tpcc;
 
-import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 import org.vanilladb.core.sql.BigIntConstant;
 import org.vanilladb.core.sql.DoubleConstant;
 import org.vanilladb.core.sql.IntegerConstant;
@@ -46,7 +45,7 @@ public class OrderStatusProcParamHelper extends StoredProcedureParamHelper {
 	}
 
 	@Override
-	public SpResultSet createResultSet() {
+	public Schema getResultSetSchema() {
 		/*
 		 * TODO The output information is not strictly followed the TPC-C
 		 * definition. See the session 2.6.3.4 in TPC-C 5.11 document.
@@ -61,8 +60,14 @@ public class OrderStatusProcParamHelper extends StoredProcedureParamHelper {
 		sch.addField("c_balance", Type.DOUBLE);
 		sch.addField("o_entry_date", Type.BIGINT);
 		sch.addField("o_carrier_id", Type.INTEGER);
+		return sch;
+	}
 
+	@Override
+	public SpResultRecord newResultSetRecord() {
 		SpResultRecord rec = new SpResultRecord();
+		Type var16 = Type.VARCHAR(16);
+		Type var2 = Type.VARCHAR(2);
 		rec.setVal("cid", new IntegerConstant(cid));
 		rec.setVal("c_first", new VarcharConstant(cFirst, var16));
 		rec.setVal("c_last", new VarcharConstant(cLast, var16));
@@ -70,8 +75,7 @@ public class OrderStatusProcParamHelper extends StoredProcedureParamHelper {
 		rec.setVal("c_balance", new DoubleConstant(cBalance));
 		rec.setVal("o_entry_date", new BigIntConstant(oEntryDate));
 		rec.setVal("o_carrier_id", new IntegerConstant(carrierId));
-
-		return new SpResultSet(isCommitted(), sch, rec);
+		return rec;
 	}
 
 	public boolean isSelectByCLast() {

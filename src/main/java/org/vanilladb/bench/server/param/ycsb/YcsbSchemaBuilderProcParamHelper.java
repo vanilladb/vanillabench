@@ -1,7 +1,6 @@
 package org.vanilladb.bench.server.param.ycsb;
 
 import org.vanilladb.bench.benchmarks.ycsb.YcsbConstants;
-import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
@@ -47,7 +46,12 @@ public class YcsbSchemaBuilderProcParamHelper extends StoredProcedureParamHelper
 	}
 
 	@Override
-	public SpResultSet createResultSet() {
-		return new SpResultSet(isCommitted(), new Schema(), new SpResultRecord());
+	public Schema getResultSetSchema() {
+		return new Schema();
+	}
+
+	@Override
+	public SpResultRecord newResultSetRecord() {
+		return new SpResultRecord();
 	}
 }

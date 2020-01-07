@@ -15,7 +15,6 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.param.micro;
 
-import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
@@ -48,8 +47,13 @@ public class TestbedLoaderParamHelper extends StoredProcedureParamHelper {
 	}
 
 	@Override
-	public SpResultSet createResultSet() {
-		return new SpResultSet(isCommitted(), new Schema(), new SpResultRecord());
+	public Schema getResultSetSchema() {
+		return new Schema();
+	}
+
+	@Override
+	public SpResultRecord newResultSetRecord() {
+		return new SpResultRecord();
 	}
 
 }

@@ -42,7 +42,7 @@ public class TpceTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 	}
 
 	public TpceTestbedLoaderProc() {
-		super(StoredProcedureParamHelper.DefaultParamHelper());
+		super(StoredProcedureParamHelper.newDefaultParamHelper());
 	}
 
 	@Override

@@ -15,7 +15,6 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.param.tpce;
 
-import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 import org.vanilladb.core.sql.BigIntConstant;
 import org.vanilladb.core.sql.DoubleConstant;
 import org.vanilladb.core.sql.IntegerConstant;
@@ -51,18 +50,21 @@ public class TradeResultParamHelper extends StoredProcedureParamHelper {
 	}
 
 	@Override
-	public SpResultSet createResultSet() {
+	public Schema getResultSetSchema() {
 		Schema sch = new Schema();
 		sch.addField("acct_bal", Type.DOUBLE);
 		sch.addField("acct_id", Type.BIGINT);
 		sch.addField("load_unit", Type.INTEGER);
+		return sch;
+	}
 
+	@Override
+	public SpResultRecord newResultSetRecord() {
 		SpResultRecord rec = new SpResultRecord();
 		rec.setVal("acct_bal", new DoubleConstant(acctBal));
 		rec.setVal("acct_id", new BigIntConstant(acctId));
 		rec.setVal("load_unit", new IntegerConstant(loadUnit));
-
-		return new SpResultSet(isCommitted(), sch, rec);
+		return rec;
 	}
 
 	public long getCustomerId() {

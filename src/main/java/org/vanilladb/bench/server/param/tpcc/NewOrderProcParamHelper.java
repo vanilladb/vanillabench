@@ -16,7 +16,6 @@
 package org.vanilladb.bench.server.param.tpcc;
 
 import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
-import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 import org.vanilladb.core.sql.BigIntConstant;
 import org.vanilladb.core.sql.DoubleConstant;
 import org.vanilladb.core.sql.Schema;
@@ -56,7 +55,7 @@ public class NewOrderProcParamHelper extends StoredProcedureParamHelper {
 	}
 
 	@Override
-	public SpResultSet createResultSet() {
+	public Schema getResultSetSchema() {
 		/*
 		 * TODO The output information is not strictly followed the TPC-C
 		 * definition. See the session 2.4.3.5 in TPC-C 5.11 document.
@@ -73,8 +72,15 @@ public class NewOrderProcParamHelper extends StoredProcedureParamHelper {
 		sch.addField("total_amount", Type.DOUBLE);
 		sch.addField("o_entry_date", Type.BIGINT);
 		sch.addField("status_msg", statusMsgType);
+		return sch;
+	}
 
+	@Override
+	public SpResultRecord newResultSetRecord() {
 		SpResultRecord rec = new SpResultRecord();
+		Type cLastType = Type.VARCHAR(16);
+		Type cCreditType = Type.VARCHAR(2);
+		Type statusMsgType = Type.VARCHAR(30);
 		rec.setVal("w_tax", new DoubleConstant(wTax));
 		rec.setVal("d_tax", new DoubleConstant(dTax));
 		rec.setVal("c_discount", new DoubleConstant(cDiscount));
@@ -85,8 +91,7 @@ public class NewOrderProcParamHelper extends StoredProcedureParamHelper {
 		String statusMsg = itemNotFound ? TpccConstants.INVALID_ITEM_MESSAGE
 				: " ";
 		rec.setVal("status_msg", new VarcharConstant(statusMsg, statusMsgType));
-
-		return new SpResultSet(isCommitted(), sch, rec);
+		return rec;
 	}
 
 	public int getWid() {

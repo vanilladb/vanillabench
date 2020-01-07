@@ -15,7 +15,6 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.param.tpcc;
 
-import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 import org.vanilladb.core.sql.BigIntConstant;
 import org.vanilladb.core.sql.DoubleConstant;
 import org.vanilladb.core.sql.IntegerConstant;
@@ -53,7 +52,7 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 	}
 
 	@Override
-	public SpResultSet createResultSet() {
+	public Schema getResultSetSchema() {
 		/*
 		 * TODO The output information is not strictly followed the TPC-C
 		 * definition. See the session 2.5.3.4 in TPC-C 5.11 document.
@@ -77,7 +76,11 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 		sch.addField("h_date", Type.BIGINT);
 		if (isBadCredit)
 			sch.addField("c_data", Type.VARCHAR(200));
+		return sch;
+	}
 
+	@Override
+	public SpResultRecord newResultSetRecord() {
 		SpResultRecord rec = new SpResultRecord();
 		rec.setVal("cid", new IntegerConstant(cid));
 		rec.setVal("c_first", new VarcharConstant(cFirst, Type.VARCHAR(16)));
@@ -97,8 +100,7 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 		rec.setVal("h_date", new BigIntConstant(hDateLong));
 		if (isBadCredit)
 			rec.setVal("c_data", new VarcharConstant(cDataStr, Type.VARCHAR(200)));
-
-		return new SpResultSet(isCommitted(), sch, rec);
+		return rec;
 	}
 
 	public int getWid() {

@@ -22,7 +22,7 @@ import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 public class StartProfilingProc extends StoredProcedure<StoredProcedureParamHelper> {
 
 	public StartProfilingProc() {
-		super(StoredProcedureParamHelper.DefaultParamHelper());
+		super(StoredProcedureParamHelper.newDefaultParamHelper());
 	}
 
 	@Override
