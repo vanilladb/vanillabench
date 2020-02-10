@@ -20,25 +20,30 @@ import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 import org.vanilladb.core.sql.Record;
 
 public class VanillaDbSpResultSet implements SutResultSet {
+	
+	private SpResultSet result;
 	private String message;
-	private boolean isCommitted;
 
 	public VanillaDbSpResultSet(SpResultSet result) {
-		Record[] records = result.getRecords();
-		if (records.length > 0)
-			message = records[0].toString();
-		else
-			message = "";
-		isCommitted = result.isCommitted();
+		this.result = result;
 	}
 	
 	@Override
 	public boolean isCommitted() {
-		return isCommitted;
+		return result.isCommitted();
 	}
 	
 	@Override
 	public String outputMsg() {
+		// Lazy evaluation
+		if (message == null) {
+			Record[] records = result.getRecords();
+			if (records.length > 0)
+				message = records[0].toString();
+			else
+				message = "";
+		}
+		
 		return message;
 	}
 }

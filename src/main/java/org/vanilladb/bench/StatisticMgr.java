@@ -202,8 +202,15 @@ public class StatisticMgr {
 			writer.write(
 					"time(sec), throughput(txs), avg_latency(ms), min(ms), max(ms), 25th_lat(ms), median_lat(ms), 75th_lat(ms)");
 			writer.newLine();
-			for (Map.Entry<Long, ArrayList<Long>> e : latencyHistory.entrySet()) {
-				writer.write(makeStatString(e.getKey(), e.getValue()));
+			
+			int timeAdvance = GRANULARITY / 1000;
+			for (long timeBound = 0, outCount = 0; outCount < latencyHistory.size(); timeBound += timeAdvance) {
+				List<Long> slot = latencyHistory.get(timeBound);
+				if (slot != null) {
+					writer.write(makeStatString(timeBound, slot));
+					outCount++;
+				} else
+					writer.write(String.format("%d, 0, NaN, NaN, NaN, NaN, NaN, NaN", timeBound));
 				writer.newLine();
 			}
 		}

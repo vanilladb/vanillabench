@@ -26,9 +26,8 @@ import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 
 public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 
-	protected int wid, did, cwid, cdid, cidInt;
+	protected int wid, did, cwid, cdid, cid;
 	protected String cDataStr, cLast, cMiddle, cFirst, cStreet1, cStreet2, cCity, cState, cZip, cPhone, cCredit;
-	protected int cid;
 	protected long cSince;
 	protected double cBalance, cCreditLim, cDiscount;
 	String wName, wStreet1, wStreet2, wCity, wState, wZip;
@@ -45,10 +44,8 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 		did = (Integer) pars[1];
 		cwid = (Integer) pars[2];
 		cdid = (Integer) pars[3];
-		cidInt = (Integer) pars[4];
+		cid = (Integer) pars[4];
 		hAmount = (Double) pars[5];
-		cid = cidInt;
-		
 	}
 
 	@Override
@@ -124,7 +121,7 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 	}
 
 	public int getcid() {
-		return cidInt;
+		return cid;
 	}
 
 	public void setcLast(String x) {

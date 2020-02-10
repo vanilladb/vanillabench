@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.vanilladb.bench.BenchmarkerParameters;
+import org.vanilladb.bench.server.procedure.BasicStoredProcFactory;
 import org.vanilladb.bench.server.procedure.micro.MicrobenchStoredProcFactory;
 import org.vanilladb.bench.server.procedure.tpcc.TpccStoredProcFactory;
 import org.vanilladb.bench.server.procedure.tpce.TpceStoredProcFactory;
@@ -71,6 +72,7 @@ public class VanillaDbSpStartUp implements SutStartUp {
 			factory = new YcsbStoredProcFactory();
 			break;
 		}
+		factory = new BasicStoredProcFactory(factory);
 		return factory;
 	}
 
