@@ -66,7 +66,7 @@ public abstract class Benchmarker {
 			if (logger.isLoggable(Level.INFO))
 				logger.info("creating " + BenchmarkerParameters.NUM_RTES + " emulators...");
 			
-			RemoteTerminalEmulator<?>[] emulators = new RemoteTerminalEmulator[BenchmarkerParameters.NUM_RTES];
+			RemoteTerminalEmulator<?>[] emulators = new RemoteTerminalEmulator[getNumOfRTEs()];
 			for (int i = 0; i < emulators.length; i++)
 				emulators[i] = createRte(getConnection(), statMgr);
 			
@@ -139,6 +139,10 @@ public abstract class Benchmarker {
 
 		if (logger.isLoggable(Level.INFO))
 			logger.info("benchmark process finished.");
+	}
+	
+	public int getNumOfRTEs() {
+		return BenchmarkerParameters.NUM_RTES;
 	}
 	
 	private SutConnection getConnection() throws SQLException {
