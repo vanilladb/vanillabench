@@ -27,14 +27,14 @@ public class YcsbParamGen implements TxParamGenerator<YcsbTransactionType> {
 	private static int getNextInsertId() {
 		int id = GLOBAL_COUNTERS.getAndIncrement();
 		
-		return id + YcsbConstants.NUM_ITEMS;
+		return id + YcsbConstants.NUM_RECORDS;
 	}
 	
 	private YcsbLatestGenerator latestRandom;
 	private RandomValueGenerator rvg = new RandomValueGenerator();
 
 	public YcsbParamGen() {
-		latestRandom = new YcsbLatestGenerator(YcsbConstants.NUM_ITEMS, SKEW_PARAMETER);
+		latestRandom = new YcsbLatestGenerator(YcsbConstants.NUM_RECORDS, SKEW_PARAMETER);
 	}
 	
 	// a main application for debugging

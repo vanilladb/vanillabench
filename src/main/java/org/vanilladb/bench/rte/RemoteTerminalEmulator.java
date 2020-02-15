@@ -49,6 +49,7 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 	}
 
 	public void startRecordStatistic() {
+		statMgr.setRecordStartTime();
 		isWarmingUp = false;
 	}
 

@@ -30,6 +30,8 @@ public class MicrobenchJdbcExecutor implements JdbcExecutor<MicrobenchTransactio
 		switch (txType) {
 		case TESTBED_LOADER:
 			return new LoadingTestbedJdbcJob().execute(conn, pars);
+		case CHECK_DATABASE:
+			return new CheckDatabaseJdbcJob().execute(conn, pars);
 		case MICRO_TXN:
 			return new MicroTxnJdbcJob().execute(conn, pars);
 		default:

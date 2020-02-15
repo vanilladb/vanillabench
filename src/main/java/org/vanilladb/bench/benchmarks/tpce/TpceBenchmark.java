@@ -20,48 +20,59 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.vanilladb.bench.BenchTransactionType;
-import org.vanilladb.bench.Benchmarker;
+import org.vanilladb.bench.Benchmark;
+import org.vanilladb.bench.BenchmarkerParameters;
 import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.benchmarks.tpce.data.TpceDataManager;
 import org.vanilladb.bench.benchmarks.tpce.rte.TpceRte;
 import org.vanilladb.bench.remote.SutConnection;
-import org.vanilladb.bench.remote.SutDriver;
+import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.rte.RemoteTerminalEmulator;
 
-public class TpceBenchmarker extends Benchmarker {
+public class TpceBenchmark extends Benchmark {
 	
 	private TpceDataManager dataMgr;
-
-	public TpceBenchmarker(SutDriver sutDriver) {
-		super(sutDriver, "tpce");
-		dataMgr = new TpceDataManager(TpceConstants.CUSTOMER_COUNT, 
-				TpceConstants.COMPANY_COUNT, TpceConstants.SECURITY_COUNT);
-	}
-
-	public TpceBenchmarker(SutDriver sutDriver, String reportPostfix) {
-		super(sutDriver, "tpce-" + reportPostfix);
-		dataMgr = new TpceDataManager(TpceConstants.CUSTOMER_COUNT, 
-				TpceConstants.COMPANY_COUNT, TpceConstants.SECURITY_COUNT);
-	}
 	
 	@Override
 	public Set<BenchTransactionType> getBenchmarkingTxTypes() {
 		Set<BenchTransactionType> txTypes = new HashSet<BenchTransactionType>();
 		for (TpceTransactionType txType : TpceTransactionType.values()) {
-			if (!txType.isLoadingProcedure())
+			if (txType.isBenchmarkingProcedure())
 				txTypes.add(txType);
 		}
 		return txTypes;
 	}
 
 	@Override
-	protected void executeLoadingProcedure(SutConnection conn) throws SQLException {
+	public void executeLoadingProcedure(SutConnection conn) throws SQLException {
 		conn.callStoredProc(TpceTransactionType.SCHEMA_BUILDER.getProcedureId());
 		conn.callStoredProc(TpceTransactionType.TESTBED_LOADER.getProcedureId());
 	}
 
 	@Override
-	protected RemoteTerminalEmulator<TpceTransactionType> createRte(SutConnection conn, StatisticMgr statMgr) {
+	public RemoteTerminalEmulator<TpceTransactionType> createRte(SutConnection conn, StatisticMgr statMgr) {
 		return new TpceRte(conn, statMgr, dataMgr);
+	}
+
+	@Override
+	public boolean executeDatabaseCheckProcedure(SutConnection conn) throws SQLException {
+		SutResultSet result = null;
+		TpceTransactionType txnType = TpceTransactionType.CHECK_DATABASE;
+		Object[] params = new Object[0];
+		
+		switch (BenchmarkerParameters.CONNECTION_MODE) {
+		case JDBC:
+			throw new RuntimeException("We do not implement checking procedure for JDBC");
+		case SP:
+			result = conn.callStoredProc(txnType.getProcedureId(), params);
+			break;
+		}
+		
+		return result.isCommitted();
+	}
+
+	@Override
+	public String getBenchmarkName() {
+		return "tpce";
 	}
 }

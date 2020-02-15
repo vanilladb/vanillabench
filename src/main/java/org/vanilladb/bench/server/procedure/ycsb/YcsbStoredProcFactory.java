@@ -10,17 +10,20 @@ public class YcsbStoredProcFactory implements StoredProcedureFactory {
 	public StoredProcedure<?> getStroredProcedure(int pid) {
 		StoredProcedure<?> sp;
 		switch (YcsbTransactionType.fromProcedureId(pid)) {
-			case SCHEMA_BUILDER:
-				sp = new YcsbSchemaBuilderProc();
-				break;
-			case TESTBED_LOADER:
-				sp = new YcsbTestbedLoaderProc();
-				break;
-			case YCSB:
-				sp = new YcsbProc();
-				break;
-			default:
-				throw new UnsupportedOperationException("The benchmarker does not recognize procedure " + pid + "");
+		case SCHEMA_BUILDER:
+			sp = new YcsbSchemaBuilderProc();
+			break;
+		case TESTBED_LOADER:
+			sp = new YcsbTestbedLoaderProc();
+			break;
+		case CHECK_DATABASE:
+			sp = new YcsbCheckDatabaseProc();
+			break;
+		case YCSB:
+			sp = new YcsbProc();
+			break;
+		default:
+			throw new UnsupportedOperationException("The benchmarker does not recognize procedure " + pid + "");
 		}
 		return sp;
 	}

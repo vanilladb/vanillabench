@@ -28,6 +28,9 @@ public class MicrobenchStoredProcFactory implements StoredProcedureFactory {
 		case TESTBED_LOADER:
 			sp = new MicroTestbedLoaderProc();
 			break;
+		case CHECK_DATABASE:
+			sp = new MicroCheckDatabaseProc();
+			break;
 		case MICRO_TXN:
 			sp = new MicroTxnProc();
 			break;

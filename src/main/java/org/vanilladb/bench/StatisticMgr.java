@@ -91,6 +91,7 @@ public class StatisticMgr {
 	private TreeMap<Long, ArrayList<Long>> latencyHistory = new TreeMap<Long, ArrayList<Long>>();
 	private List<BenchTransactionType> allTxTypes;
 	private String fileNamePostfix = "";
+	private long recordStartTime = -1;
 	
 	public StatisticMgr(Collection<BenchTransactionType> txTypes) {
 		allTxTypes = new LinkedList<BenchTransactionType>(txTypes);
@@ -100,14 +101,19 @@ public class StatisticMgr {
 		allTxTypes = new LinkedList<BenchTransactionType>(txTypes);
 		fileNamePostfix = namePostfix;
 	}
-
-	public synchronized void processTxnResult(TxnResultSet trs) {
-		resultSets.add(trs);
+	
+	/**
+	 * We use the time that this method is called at as the start time for recording.
+	 */
+	public synchronized void setRecordStartTime() {
+		if (recordStartTime == -1)
+			recordStartTime = System.nanoTime();
 	}
 
-	public synchronized void processBatchTxnsResult(TxnResultSet... trss) {
-		for (TxnResultSet trs : trss)
-			resultSets.add(trs);
+	public synchronized void processTxnResult(TxnResultSet trs) {
+		if (recordStartTime == -1)
+			recordStartTime = trs.getTxnEndTime();
+		resultSets.add(trs);
 	}
 
 	public synchronized void outputReport() {
@@ -217,7 +223,7 @@ public class StatisticMgr {
 	}
 
 	private void addTxnLatency(TxnResultSet rs) {
-		long elapsedTime = TimeUnit.NANOSECONDS.toMillis(rs.getTxnEndTime() - Benchmarker.BENCH_START_TIME);
+		long elapsedTime = TimeUnit.NANOSECONDS.toMillis(rs.getTxnEndTime() - recordStartTime);
 		long timeSlotBoundary = (elapsedTime / GRANULARITY) * GRANULARITY / 1000; // in seconds
 		
 		ArrayList<Long> timeSlot = latencyHistory.get(timeSlotBoundary);

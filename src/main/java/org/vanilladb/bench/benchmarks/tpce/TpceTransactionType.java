@@ -19,21 +19,24 @@ import org.vanilladb.bench.BenchTransactionType;
 
 public enum TpceTransactionType implements BenchTransactionType {
 	// Loading procedures
-	SCHEMA_BUILDER(true), TESTBED_LOADER(true),
+	SCHEMA_BUILDER(false), TESTBED_LOADER(false),
+	
+	// Database checking procedures
+	CHECK_DATABASE(false),
 	
 	// TPC-E procedures
-	BROKER_VOLUME(false), CUSTOMER_POSITION(false), MARKET_FEED(false), MARKET_WATCH(false),
-	SECURITY_DETAIL(false), TRADE_LOOKUP(false), TRADE_ORDER(false), TRADE_RESULT(false),
-	TRADE_STATUS(false), TRADE_UPDATE(false), DATA_MAINTENANCE(false), TRADE_CLEANUP(false);
+	BROKER_VOLUME(true), CUSTOMER_POSITION(true), MARKET_FEED(true), MARKET_WATCH(true),
+	SECURITY_DETAIL(true), TRADE_LOOKUP(true), TRADE_ORDER(true), TRADE_RESULT(true),
+	TRADE_STATUS(true), TRADE_UPDATE(true), DATA_MAINTENANCE(true), TRADE_CLEANUP(true);
 	
 	public static TpceTransactionType fromProcedureId(int pid) {
 		return TpceTransactionType.values()[pid];
 	}
 	
-	private boolean isLoadProc;
+	private boolean isBenchProc;
 	
 	TpceTransactionType(boolean isLoadProc) {
-		this.isLoadProc = isLoadProc;
+		this.isBenchProc = isLoadProc;
 	}
 	
 	@Override
@@ -41,7 +44,7 @@ public enum TpceTransactionType implements BenchTransactionType {
 		return this.ordinal();
 	}
 	
-	public boolean isLoadingProcedure() {
-		return isLoadProc;
+	public boolean isBenchmarkingProcedure() {
+		return isBenchProc;
 	}
 }

@@ -31,6 +31,9 @@ public class TpccStoredProcFactory implements StoredProcedureFactory {
 		case TESTBED_LOADER:
 			sp = new TpccTestbedLoaderProc();
 			break;
+		case CHECK_DATABASE:
+			sp = new TpccCheckDatabaseProc();
+			break;
 		case NEW_ORDER:
 			sp = new NewOrderProc();
 			break;

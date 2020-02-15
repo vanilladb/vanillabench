@@ -31,6 +31,9 @@ public class TpceStoredProcFactory implements StoredProcedureFactory {
 		case TESTBED_LOADER:
 			sp = new TpceTestbedLoaderProc();
 			break;
+		case CHECK_DATABASE:
+			sp = new TpceCheckDatabaseProc();
+			break;
 		case TRADE_ORDER:
 			sp = new TradeOrderProc();
 			break;

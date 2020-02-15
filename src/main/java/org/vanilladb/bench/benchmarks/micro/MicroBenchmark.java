@@ -15,43 +15,67 @@
  *******************************************************************************/
 package org.vanilladb.bench.benchmarks.micro;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.vanilladb.bench.BenchTransactionType;
-import org.vanilladb.bench.Benchmarker;
+import org.vanilladb.bench.Benchmark;
+import org.vanilladb.bench.BenchmarkerParameters;
 import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.benchmarks.micro.rte.MicrobenchmarkRte;
+import org.vanilladb.bench.benchmarks.micro.rte.jdbc.MicrobenchJdbcExecutor;
 import org.vanilladb.bench.remote.SutConnection;
-import org.vanilladb.bench.remote.SutDriver;
+import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.rte.RemoteTerminalEmulator;
 
-public class MicroBenchmarker extends Benchmarker {
-	
-	public MicroBenchmarker(SutDriver sutDriver) {
-		super(sutDriver, "microbench");
-	}
-	
-	public MicroBenchmarker(SutDriver sutDriver, String reportPostfix) {
-		super(sutDriver, "microbench-" + reportPostfix);
-	}
-	
+public class MicroBenchmark extends Benchmark {
+
+	@Override
 	public Set<BenchTransactionType> getBenchmarkingTxTypes() {
 		Set<BenchTransactionType> txTypes = new HashSet<BenchTransactionType>();
 		for (MicrobenchTransactionType txType : MicrobenchTransactionType.values()) {
-			if (!txType.isLoadingProcedure())
+			if (txType.isBenchmarkingProcedure())
 				txTypes.add(txType);
 		}
 		return txTypes;
 	}
 
-	protected void executeLoadingProcedure(SutConnection conn) throws SQLException {
+	@Override
+	public void executeLoadingProcedure(SutConnection conn) throws SQLException {
 		conn.callStoredProc(MicrobenchTransactionType.TESTBED_LOADER.getProcedureId(),
 				MicrobenchConstants.NUM_ITEMS);
 	}
-	
-	protected RemoteTerminalEmulator<MicrobenchTransactionType> createRte(SutConnection conn, StatisticMgr statMgr) {
+
+	@Override
+	public RemoteTerminalEmulator<MicrobenchTransactionType> createRte(SutConnection conn, StatisticMgr statMgr) {
 		return new MicrobenchmarkRte(conn, statMgr);
+	}
+
+	@Override
+	public boolean executeDatabaseCheckProcedure(SutConnection conn) throws SQLException {
+		SutResultSet result = null;
+		MicrobenchTransactionType txnType = MicrobenchTransactionType.CHECK_DATABASE;
+		Object[] params = new Object[] {MicrobenchConstants.NUM_ITEMS};
+		
+		switch (BenchmarkerParameters.CONNECTION_MODE) {
+		case JDBC:
+			Connection jdbcConn = conn.toJdbcConnection();
+			jdbcConn.setAutoCommit(false);
+			MicrobenchJdbcExecutor executor = new MicrobenchJdbcExecutor();
+			result = executor.execute(jdbcConn, txnType, params);
+			break;
+		case SP:
+			result = conn.callStoredProc(txnType.getProcedureId(), params);
+			break;
+		}
+		
+		return result.isCommitted();
+	}
+
+	@Override
+	public String getBenchmarkName() {
+		return "microbench";
 	}
 }

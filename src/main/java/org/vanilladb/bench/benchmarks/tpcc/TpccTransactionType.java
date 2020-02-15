@@ -19,19 +19,22 @@ import org.vanilladb.bench.BenchTransactionType;
 
 public enum TpccTransactionType implements BenchTransactionType {
 	// Loading procedures
-	SCHEMA_BUILDER(true), TESTBED_LOADER(true),
+	SCHEMA_BUILDER(false), TESTBED_LOADER(false),
+	
+	// Database checking procedures
+	CHECK_DATABASE(false),
 	
 	// TPC-C procedures
-	NEW_ORDER(false), PAYMENT(false), ORDER_STATUS(false), DELIVERY(false), STOCK_LEVEL(false);
+	NEW_ORDER(true), PAYMENT(true), ORDER_STATUS(true), DELIVERY(true), STOCK_LEVEL(true);
 	
 	public static TpccTransactionType fromProcedureId(int pid) {
 		return TpccTransactionType.values()[pid];
 	}
 	
-	private boolean isLoadProc;
+	private boolean isBenchProc;
 	
 	TpccTransactionType(boolean isLoadProc) {
-		this.isLoadProc = isLoadProc;
+		this.isBenchProc = isLoadProc;
 	}
 	
 	@Override
@@ -39,7 +42,7 @@ public enum TpccTransactionType implements BenchTransactionType {
 		return this.ordinal();
 	}
 	
-	public boolean isLoadingProcedure() {
-		return isLoadProc;
+	public boolean isBenchmarkingProcedure() {
+		return isBenchProc;
 	}
 }

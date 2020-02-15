@@ -19,4 +19,6 @@ public interface BenchTransactionType {
 	
 	int getProcedureId();
 	
+	boolean isBenchmarkingProcedure();
+	
 }

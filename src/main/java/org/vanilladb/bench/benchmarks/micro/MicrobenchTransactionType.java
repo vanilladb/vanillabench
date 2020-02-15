@@ -19,27 +19,31 @@ import org.vanilladb.bench.BenchTransactionType;
 
 public enum MicrobenchTransactionType implements BenchTransactionType {
 	// Loading procedures
-	TESTBED_LOADER(true),
+	TESTBED_LOADER(false),
+	
+	// Database checking procedures
+	CHECK_DATABASE(false),
 	
 	// Benchmarking procedures
-	MICRO_TXN(false);
+	MICRO_TXN(true);
 	
 	public static MicrobenchTransactionType fromProcedureId(int pid) {
 		return MicrobenchTransactionType.values()[pid];
 	}
 	
-	private boolean isLoadProc;
+	private boolean isBenchProc;
 	
-	MicrobenchTransactionType(boolean isLoadProc) {
-		this.isLoadProc = isLoadProc;
+	MicrobenchTransactionType(boolean isBenchProc) {
+		this.isBenchProc = isBenchProc;
 	}
 	
 	@Override
 	public int getProcedureId() {
 		return this.ordinal();
 	}
-	
-	public boolean isLoadingProcedure() {
-		return isLoadProc;
+
+	@Override
+	public boolean isBenchmarkingProcedure() {
+		return isBenchProc;
 	}
 }

@@ -29,7 +29,7 @@ public class YcsbTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 		RecoveryMgr.enableLogging(false);
 
 		// Generate item records
-		generateItems(1, YcsbConstants.NUM_ITEMS);
+		generateItems(1, YcsbConstants.NUM_RECORDS);
 
 		if (logger.isLoggable(Level.INFO))
 			logger.info("Loading completed. Flush all loading data to disks...");
@@ -53,7 +53,7 @@ public class YcsbTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 		Transaction tx = getTransaction();
 		int endId = startId + recordCount - 1;
 		
-		if (logger.isLoggable(Level.FINE))
+		if (logger.isLoggable(Level.INFO))
 			logger.info("Start populating YCSB table from ycsb_id=" + startId + " to ycsb_id=" + endId);
 		
 		// Generate the field names of YCSB table
