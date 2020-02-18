@@ -55,6 +55,9 @@ public class NewOrderProc extends StoredProcedure<NewOrderProcParamHelper> {
 		// SELECT w_tax FROM warehouse WHERE w_id = wid
 		String sql = "SELECT w_tax FROM warehouse WHERE w_id = " + wid;
 		Scan s = StoredProcedureHelper.executeQuery(sql, tx);
+		s.beforeFirst();
+		if (!s.next())
+			throw new RuntimeException("Executing '" + sql + "' fails");
 		paramHelper.setWTax((Double) s.getVal("w_tax").asJavaVal());
 		s.close();
 
@@ -63,6 +66,9 @@ public class NewOrderProc extends StoredProcedure<NewOrderProcParamHelper> {
 		sql = "SELECT d_tax, d_next_o_id FROM district WHERE d_w_id = " + wid +
 				" AND d_id = " + did;
 		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s.beforeFirst();
+		if (!s.next())
+			throw new RuntimeException("Executing '" + sql + "' fails");
 		nextOid = (Integer) s.getVal("d_next_o_id").asJavaVal();
 		paramHelper.setdTax((Double) s.getVal("d_tax").asJavaVal());
 		s.close();
@@ -81,6 +87,9 @@ public class NewOrderProc extends StoredProcedure<NewOrderProcParamHelper> {
 		sql = "SELECT c_discount, c_last, c_credit FROM customer WHERE c_w_id = " + wid +
 				" AND c_d_id = " + did + " AND c_id = " + cid;
 		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s.beforeFirst();
+		if (!s.next())
+			throw new RuntimeException("Executing '" + sql + "' fails");
 		paramHelper.setcDiscount((Double) s.getVal("c_discount").asJavaVal());
 		paramHelper.setcLast((String) s.getVal("c_last").asJavaVal());
 		paramHelper.setcCredit((String) s.getVal("c_credit").asJavaVal());
@@ -118,6 +127,9 @@ public class NewOrderProc extends StoredProcedure<NewOrderProcParamHelper> {
 			// SELECT i_price, i_name, i_data FROM item WHERE i_id = olIId
 			sql = "SELECT i_price, i_name, i_data FROM item WHERE i_id = " + olIId;
 			s = StoredProcedureHelper.executeQuery(sql, tx);
+			s.beforeFirst();
+			if (!s.next())
+				throw new RuntimeException("Executing '" + sql + "' fails");
 			// TODO: save i_price, i_name, i_data
 			double iPrice = (Double) s.getVal("i_price").asJavaVal();
 			s.getVal("i_name").asJavaVal();
@@ -136,6 +148,9 @@ public class NewOrderProc extends StoredProcedure<NewOrderProcParamHelper> {
 					", s_data, s_ytd, s_order_cnt FROM stock WHERE s_i_id = " + olIId +
 					" AND s_w_id = " + olSupplyWId;
 			s = StoredProcedureHelper.executeQuery(sql, tx);
+			s.beforeFirst();
+			if (!s.next())
+				throw new RuntimeException("Executing '" + sql + "' fails");
 			// TODO: save sDistXX, s_data
 			int sQuantity = (Integer) s.getVal("s_quantity").asJavaVal();
 			String sDistInfo = (String) s.getVal(sDistXX).asJavaVal();

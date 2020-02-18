@@ -37,6 +37,9 @@ public class TradeResultProc extends StoredProcedure<TradeResultParamHelper> {
 		String sql = "SELECT ca_name, ca_b_id, ca_c_id FROM customer_account WHERE "
 				+ "ca_id = " + paramHelper.getAcctId();
 		Scan s = StoredProcedureHelper.executeQuery(sql, tx);
+		s.beforeFirst();
+		if (!s.next())
+			throw new RuntimeException("Executing '" + sql + "' fails");
 		s.getVal("ca_name").asJavaVal();
 		s.getVal("ca_b_id").asJavaVal();
 		s.getVal("ca_c_id").asJavaVal();
@@ -44,16 +47,25 @@ public class TradeResultProc extends StoredProcedure<TradeResultParamHelper> {
 		// SELECT c_name FROM customer WHERE c_id = customerKey
 		sql = "SELECT c_f_name FROM customer WHERE c_id = " + paramHelper.getCustomerId();
 		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s.beforeFirst();
+		if (!s.next())
+			throw new RuntimeException("Executing '" + sql + "' fails");
 		s.getVal("c_f_name").asJavaVal();
 
 		// SELECT b_name FROM broker WHERE b_id = brokerId
 		sql = "SELECT b_name FROM broker WHERE b_id = " + paramHelper.getBrokerId();
 		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s.beforeFirst();
+		if (!s.next())
+			throw new RuntimeException("Executing '" + sql + "' fails");
 		s.getVal("b_name").asJavaVal();
 
 		// SELECT t_trade_price FROM trade WHERE t_id = tradeId
 		sql = "SELECT t_trade_price FROM trade WHERE t_id = " + paramHelper.getTradeId();
 		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s.beforeFirst();
+		if (!s.next())
+			throw new RuntimeException("Executing '" + sql + "' fails");
 		s.getVal("t_trade_price").asJavaVal();
 
 		// INSERT INTO trade_history (th_t_id, th_dts, th_st_id) VALUES (...)

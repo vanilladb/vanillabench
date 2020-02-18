@@ -43,6 +43,9 @@ public class PaymentProc extends StoredProcedure<PaymentProcParamHelper> {
 		String sql = "SELECT w_name, w_street_1, w_street_2, w_city,w_state, w_zip, w_ytd "
 				+ "FROM warehouse WHERE w_id = " + wid;
 		Scan s = StoredProcedureHelper.executeQuery(sql, tx);
+		s.beforeFirst();
+		if (!s.next())
+			throw new RuntimeException("Executing '" + sql + "' fails");
 		String wName = (String) s.getVal("w_name").asJavaVal();
 		s.getVal("w_street_1").asJavaVal();
 		s.getVal("w_street_2").asJavaVal();
@@ -63,6 +66,9 @@ public class PaymentProc extends StoredProcedure<PaymentProcParamHelper> {
 		sql = "SELECT d_name, d_street_1, d_street_2, d_city, d_state, d_zip, d_ytd "
 				+ "FROM district WHERE d_w_id = " + wid + " AND d_id = " + did;
 		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s.beforeFirst();
+		if (!s.next())
+			throw new RuntimeException("Executing '" + sql + "' fails");
 		String dName = (String) s.getVal("d_name").asJavaVal();
 		s.getVal("d_street_1").asJavaVal();
 		s.getVal("d_street_2").asJavaVal();
@@ -92,6 +98,9 @@ public class PaymentProc extends StoredProcedure<PaymentProcParamHelper> {
 				"c_discount, c_balance, c_since FROM customer " +
 				"WHERE c_w_id = " + cwid + " AND c_d_id = " + cdid + " AND c_id = " + cid;
 		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s.beforeFirst();
+		if (!s.next())
+			throw new RuntimeException("Executing '" + sql + "' fails");
 		paramHelper.setcFirst((String) s.getVal("c_first").asJavaVal());
 		paramHelper.setcMiddle((String) s.getVal("c_middle").asJavaVal());
 		paramHelper.setcLast((String) s.getVal("c_last").asJavaVal());
@@ -120,6 +129,9 @@ public class PaymentProc extends StoredProcedure<PaymentProcParamHelper> {
 			sql = "SELECT c_data FROM customer WHERE c_w_id = " + cwid +
 					" AND c_d_id = " + cdid + " AND c_id = " + cid;
 			s = StoredProcedureHelper.executeQuery(sql, tx);
+			s.beforeFirst();
+			if (!s.next())
+				throw new RuntimeException("Executing '" + sql + "' fails");
 			String cData = (String) s.getVal("c_data").asJavaVal();
 			s.close();
 			

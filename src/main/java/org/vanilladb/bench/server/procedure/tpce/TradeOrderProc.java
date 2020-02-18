@@ -65,10 +65,14 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 		String sql = "SELECT ca_name, ca_b_id, ca_c_id, ca_tax_st FROM customer_account"
 				+ " WHERE ca_id = " + paramHelper.getAcctId();
 		Scan s = StoredProcedureHelper.executeQuery(sql, tx);
+		s.beforeFirst();
+		if (!s.next())
+			throw new RuntimeException("Executing '" + sql + "' fails");
 		acctName = (String) s.getVal("ca_name").asJavaVal();
 		brokerId = (Long) s.getVal("ca_b_id").asJavaVal();
 		custId = (Long) s.getVal("ca_c_id").asJavaVal();
 		taxStatus = (Integer) s.getVal("ca_tax_st").asJavaVal();
+		s.close();
 		
 		// TODO: Add this
 		// num_found = row_count
@@ -79,15 +83,23 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 		sql = "SELECT c_f_name, c_l_name, c_tier, c_tax_id FROM customer"
 				+ " WHERE c_id = " + custId;
 		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s.beforeFirst();
+		if (!s.next())
+			throw new RuntimeException("Executing '" + sql + "' fails");
 		custFName = (String) s.getVal("c_f_name").asJavaVal();
 		custLName = (String) s.getVal("c_l_name").asJavaVal();
 		custTier = (Integer) s.getVal("c_tier").asJavaVal();
 		taxId = (String) s.getVal("c_tax_id").asJavaVal();
+		s.close();
 		
 		// SELECT broker_name = b_name FROM broker WHERE b_id = broker_id
 		sql = "SELECT b_name FROM broker WHERE b_id = " + brokerId;
 		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s.beforeFirst();
+		if (!s.next())
+			throw new RuntimeException("Executing '" + sql + "' fails");
 		brokerName = (String) s.getVal("b_name").asJavaVal();
+		s.close();
 	}
 	
 	/**
@@ -114,24 +126,36 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 		String sql = "SELECT s_co_id, s_ex_id, s_name FROM security WHERE "
 				+ "s_symb = " + paramHelper.getSymbol();
 		Scan s = StoredProcedureHelper.executeQuery(sql, tx);
+		s.beforeFirst();
+		if (!s.next())
+			throw new RuntimeException("Executing '" + sql + "' fails");
 		coId = (Long) s.getVal("s_co_id").asJavaVal();
 		exchId = (String) s.getVal("s_ex_id").asJavaVal();
 		sName = (String) s.getVal("s_name").asJavaVal();
+		s.close();
 		
 		// SELECT market_price = lt_price FROM last_trade
 		// WHERE lt_s_symb = symbol
 		sql = "SELECT lt_price FROM last_trade WHERE "
 				+ "lt_s_symb = " + paramHelper.getSymbol();
 		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s.beforeFirst();
+		if (!s.next())
+			throw new RuntimeException("Executing '" + sql + "' fails");
 		marketPrice = (Double) s.getVal("lt_price").asJavaVal();
+		s.close();
 		
 		// SELECT type_is_market = tt_is_mrkt, type_is_sell = tt_is_sell
 		// FROM trade_type WHERE tt_id = trade_type_id
 		sql = "SELECT tt_is_mrkt, tt_is_sell FROM trade_type WHERE "
 				+ "tt_id = " + paramHelper.getTradeTypeId();
 		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s.beforeFirst();
+		if (!s.next())
+			throw new RuntimeException("Executing '" + sql + "' fails");
 		typeIsMarket = (Integer) s.getVal("tt_is_mrkt").asJavaVal();
 		typeIsSell = (Integer) s.getVal("tt_is_sell").asJavaVal();
+		s.close();
 		
 		if (typeIsMarket == 1) {
 			statusId = "A";

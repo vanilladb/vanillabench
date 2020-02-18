@@ -24,13 +24,7 @@ public class StoredProcedureHelper {
 	
 	public static Scan executeQuery(String sql, Transaction tx) {
 		Plan p = VanillaDb.newPlanner().createQueryPlan(sql, tx);
-		Scan s = p.open();
-		
-		s.beforeFirst();
-		if (s.next()) {
-			return s;
-		} else
-			throw new RuntimeException("Query: '" + sql + "' fails.");
+		return p.open();
 	}
 	
 	public static int executeUpdate(String sql, Transaction tx) {
