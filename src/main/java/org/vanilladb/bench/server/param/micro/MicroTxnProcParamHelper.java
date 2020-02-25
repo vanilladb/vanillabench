@@ -15,7 +15,6 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.param.micro;
 
-import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 import org.vanilladb.core.sql.DoubleConstant;
 import org.vanilladb.core.sql.IntegerConstant;
 import org.vanilladb.core.sql.Schema;
@@ -91,30 +90,28 @@ public class MicroTxnProcParamHelper extends StoredProcedureParamHelper {
 	}
 
 	@Override
-	public SpResultSet createResultSet() {
+	public Schema getResultSetSchema() {
 		Schema sch = new Schema();
-		Type statusType = Type.VARCHAR(10);
 		Type intType = Type.INTEGER;
 		Type itemPriceType = Type.DOUBLE;
 		Type itemNameType = Type.VARCHAR(24);
-		sch.addField("status", statusType);
 		sch.addField("rc", intType);
-		int l = itemName.length;
-		for (int i = 0; i < l; i++) {
+		for (int i = 0; i < itemName.length; i++) {
 			sch.addField("i_name_" + i, itemNameType);
 			sch.addField("i_price_" + i, itemPriceType);
 		}
+		return sch;
+	}
 
+	@Override
+	public SpResultRecord newResultSetRecord() {
 		SpResultRecord rec = new SpResultRecord();
-		String status = isCommitted ? "committed" : "abort";
-		rec.setVal("status", new VarcharConstant(status, statusType));
-		rec.setVal("rc", new IntegerConstant(l));
-		for (int i = 0; i < l; i++) {
-			rec.setVal("i_name_" + i, new VarcharConstant(itemName[i], itemNameType));
+		rec.setVal("rc", new IntegerConstant(itemName.length));
+		for (int i = 0; i < itemName.length; i++) {
+			rec.setVal("i_name_" + i, new VarcharConstant(itemName[i], Type.VARCHAR(24)));
 			rec.setVal("i_price_" + i, new DoubleConstant(itemPrice[i]));
 		}
-
-		return new SpResultSet(sch, rec);
+		return rec;
 	}
 
 }

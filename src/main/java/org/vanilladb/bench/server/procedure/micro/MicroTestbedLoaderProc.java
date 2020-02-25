@@ -20,14 +20,16 @@ import java.util.logging.Logger;
 
 import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
 import org.vanilladb.bench.server.param.micro.TestbedLoaderParamHelper;
-import org.vanilladb.bench.server.procedure.BasicStoredProcedure;
+import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
 import org.vanilladb.core.server.VanillaDb;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
+import org.vanilladb.core.storage.tx.Transaction;
 import org.vanilladb.core.storage.tx.recovery.CheckpointTask;
 import org.vanilladb.core.storage.tx.recovery.RecoveryMgr;
 
-public class MicroTestbedLoaderProc extends BasicStoredProcedure<TestbedLoaderParamHelper> {
+public class MicroTestbedLoaderProc extends StoredProcedure<TestbedLoaderParamHelper> {
 	private static Logger logger = Logger.getLogger(MicroTestbedLoaderProc.class.getName());
-
+	
 	public MicroTestbedLoaderProc() {
 		super(new TestbedLoaderParamHelper());
 	}
@@ -45,7 +47,7 @@ public class MicroTestbedLoaderProc extends BasicStoredProcedure<TestbedLoaderPa
 		createSchemas();
 
 		// Generate item records
-		generateItems(1, paramHelper.getNumberOfItems());
+		generateItems(1, getParamHelper().getNumberOfItems());
 
 		if (logger.isLoggable(Level.INFO))
 			logger.info("Loading completed. Flush all loading data to disks...");
@@ -72,17 +74,20 @@ public class MicroTestbedLoaderProc extends BasicStoredProcedure<TestbedLoaderPa
 	}
 	
 	private void createSchemas() {
+		TestbedLoaderParamHelper paramHelper = getParamHelper();
+		Transaction tx = getTransaction();
+		
 		if (logger.isLoggable(Level.FINE))
 			logger.info("Create tables...");
 		
-		for (String cmd : paramHelper.getTableSchemas())
-			executeUpdate(cmd);
+		for (String sql : paramHelper.getTableSchemas())
+			StoredProcedureHelper.executeUpdate(sql, tx);
 		
 		if (logger.isLoggable(Level.FINE))
 			logger.info("Create indexes...");
 
-		for (String cmd : paramHelper.getIndexSchemas())
-			executeUpdate(cmd);
+		for (String sql : paramHelper.getIndexSchemas())
+			StoredProcedureHelper.executeUpdate(sql, tx);
 		
 		if (logger.isLoggable(Level.FINE))
 			logger.info("Finish creating schemas.");
@@ -92,6 +97,7 @@ public class MicroTestbedLoaderProc extends BasicStoredProcedure<TestbedLoaderPa
 		if (logger.isLoggable(Level.FINE))
 			logger.info("Start populating items from i_id=" + startIId + " to i_id=" + endIId);
 
+		Transaction tx = getTransaction();
 		int iid, iimid;
 		String iname, idata;
 		double iprice;
@@ -107,7 +113,7 @@ public class MicroTestbedLoaderProc extends BasicStoredProcedure<TestbedLoaderPa
 
 			sql = "INSERT INTO item(i_id, i_im_id, i_name, i_price, i_data) VALUES (" + iid + ", " + iimid + ", '"
 					+ iname + "', " + iprice + ", '" + idata + "' )";
-			executeUpdate(sql);
+			StoredProcedureHelper.executeUpdate(sql, tx);
 		}
 
 		if (logger.isLoggable(Level.FINE))

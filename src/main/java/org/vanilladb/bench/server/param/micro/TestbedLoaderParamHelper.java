@@ -15,10 +15,7 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.param.micro;
 
-import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 import org.vanilladb.core.sql.Schema;
-import org.vanilladb.core.sql.Type;
-import org.vanilladb.core.sql.VarcharConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 
@@ -50,19 +47,13 @@ public class TestbedLoaderParamHelper extends StoredProcedureParamHelper {
 	}
 
 	@Override
-	public SpResultSet createResultSet() {
-		// create schema
-		Schema sch = new Schema();
-		Type statusType = Type.VARCHAR(10);
-		sch.addField("status", statusType);
+	public Schema getResultSetSchema() {
+		return new Schema();
+	}
 
-		// create record
-		SpResultRecord rec = new SpResultRecord();
-		String status = isCommitted ? "committed" : "abort";
-		rec.setVal("status", new VarcharConstant(status, statusType));
-
-		// create result set
-		return new SpResultSet(sch, rec);
+	@Override
+	public SpResultRecord newResultSetRecord() {
+		return new SpResultRecord();
 	}
 
 }

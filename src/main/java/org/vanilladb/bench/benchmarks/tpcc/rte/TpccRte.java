@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.vanilladb.bench.StatisticMgr;
-import org.vanilladb.bench.TransactionType;
+import org.vanilladb.bench.BenchTransactionType;
 import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
 import org.vanilladb.bench.benchmarks.tpcc.TpccTransactionType;
 import org.vanilladb.bench.remote.SutConnection;
@@ -31,12 +31,12 @@ public class TpccRte extends RemoteTerminalEmulator<TpccTransactionType> {
 	private static final Random TX_TYPE_RANDOM = new Random();
 	
 	private int homeWid;
-	private Map<TransactionType, TpccTxExecutor> executors;
+	private Map<BenchTransactionType, TpccTxExecutor> executors;
 
 	public TpccRte(SutConnection conn, StatisticMgr statMgr, int homeWarehouseId) {
 		super(conn, statMgr);
 		homeWid = homeWarehouseId;
-		executors = new HashMap<TransactionType, TpccTxExecutor>();
+		executors = new HashMap<BenchTransactionType, TpccTxExecutor>();
 		executors.put(TpccTransactionType.NEW_ORDER, new TpccTxExecutor(new NewOrderParamGen(homeWid)));
 		executors.put(TpccTransactionType.PAYMENT, new TpccTxExecutor(new PaymentParamGen(homeWid)));
 		executors.put(TpccTransactionType.ORDER_STATUS, new TpccTxExecutor(new OrderStatusParamGen(homeWid)));

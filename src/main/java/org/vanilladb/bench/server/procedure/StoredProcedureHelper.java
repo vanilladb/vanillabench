@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016, 2018 vanilladb.org contributors
+ * Copyright 2016, 2017 vanilladb.org contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.vanilladb.bench.benchmarks.micro;
+package org.vanilladb.bench.server.procedure;
 
-import org.vanilladb.bench.TransactionType;
+import org.vanilladb.core.query.algebra.Plan;
+import org.vanilladb.core.query.algebra.Scan;
+import org.vanilladb.core.server.VanillaDb;
+import org.vanilladb.core.storage.tx.Transaction;
 
-public enum MicrobenchmarkTxnType implements TransactionType {
-	// Loading procedures
-	TESTBED_LOADER,
+public class StoredProcedureHelper {
 	
-	// Profiling
-	START_PROFILING, STOP_PROFILING,
-	
-	// Benchmarking procedures
-	MICRO_TXN;
-	
-	public static MicrobenchmarkTxnType fromProcedureId(int pid) {
-		return MicrobenchmarkTxnType.values()[pid];
+	public static Scan executeQuery(String sql, Transaction tx) {
+		Plan p = VanillaDb.newPlanner().createQueryPlan(sql, tx);
+		return p.open();
 	}
 	
-	public int getProcedureId() {
-		return this.ordinal();
-	}
-	
-	public boolean isBenchmarkingTx() {
-		if (this == MICRO_TXN)
-			return true;
-		return false;
+	public static int executeUpdate(String sql, Transaction tx) {
+		return VanillaDb.newPlanner().executeUpdate(sql, tx);
 	}
 }

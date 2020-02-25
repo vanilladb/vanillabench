@@ -15,7 +15,6 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.param.tpcc;
 
-import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 import org.vanilladb.core.sql.BigIntConstant;
 import org.vanilladb.core.sql.DoubleConstant;
 import org.vanilladb.core.sql.IntegerConstant;
@@ -27,16 +26,15 @@ import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 
 public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 
-	protected int wid, did, cwid, cdid, cidInt;
+	protected int wid, did, cwid, cdid, cid;
 	protected String cDataStr, cLast, cMiddle, cFirst, cStreet1, cStreet2, cCity, cState, cZip, cPhone, cCredit;
-	protected int cid;
 	protected long cSince;
 	protected double cBalance, cCreditLim, cDiscount;
 	String wName, wStreet1, wStreet2, wCity, wState, wZip;
 
 	protected long hDateLong;
 	protected double hAmount;
-	protected boolean isCommitted = true, isBadCredit = false;
+	protected boolean isBadCredit = false;
 
 	@Override
 	public void prepareParameters(Object... pars) {
@@ -46,22 +44,17 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 		did = (Integer) pars[1];
 		cwid = (Integer) pars[2];
 		cdid = (Integer) pars[3];
-		cidInt = (Integer) pars[4];
+		cid = (Integer) pars[4];
 		hAmount = (Double) pars[5];
-		cid = cidInt;
-		
 	}
 
 	@Override
-	public SpResultSet createResultSet() {
+	public Schema getResultSetSchema() {
 		/*
 		 * TODO The output information is not strictly followed the TPC-C
 		 * definition. See the session 2.5.3.4 in TPC-C 5.11 document.
 		 */
 		Schema sch = new Schema();
-		
-		Type statusType = Type.VARCHAR(10);
-		sch.addField("status", statusType);
 		sch.addField("cid", Type.INTEGER);
 		sch.addField("c_first", Type.VARCHAR(16));
 		sch.addField("c_last", Type.VARCHAR(16));
@@ -80,10 +73,12 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 		sch.addField("h_date", Type.BIGINT);
 		if (isBadCredit)
 			sch.addField("c_data", Type.VARCHAR(200));
+		return sch;
+	}
 
+	@Override
+	public SpResultRecord newResultSetRecord() {
 		SpResultRecord rec = new SpResultRecord();
-		String status = isCommitted ? "committed" : "abort";
-		rec.setVal("status", new VarcharConstant(status, statusType));
 		rec.setVal("cid", new IntegerConstant(cid));
 		rec.setVal("c_first", new VarcharConstant(cFirst, Type.VARCHAR(16)));
 		rec.setVal("c_last", new VarcharConstant(cLast, Type.VARCHAR(16)));
@@ -102,7 +97,7 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 		rec.setVal("h_date", new BigIntConstant(hDateLong));
 		if (isBadCredit)
 			rec.setVal("c_data", new VarcharConstant(cDataStr, Type.VARCHAR(200)));
-		return new SpResultSet(sch, rec);
+		return rec;
 	}
 
 	public int getWid() {
@@ -126,7 +121,7 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 	}
 
 	public int getcid() {
-		return cidInt;
+		return cid;
 	}
 
 	public void setcLast(String x) {

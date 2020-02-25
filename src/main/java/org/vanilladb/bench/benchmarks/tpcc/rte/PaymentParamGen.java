@@ -60,7 +60,8 @@ public class PaymentParamGen implements TpccTxParamGenerator {
 		 * The customer is randomly selected 60% of the time by last name and
 		 * 40% of time by id.
 		 */
-		// XXX: ElaSQL doesn't support selecting by the last name
+		// FIXME: We disable this for ElaSQL, but it should be ok to run
+		// for VanillaCore. So, we should make it run in VanillaBench.
 //		if (rg.rng().nextDouble() >= 0.60)
 //			pars[4] = rg.makeRandomLastName(false);
 //		else

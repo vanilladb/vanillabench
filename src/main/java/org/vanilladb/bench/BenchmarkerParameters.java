@@ -15,9 +15,14 @@
  *******************************************************************************/
 package org.vanilladb.bench;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.vanilladb.bench.util.BenchProperties;
 
 public class BenchmarkerParameters {
+	private static Logger logger = Logger.getLogger(BenchmarkerParameters.class
+			.getName());
 	
 	public static final long WARM_UP_INTERVAL;
 	public static final long BENCHMARK_INTERVAL;
@@ -29,8 +34,8 @@ public class BenchmarkerParameters {
 	public static enum ConnectionMode { JDBC, SP };
 	public static final ConnectionMode CONNECTION_MODE;
 	
-	// Micro = 1, TPC-C = 2, TPC-E = 3
-	public static enum BenchType { MICRO, TPCC, TPCE };
+	// Micro = 1, TPC-C = 2, TPC-E = 3, YCSB = 4
+	public static enum BenchType { MICRO, TPCC, TPCE, YCSB };
 	public static final BenchType BENCH_TYPE;
 	
 	public static final boolean PROFILING_ON_SERVER;
@@ -74,9 +79,15 @@ public class BenchmarkerParameters {
 		case 3:
 			BENCH_TYPE = BenchType.TPCE;
 			break;
+		case 4:
+			BENCH_TYPE = BenchType.YCSB;
+			break;
 		default:
 			throw new IllegalArgumentException("The connection mode should be 1 (Micro), 2 (TPC-C), or 3 (TPC-E)");
 		}
+		
+		if (logger.isLoggable(Level.INFO))
+			logger.info("Using " + BENCH_TYPE + " benchmarks");
 		
 		PROFILING_ON_SERVER = BenchProperties.getLoader().getPropertyAsBoolean(
 				BenchmarkerParameters.class.getName() + ".PROFILING_ON_SERVER", false);

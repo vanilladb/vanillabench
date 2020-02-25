@@ -15,32 +15,27 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure.micro;
 
-import org.vanilladb.bench.benchmarks.micro.MicrobenchmarkTxnType;
-import org.vanilladb.bench.server.procedure.StartProfilingProc;
-import org.vanilladb.bench.server.procedure.StopProfilingProc;
+import org.vanilladb.bench.benchmarks.micro.MicrobenchTransactionType;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureFactory;
 
 public class MicrobenchStoredProcFactory implements StoredProcedureFactory {
 
 	@Override
-	public StoredProcedure getStroredProcedure(int pid) {
-		StoredProcedure sp;
-		switch (MicrobenchmarkTxnType.fromProcedureId(pid)) {
+	public StoredProcedure<?> getStroredProcedure(int pid) {
+		StoredProcedure<?> sp;
+		switch (MicrobenchTransactionType.fromProcedureId(pid)) {
 		case TESTBED_LOADER:
 			sp = new MicroTestbedLoaderProc();
 			break;
-		case START_PROFILING:
-			sp = new StartProfilingProc();
-			break;
-		case STOP_PROFILING:
-			sp = new StopProfilingProc();
+		case CHECK_DATABASE:
+			sp = new MicroCheckDatabaseProc();
 			break;
 		case MICRO_TXN:
 			sp = new MicroTxnProc();
 			break;
 		default:
-			sp = null;
+			throw new UnsupportedOperationException("The benchmarker does not recognize procedure " + pid + "");
 		}
 		return sp;
 	}
