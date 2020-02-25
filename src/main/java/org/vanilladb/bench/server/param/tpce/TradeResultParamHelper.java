@@ -15,13 +15,11 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.param.tpce;
 
-import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 import org.vanilladb.core.sql.BigIntConstant;
 import org.vanilladb.core.sql.DoubleConstant;
 import org.vanilladb.core.sql.IntegerConstant;
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Type;
-import org.vanilladb.core.sql.VarcharConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 
@@ -52,23 +50,21 @@ public class TradeResultParamHelper extends StoredProcedureParamHelper {
 	}
 
 	@Override
-	public SpResultSet createResultSet() {
+	public Schema getResultSetSchema() {
 		Schema sch = new Schema();
-		Type statusType = Type.VARCHAR(10);
-
 		sch.addField("acct_bal", Type.DOUBLE);
 		sch.addField("acct_id", Type.BIGINT);
 		sch.addField("load_unit", Type.INTEGER);
-		sch.addField("status", Type.VARCHAR(10));
+		return sch;
+	}
 
+	@Override
+	public SpResultRecord newResultSetRecord() {
 		SpResultRecord rec = new SpResultRecord();
-		String status = isCommitted ? "committed" : "abort";
 		rec.setVal("acct_bal", new DoubleConstant(acctBal));
 		rec.setVal("acct_id", new BigIntConstant(acctId));
 		rec.setVal("load_unit", new IntegerConstant(loadUnit));
-		rec.setVal("status", new VarcharConstant(status, statusType));
-
-		return new SpResultSet(sch, rec);
+		return rec;
 	}
 
 	public long getCustomerId() {

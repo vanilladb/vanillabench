@@ -34,19 +34,17 @@ public class TpceTxExecutor extends TransactionExecutor<TpceTransactionType> {
 	@Override
 	public TxnResultSet execute(SutConnection conn) {
 		try {
-			TxnResultSet rs = new TxnResultSet();
-			rs.setTxnType(pg.getTxnType());
-
 			// generate parameters
 			Object[] params = pg.generateParameter();
 
-			// send tx request and start measure tx response time
+			// send txn request and start measure txn response time
 			long txnRT = System.nanoTime();
 			
 			SutResultSet result = executeTxn(conn, params);
 
-			// measure txn Sresponse time
-			txnRT = System.nanoTime() - txnRT;
+			// measure txn response time
+			long txnEndTime = System.nanoTime();
+			txnRT = txnEndTime - txnRT;
 			
 			// notify the parameter generator
 			paramGen.onResponseReceived(result);
@@ -55,12 +53,8 @@ public class TpceTxExecutor extends TransactionExecutor<TpceTransactionType> {
 			if (TransactionExecutor.DISPLAY_RESULT)
 				System.out.println(pg.getTxnType() + " " + result.outputMsg());
 
-			rs.setTxnIsCommited(result.isCommitted());
-			rs.setOutMsg(result.outputMsg());
-			rs.setTxnResponseTimeNs(txnRT);
-			rs.setTxnEndTime();
-
-			return rs;
+			return new TxnResultSet(pg.getTxnType(), txnRT, txnEndTime,
+					result.isCommitted(), result.outputMsg());
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.getMessage());
