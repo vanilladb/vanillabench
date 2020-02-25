@@ -12,6 +12,7 @@ VanillaBench is a benchmarking tool for testing the performance (throughput and 
   - Design (TBA)
 - TPC-C (New-Order, Payment)
 - TPC-E (Simplified Trade-Order, Trade-Result)
+- Yahoo Cloud Benchmarks (YCSB)
 
 ## Getting Started
 
@@ -122,7 +123,7 @@ The project is a Maven project, which means you can do all the work for running 
 <dependency>
   <groupId>org.vanilladb</groupId>
   <artifactId>bench</artifactId>
-  <version>0.3.0</version>
+  <version>0.4.0</version>
 </dependency>
 ```
 
@@ -132,6 +133,6 @@ If you have any question, you can either open an issue here or contact [vanillad
 
 ## License
 
-Copyright 2016-2018 vanilladb.org contributors
+Copyright 2016-2020 vanilladb.org contributors
 
 Licensed under the [Apache License 2.0](LICENSE)
