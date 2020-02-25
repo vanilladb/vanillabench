@@ -19,7 +19,7 @@
 
 	<groupId>org.vanilladb</groupId>
 	<artifactId>bench</artifactId>
-	<version>0.3.0</version>
+	<version>0.4.0</version>
 	<packaging>jar</packaging>
 
 	<name>vanillabench</name>
@@ -64,7 +64,7 @@
 			<email>ctsai@datalab.cs.nthu.edu.tw</email>
 		</developer>
 		<developer>
-			<name>Ching Tsai</name>
+			<name>Tz-Yu Lin</name>
 			<email>tylin@datalab.cs.nthu.edu.tw</email>
 		</developer>
 		<developer>
