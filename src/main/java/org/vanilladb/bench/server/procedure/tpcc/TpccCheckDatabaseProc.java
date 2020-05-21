@@ -129,9 +129,9 @@ public class TpccCheckDatabaseProc extends StoredProcedure<StoredProcedureParamH
 			logger.fine("Checking order lines with ol_w_id=" + wid + ", ol_d_id=" + did);
 		
 		// Scan the table
-		String sql = "SELECT ol_o_id, COUNT(ol_number) FROM order_line"
-				+ " WHERE ol_w_id = " + wid + " AND ol_d_id = " + did + " GROUP BY ol_o_id";
-		return checkUniqueness(sql, "ol_o_id", 1, TpccConstants.CUSTOMERS_PER_DISTRICT);
+		String sql = "SELECT ol_o_id FROM order_line"
+				+ " WHERE ol_w_id = " + wid + " AND ol_d_id = " + did;
+		return checkExistence(sql, "ol_o_id", 1, TpccConstants.CUSTOMERS_PER_DISTRICT);
 	}
 	
 	private boolean checkNewOrders(int wid, int did) {
@@ -150,7 +150,7 @@ public class TpccCheckDatabaseProc extends StoredProcedure<StoredProcedureParamH
 		for (int i = 0; i < total; i++)
 			checked[i] = false;
 		
-		// Check warehouse records
+		// Check records
 		Scan scan = StoredProcedureHelper.executeQuery(sql, getTransaction());
 		scan.beforeFirst();
 		for (int count = 0; count < total; count++) {
@@ -171,6 +171,33 @@ public class TpccCheckDatabaseProc extends StoredProcedure<StoredProcedureParamH
 		}
 		scan.close();
 		
+		return true;
+	}
+	
+	private boolean checkExistence(String sql, String checkField, int startId, int endId) {
+		// Use a bit array to record existence
+		int total = endId - startId + 1;
+		boolean[] checked = new boolean[total];
+		for (int i = 0; i < total; i++)
+			checked[i] = false;
+		
+		// Check records
+		Scan scan = StoredProcedureHelper.executeQuery(sql, getTransaction());
+		scan.beforeFirst();
+		while (scan.next()) {
+			int id = (Integer) scan.getVal(checkField).asJavaVal();
+			checked[id - startId] = true;
+		}
+		scan.close();
+		
+		// Check if there is any record missing
+		for (int i = 0; i < checked.length; i++) {
+			if (!checked[i]) {
+				if (logger.isLoggable(Level.SEVERE))
+					logger.severe(String.format("%s = %d is missing.", checkField, i + startId));
+				return false;
+			}
+		}
 		return true;
 	}
 
