@@ -30,11 +30,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.util.BenchProperties;
 
 public class StatisticMgr {
@@ -88,20 +88,56 @@ public class StatisticMgr {
 		}
 	}
 
-	private List<TxnResultSet> resultSets = new ArrayList<TxnResultSet>();
+	// private List<TxnResultSet> resultSets = new ArrayList<TxnResultSet>();
+	private ArrayBlockingQueue<TxnResultSet> resultSets = new ArrayBlockingQueue<TxnResultSet>(100_000);
+	private int totalResultSetsNumber;
+	private double totalResTimeMs;
 	private TreeMap<Long, ArrayList<Long>> latencyHistory = new TreeMap<Long, ArrayList<Long>>();
-	private TreeMap<Long, ArrayList<Long>> zipLatencyHistory = new TreeMap<Long, ArrayList<Long>>();
 	private List<BenchTransactionType> allTxTypes;
 	private String fileNamePostfix = "";
 	private long recordStartTime = -1;
+	private ZipThread zipThread;
+	private Map<BenchTransactionType, TxnStatistic> txnStatistics = new HashMap<BenchTransactionType, TxnStatistic>();
+	private Map<BenchTransactionType, Integer> abortedCounts = new HashMap<BenchTransactionType, Integer>();
 
 	public StatisticMgr(Collection<BenchTransactionType> txTypes) {
 		allTxTypes = new LinkedList<BenchTransactionType>(txTypes);
+		zipThread = new ZipThread();
+		zipThread.start();
+		for (BenchTransactionType type : allTxTypes) {
+			txnStatistics.put(type, new TxnStatistic(type));
+			abortedCounts.put(type, 0);
+		}
 	}
 
 	public StatisticMgr(Collection<BenchTransactionType> txTypes, String namePostfix) {
 		allTxTypes = new LinkedList<BenchTransactionType>(txTypes);
 		fileNamePostfix = namePostfix;
+		zipThread = new ZipThread();
+		zipThread.start();
+		for (BenchTransactionType type : allTxTypes) {
+			txnStatistics.put(type, new TxnStatistic(type));
+			abortedCounts.put(type, 0);
+		}
+	}
+
+	public class ZipThread extends Thread {
+		boolean stop = false;
+
+		@Override
+		public void run() {
+			while (!stop) {
+				try {
+					addTxnLatency(resultSets.take());
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		public void stopRunning() {
+			stop = true;
+		}
 	}
 
 	/**
@@ -116,6 +152,7 @@ public class StatisticMgr {
 	public synchronized void processTxnResult(TxnResultSet trs) {
 		if (recordStartTime == -1)
 			recordStartTime = trs.getTxnEndTime();
+
 		resultSets.add(trs);
 	}
 
@@ -126,6 +163,7 @@ public class StatisticMgr {
 			if (fileNamePostfix != null && !fileNamePostfix.isEmpty())
 				fileName += "-" + fileNamePostfix; // E.g. "20180524-200824-postfix"
 
+			zipThread.stopRunning();
 			outputDetailReport(fileName);
 			outputTimelineReport(fileName);
 
@@ -138,43 +176,39 @@ public class StatisticMgr {
 	}
 
 	private void outputDetailReport(String fileName) throws IOException {
-		Map<BenchTransactionType, TxnStatistic> txnStatistics = new HashMap<BenchTransactionType, TxnStatistic>();
-		Map<BenchTransactionType, Integer> abortedCounts = new HashMap<BenchTransactionType, Integer>();
+//		Map<BenchTransactionType, TxnStatistic> txnStatistics = new HashMap<BenchTransactionType, TxnStatistic>();
+//		Map<BenchTransactionType, Integer> abortedCounts = new HashMap<BenchTransactionType, Integer>();
 
-		for (BenchTransactionType type : allTxTypes) {
-			txnStatistics.put(type, new TxnStatistic(type));
-			abortedCounts.put(type, 0);
-		}
+//		for (BenchTransactionType type : allTxTypes) {
+//			txnStatistics.put(type, new TxnStatistic(type));
+//			abortedCounts.put(type, 0);
+//		}
 
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(OUTPUT_DIR, fileName + ".txt")))) {
 			// First line: total transaction count
-			writer.write("# of txns (including aborted) during benchmark period: " + resultSets.size());
+			// writer.write("# of txns (including aborted) during benchmark period: " +
+			// resultSets.size());
+			writer.write("# of txns (including aborted) during benchmark period: " + totalResultSetsNumber);
 			writer.newLine();
 
-			// Detail latency report
-			for (TxnResultSet resultSet : resultSets) {
-				if (resultSet.isTxnIsCommited()) {
-					// Write a line: {[Tx Type]: [Latency]}
-					writer.write(resultSet.getTxnType() + ": "
-							+ TimeUnit.NANOSECONDS.toMillis(resultSet.getTxnResponseTime()) + " ms");
-					writer.newLine();
-
-					// Count transaction for each type
-					TxnStatistic txnStatistic = txnStatistics.get(resultSet.getTxnType());
-					txnStatistic.addTxnResponseTime(resultSet.getTxnResponseTime());
-
-					// For another report
-					addTxnLatency(resultSet);
-				} else {
-					writer.write(resultSet.getTxnType() + ": ABORTED");
-					writer.newLine();
-
-					// Count transaction for each type
-					Integer count = abortedCounts.get(resultSet.getTxnType());
-					abortedCounts.put(resultSet.getTxnType(), count + 1);
-				}
-			}
-			writer.newLine();
+			/*
+			 * // Detail latency report for (TxnResultSet resultSet : resultSets) { if
+			 * (resultSet.isTxnIsCommited()) { // Write a line: {[Tx Type]: [Latency]}
+			 * writer.write(resultSet.getTxnType() + ": " +
+			 * TimeUnit.NANOSECONDS.toMillis(resultSet.getTxnResponseTime()) + " ms");
+			 * writer.newLine();
+			 * 
+			 * // Count transaction for each type TxnStatistic txnStatistic =
+			 * txnStatistics.get(resultSet.getTxnType());
+			 * txnStatistic.addTxnResponseTime(resultSet.getTxnResponseTime());
+			 * 
+			 * // For another report addTxnLatency(resultSet); } else {
+			 * writer.write(resultSet.getTxnType() + ": ABORTED"); writer.newLine();
+			 * 
+			 * // Count transaction for each type Integer count =
+			 * abortedCounts.get(resultSet.getTxnType());
+			 * abortedCounts.put(resultSet.getTxnType(), count + 1); } } writer.newLine();
+			 */
 
 			// Last few lines: show the statistics for each type of transactions
 			int abortedTotal = 0;
@@ -194,11 +228,13 @@ public class StatisticMgr {
 			}
 
 			// Last line: Total statistics
-			int finishedCount = resultSets.size() - abortedTotal;
+			// int finishedCount = resultSets.size() - abortedTotal;
+			int finishedCount = totalResultSetsNumber - abortedTotal;
 			double avgResTimeMs = 0;
 			if (finishedCount > 0) { // Avoid "Divide By Zero"
-				for (TxnResultSet rs : resultSets)
-					avgResTimeMs += rs.getTxnResponseTime() / finishedCount;
+				avgResTimeMs = totalResTimeMs / finishedCount;
+//				for (TxnResultSet rs : resultSets)
+//					avgResTimeMs += rs.getTxnResponseTime() / finishedCount;
 			}
 			writer.write(String.format("TOTAL - committed: %d, aborted: %d, avg latency: %d ms", finishedCount,
 					abortedTotal, Math.round(avgResTimeMs / 1000000)));
@@ -230,87 +266,52 @@ public class StatisticMgr {
 
 		ArrayList<Long> timeSlot = latencyHistory.get(timeSlotBoundary);
 		if (timeSlot == null) {
-			// new thread for zip the latencyHistroy
-			if (!latencyHistory.isEmpty()) {
-				ZipLatencyHistory zipThread = new ZipLatencyHistory(timeSlotBoundary - GRANULARITY / 1000,
-						latencyHistory.get(timeSlotBoundary - GRANULARITY / 1000));
-				zipThread.start();
-			}
 			timeSlot = new ArrayList<Long>();
 			latencyHistory.put(timeSlotBoundary, timeSlot);
 		}
 		timeSlot.add(TimeUnit.NANOSECONDS.toMillis(rs.getTxnResponseTime()));
-	}
-
-	// where i changed
-	private class ZipLatencyHistory extends Thread {
-		private long timeSlotBoundary;
-		private List<Long> timeSlot;
-
-		public ZipLatencyHistory(long timeSlotBoundary, List<Long> timeSlot) {
-			this.timeSlotBoundary = timeSlotBoundary;
-			this.timeSlot = timeSlot;
-			// Set the thread name
-			setName("ZIP-" + timeSlotBoundary);
+		if (rs.isTxnIsCommited()) {
+			TxnStatistic txnStatistic = txnStatistics.get(rs.getTxnType());
+			txnStatistic.addTxnResponseTime(rs.getTxnResponseTime());
+		} else {
+			Integer count = abortedCounts.get(rs.getTxnType());
+			abortedCounts.put(rs.getTxnType(), count + 1);
 		}
-
-		@Override
-		public void run() {
-			Collections.sort(timeSlot);
-
-			// Transfer it to unmodifiable in order to prevent modification
-			// when we use a sublist to access it.
-			timeSlot = Collections.unmodifiableList(timeSlot);
-			int count = timeSlot.size();
-			int middleOffset = timeSlot.size() / 2;
-			long lowerQ, upperQ, median;
-			double mean;
-
-			median = calcMedian(timeSlot);
-			mean = calcMean(timeSlot);
-
-			if (count < 2) { // Boundary case: there is only one number in the list
-				lowerQ = median;
-				upperQ = median;
-			} else if (count % 2 == 0) { // Even
-				lowerQ = calcMedian(timeSlot.subList(0, middleOffset));
-				upperQ = calcMedian(timeSlot.subList(middleOffset, count));
-			} else { // Odd
-				lowerQ = calcMedian(timeSlot.subList(0, middleOffset));
-				upperQ = calcMedian(timeSlot.subList(middleOffset + 1, count));
-			}
-
-			Long min = Collections.min(timeSlot);
-			Long max = Collections.max(timeSlot);
-
-			ArrayList<Long> newTimeSlot = new ArrayList<Long>();
-			newTimeSlot.add((long) count);// count, mean, min, max, lowerQ, median, upperQ
-			newTimeSlot.add((long) mean);// error
-			newTimeSlot.add(min);
-			newTimeSlot.add(max);
-			newTimeSlot.add(lowerQ);
-			newTimeSlot.add(median);
-			newTimeSlot.add(upperQ);
-
-			latencyHistory.put(timeSlotBoundary, newTimeSlot);
-		}
+		totalResTimeMs += rs.getTxnResponseTime();
+		totalResultSetsNumber++;
 	}
 
 	private String makeStatString(long timeSlotBoundary, List<Long> timeSlot) {
-		// do i need this ?
+		Collections.sort(timeSlot);
+
+		// Transfer it to unmodifiable in order to prevent modification
+		// when we use a sublist to access it.
 		timeSlot = Collections.unmodifiableList(timeSlot);
-		// count, mean, min, max, lowerQ, median, upperQ
-		long count = timeSlot.get(0);
-		long mean = timeSlot.get(1);
-		long min = timeSlot.get(2);
-		long max = timeSlot.get(3);
-		long lowerQ = timeSlot.get(4);
-		long median = timeSlot.get(5);
-		long upperQ = timeSlot.get(6);
-		return String.format("%d, %d, %d, %d, %d, %d, %d, %d", timeSlotBoundary, count, mean, min, max, lowerQ, median,
+
+		int count = timeSlot.size();
+		int middleOffset = timeSlot.size() / 2;
+		long lowerQ, upperQ, median;
+		double mean;
+
+		median = calcMedian(timeSlot);
+		mean = calcMean(timeSlot);
+
+		if (count < 2) { // Boundary case: there is only one number in the list
+			lowerQ = median;
+			upperQ = median;
+		} else if (count % 2 == 0) { // Even
+			lowerQ = calcMedian(timeSlot.subList(0, middleOffset));
+			upperQ = calcMedian(timeSlot.subList(middleOffset, count));
+		} else { // Odd
+			lowerQ = calcMedian(timeSlot.subList(0, middleOffset));
+			upperQ = calcMedian(timeSlot.subList(middleOffset + 1, count));
+		}
+
+		Long min = Collections.min(timeSlot);
+		Long max = Collections.max(timeSlot);
+
+		return String.format("%d, %d, %f, %d, %d, %d, %d, %d", timeSlotBoundary, count, mean, min, max, lowerQ, median,
 				upperQ);
-		// return String.format("%d, %d, %f, %d, %d, %d, %d, %d",
-		// timeSlotBoundary, count, mean, min, max, lowerQ, median, upperQ);
 	}
 
 	private Long calcMedian(List<Long> timeSlot) {
