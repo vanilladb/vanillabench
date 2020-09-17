@@ -126,7 +126,7 @@ public class StatisticMgr {
 
 		@Override
 		public void run() {
-			while (!stop) {
+			while (!stop || !resultSets.isEmpty()) {
 				try {
 					addTxnLatency(resultSets.take());
 				} catch (InterruptedException e) {
@@ -164,10 +164,13 @@ public class StatisticMgr {
 				fileName += "-" + fileNamePostfix; // E.g. "20180524-200824-postfix"
 
 			zipThread.stopRunning();
+			zipThread.join();
 			outputDetailReport(fileName);
 			outputTimelineReport(fileName);
 
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
@@ -176,39 +179,10 @@ public class StatisticMgr {
 	}
 
 	private void outputDetailReport(String fileName) throws IOException {
-//		Map<BenchTransactionType, TxnStatistic> txnStatistics = new HashMap<BenchTransactionType, TxnStatistic>();
-//		Map<BenchTransactionType, Integer> abortedCounts = new HashMap<BenchTransactionType, Integer>();
-
-//		for (BenchTransactionType type : allTxTypes) {
-//			txnStatistics.put(type, new TxnStatistic(type));
-//			abortedCounts.put(type, 0);
-//		}
-
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(OUTPUT_DIR, fileName + ".txt")))) {
 			// First line: total transaction count
-			// writer.write("# of txns (including aborted) during benchmark period: " +
-			// resultSets.size());
 			writer.write("# of txns (including aborted) during benchmark period: " + totalResultSetsNumber);
 			writer.newLine();
-
-			/*
-			 * // Detail latency report for (TxnResultSet resultSet : resultSets) { if
-			 * (resultSet.isTxnIsCommited()) { // Write a line: {[Tx Type]: [Latency]}
-			 * writer.write(resultSet.getTxnType() + ": " +
-			 * TimeUnit.NANOSECONDS.toMillis(resultSet.getTxnResponseTime()) + " ms");
-			 * writer.newLine();
-			 * 
-			 * // Count transaction for each type TxnStatistic txnStatistic =
-			 * txnStatistics.get(resultSet.getTxnType());
-			 * txnStatistic.addTxnResponseTime(resultSet.getTxnResponseTime());
-			 * 
-			 * // For another report addTxnLatency(resultSet); } else {
-			 * writer.write(resultSet.getTxnType() + ": ABORTED"); writer.newLine();
-			 * 
-			 * // Count transaction for each type Integer count =
-			 * abortedCounts.get(resultSet.getTxnType());
-			 * abortedCounts.put(resultSet.getTxnType(), count + 1); } } writer.newLine();
-			 */
 
 			// Last few lines: show the statistics for each type of transactions
 			int abortedTotal = 0;
@@ -228,13 +202,10 @@ public class StatisticMgr {
 			}
 
 			// Last line: Total statistics
-			// int finishedCount = resultSets.size() - abortedTotal;
 			int finishedCount = totalResultSetsNumber - abortedTotal;
 			double avgResTimeMs = 0;
 			if (finishedCount > 0) { // Avoid "Divide By Zero"
 				avgResTimeMs = totalResTimeMs / finishedCount;
-//				for (TxnResultSet rs : resultSets)
-//					avgResTimeMs += rs.getTxnResponseTime() / finishedCount;
 			}
 			writer.write(String.format("TOTAL - committed: %d, aborted: %d, avg latency: %d ms", finishedCount,
 					abortedTotal, Math.round(avgResTimeMs / 1000000)));
