@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.BenchTransactionType;
+import org.vanilladb.bench.BenchmarkerParameters;
 import org.vanilladb.bench.TxnResultSet;
 import org.vanilladb.bench.remote.SutConnection;
 
@@ -45,6 +46,16 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 			TxnResultSet rs = executeTxnCycle(conn);
 			if (!isWarmingUp)
 				statMgr.processTxnResult(rs);
+			
+			// Sleep for a while
+			if (BenchmarkerParameters.RTE_SLEEP_TIME > 0) {
+				try {
+					Thread.sleep(BenchmarkerParameters.RTE_SLEEP_TIME);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					throw new RuntimeException(e);
+				}
+			}
 		}
 	}
 
