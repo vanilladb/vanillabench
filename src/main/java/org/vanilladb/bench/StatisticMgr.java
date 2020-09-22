@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,8 +58,8 @@ public class StatisticMgr {
 		if (!OUTPUT_DIR.exists())
 			OUTPUT_DIR.mkdir();
 
-		GRANULARITY = BenchProperties.getLoader().getPropertyAsInteger(StatisticMgr.class.getName() + ".GRANULARITY",
-				3000);
+		GRANULARITY = BenchProperties.getLoader().getPropertyAsInteger(
+				StatisticMgr.class.getName() + ".GRANULARITY", 3000);
 	}
 
 	private static class TxnStatistic {
@@ -87,10 +88,9 @@ public class StatisticMgr {
 			return totalResponseTimeNs;
 		}
 	}
-
-	// private List<TxnResultSet> resultSets = new ArrayList<TxnResultSet>();
-	private ArrayBlockingQueue<TxnResultSet> resultSets = new ArrayBlockingQueue<TxnResultSet>(100_000);
-	private int totalResultSetsNumber;
+	
+	private BlockingQueue<TxnResultSet> resultSets = new ArrayBlockingQueue<TxnResultSet>(100_000);
+	private int totalTxnCount;
 	private double totalResTimeMs;
 	private TreeMap<Long, ArrayList<Long>> latencyHistory = new TreeMap<Long, ArrayList<Long>>();
 	private List<BenchTransactionType> allTxTypes;
@@ -102,17 +102,16 @@ public class StatisticMgr {
 
 	public StatisticMgr(Collection<BenchTransactionType> txTypes) {
 		allTxTypes = new LinkedList<BenchTransactionType>(txTypes);
-		zipThread = new ZipThread();
-		zipThread.start();
-		for (BenchTransactionType type : allTxTypes) {
-			txnStatistics.put(type, new TxnStatistic(type));
-			abortedCounts.put(type, 0);
-		}
+		initZipThread();
 	}
 
 	public StatisticMgr(Collection<BenchTransactionType> txTypes, String namePostfix) {
 		allTxTypes = new LinkedList<BenchTransactionType>(txTypes);
 		fileNamePostfix = namePostfix;
+		initZipThread();
+	}
+	
+	private void initZipThread() {
 		zipThread = new ZipThread();
 		zipThread.start();
 		for (BenchTransactionType type : allTxTypes) {
@@ -162,9 +161,12 @@ public class StatisticMgr {
 			String fileName = formatter.format(Calendar.getInstance().getTime());
 			if (fileNamePostfix != null && !fileNamePostfix.isEmpty())
 				fileName += "-" + fileNamePostfix; // E.g. "20180524-200824-postfix"
-
+			
+			// Stop the zipping thread
 			zipThread.stopRunning();
 			zipThread.join();
+			
+			// Output the result
 			outputDetailReport(fileName);
 			outputTimelineReport(fileName);
 
@@ -179,9 +181,10 @@ public class StatisticMgr {
 	}
 
 	private void outputDetailReport(String fileName) throws IOException {
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(OUTPUT_DIR, fileName + ".txt")))) {
+		try (BufferedWriter writer = new BufferedWriter(
+				new FileWriter(new File(OUTPUT_DIR, fileName + ".txt")))) {
 			// First line: total transaction count
-			writer.write("# of txns (including aborted) during benchmark period: " + totalResultSetsNumber);
+			writer.write("# of txns (including aborted) during benchmark period: " + totalTxnCount);
 			writer.newLine();
 
 			// Last few lines: show the statistics for each type of transactions
@@ -202,13 +205,13 @@ public class StatisticMgr {
 			}
 
 			// Last line: Total statistics
-			int finishedCount = totalResultSetsNumber - abortedTotal;
+			int finishedCount = totalTxnCount - abortedTotal;
 			double avgResTimeMs = 0;
 			if (finishedCount > 0) { // Avoid "Divide By Zero"
 				avgResTimeMs = totalResTimeMs / finishedCount;
 			}
-			writer.write(String.format("TOTAL - committed: %d, aborted: %d, avg latency: %d ms", finishedCount,
-					abortedTotal, Math.round(avgResTimeMs / 1000000)));
+			writer.write(String.format("TOTAL - committed: %d, aborted: %d, avg latency: %d ms",
+					finishedCount, abortedTotal, Math.round(avgResTimeMs / 1000000)));
 		}
 	}
 
@@ -242,14 +245,16 @@ public class StatisticMgr {
 		}
 		timeSlot.add(TimeUnit.NANOSECONDS.toMillis(rs.getTxnResponseTime()));
 		if (rs.isTxnIsCommited()) {
+			// Count transactions for each type
 			TxnStatistic txnStatistic = txnStatistics.get(rs.getTxnType());
 			txnStatistic.addTxnResponseTime(rs.getTxnResponseTime());
 		} else {
+			// Count aborted transactions
 			Integer count = abortedCounts.get(rs.getTxnType());
 			abortedCounts.put(rs.getTxnType(), count + 1);
 		}
 		totalResTimeMs += rs.getTxnResponseTime();
-		totalResultSetsNumber++;
+		totalTxnCount++;
 	}
 
 	private String makeStatString(long timeSlotBoundary, List<Long> timeSlot) {
@@ -281,8 +286,8 @@ public class StatisticMgr {
 		Long min = Collections.min(timeSlot);
 		Long max = Collections.max(timeSlot);
 
-		return String.format("%d, %d, %f, %d, %d, %d, %d, %d", timeSlotBoundary, count, mean, min, max, lowerQ, median,
-				upperQ);
+		return String.format("%d, %d, %f, %d, %d, %d, %d, %d",
+				timeSlotBoundary, count, mean, min, max, lowerQ, median, upperQ);
 	}
 
 	private Long calcMedian(List<Long> timeSlot) {
