@@ -125,13 +125,14 @@ public class StatisticMgr {
 
 		@Override
 		public void run() {
-			while (!stop) {
-				if(!resultSets.isEmpty()) {
-					try {
-						addTxnLatency(resultSets.take());
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+			while (!stop||!resultSets.isEmpty()) {
+				try {
+					TxnResultSet resultSet = resultSets.poll(1, TimeUnit.SECONDS);
+					if (resultSet!=null) {
+						addTxnLatency(resultSet);
 					}
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 			}
 		}
