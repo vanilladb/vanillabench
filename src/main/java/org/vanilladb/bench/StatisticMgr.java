@@ -140,7 +140,7 @@ public class StatisticMgr {
 				try {
 					TxnResultSet resultSet = resultSets.poll(1, TimeUnit.SECONDS);
 					if (resultSet!=null) {
-						analyzeReadWriteSet(resultSet);
+						analyzeResultSet(resultSet);
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -248,7 +248,7 @@ public class StatisticMgr {
 		}
 	}
 
-	private void analyzeReadWriteSet(TxnResultSet rs) {
+	private void analyzeResultSet(TxnResultSet rs) {
 		long elapsedTime = TimeUnit.NANOSECONDS.toMillis(rs.getTxnEndTime() - recordStartTime);
 		long timeSlotBoundary = (elapsedTime / GRANULARITY) * GRANULARITY / 1000; // in seconds
 
