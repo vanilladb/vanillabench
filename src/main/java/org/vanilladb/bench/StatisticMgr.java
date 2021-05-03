@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016, 2018 vanilladb.org contributors
+ * Copyright 2016 ~ 2021 vanilladb.org contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,10 @@ public class StatisticMgr {
 
 	private static class TxnStatistic {
 		private BenchTransactionType mType;
-		private int txnCount = 0;
+		
+		private int commitedTxnCount = 0;
+		private int abortedTxnCount = 0;
+		
 		private long totalResponseTimeNs = 0;
 
 		public TxnStatistic(BenchTransactionType txnType) {
@@ -75,13 +78,21 @@ public class StatisticMgr {
 			return mType;
 		}
 
-		public void addTxnResponseTime(long responseTime) {
-			txnCount++;
+		public void addTxnResponseTimeAndCommitedTxnCount(long responseTime) {
+			commitedTxnCount++;
 			totalResponseTimeNs += responseTime;
 		}
+		
+		public void addAbortedTxnCount() {
+			abortedTxnCount++;
+		}
 
-		public int getTxnCount() {
-			return txnCount;
+		public int commitedTxnCount() {
+			return commitedTxnCount;
+		}
+		
+		public int abortedTxnCount() {
+			return abortedTxnCount;
 		}
 
 		public long getTotalResponseTime() {
@@ -129,7 +140,7 @@ public class StatisticMgr {
 				try {
 					TxnResultSet resultSet = resultSets.poll(1, TimeUnit.SECONDS);
 					if (resultSet!=null) {
-						addTxnLatency(resultSet);
+						analyzeResultSet(resultSet);
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -194,15 +205,15 @@ public class StatisticMgr {
 			int abortedTotal = 0;
 			for (Entry<BenchTransactionType, TxnStatistic> entry : txnStatistics.entrySet()) {
 				TxnStatistic value = entry.getValue();
-				int abortedCount = abortedCounts.get(entry.getKey());
-				abortedTotal += abortedCount;
+				//int abortedCount = abortedCounts.get(entry.getKey());
+				abortedTotal += value.abortedTxnCount();
 				long avgResTimeMs = 0;
 
-				if (value.txnCount > 0) {
-					avgResTimeMs = TimeUnit.NANOSECONDS.toMillis(value.getTotalResponseTime() / value.txnCount);
+				if (value.commitedTxnCount > 0) {
+					avgResTimeMs = TimeUnit.NANOSECONDS.toMillis(value.getTotalResponseTime() / value.commitedTxnCount);
 				}
 
-				writer.write(value.getmType() + " - committed: " + value.getTxnCount() + ", aborted: " + abortedCount
+				writer.write(value.getmType() + " - committed: " + value.commitedTxnCount() + ", aborted: " + value.abortedTxnCount()
 						+ ", avg latency: " + avgResTimeMs + " ms");
 				writer.newLine();
 			}
@@ -237,7 +248,7 @@ public class StatisticMgr {
 		}
 	}
 
-	private void addTxnLatency(TxnResultSet rs) {
+	private void analyzeResultSet(TxnResultSet rs) {
 		long elapsedTime = TimeUnit.NANOSECONDS.toMillis(rs.getTxnEndTime() - recordStartTime);
 		long timeSlotBoundary = (elapsedTime / GRANULARITY) * GRANULARITY / 1000; // in seconds
 
@@ -247,19 +258,21 @@ public class StatisticMgr {
 			latencyHistory.put(timeSlotBoundary, timeSlot);
 		}
 		timeSlot.add(TimeUnit.NANOSECONDS.toMillis(rs.getTxnResponseTime()));
+		
+		// there are multiple txn types
+		TxnStatistic txnStatistic = txnStatistics.get(rs.getTxnType());
+		
 		if (rs.isTxnIsCommited()) {
 			// Count transactions for each type
-			TxnStatistic txnStatistic = txnStatistics.get(rs.getTxnType());
-			txnStatistic.addTxnResponseTime(rs.getTxnResponseTime());
+			txnStatistic.addTxnResponseTimeAndCommitedTxnCount(rs.getTxnResponseTime());
 		} else {
 			// Count aborted transactions
-			Integer count = abortedCounts.get(rs.getTxnType());
-			abortedCounts.put(rs.getTxnType(), count + 1);
+			txnStatistic.addAbortedTxnCount();
 		}
 		totalResTimeMs += rs.getTxnResponseTime();
 		totalTxnCount++;
 	}
-
+	
 	private String makeStatString(long timeSlotBoundary, List<Long> timeSlot) {
 		Collections.sort(timeSlot);
 
@@ -292,7 +305,7 @@ public class StatisticMgr {
 		return String.format("%d, %d, %f, %d, %d, %d, %d, %d",
 				timeSlotBoundary, count, mean, min, max, lowerQ, median, upperQ);
 	}
-
+	
 	private Long calcMedian(List<Long> timeSlot) {
 		int count = timeSlot.size();
 		if (count % 2 != 0) // Odd
