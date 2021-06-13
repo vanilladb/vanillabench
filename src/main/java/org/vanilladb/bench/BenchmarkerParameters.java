@@ -27,6 +27,7 @@ public class BenchmarkerParameters {
 	public static final long WARM_UP_INTERVAL;
 	public static final long BENCHMARK_INTERVAL;
 	public static final int NUM_RTES;
+	public static final long RTE_SLEEP_TIME;
 	
 	public static final String SERVER_IP;
 	
@@ -50,6 +51,9 @@ public class BenchmarkerParameters {
 
 		NUM_RTES = BenchProperties.getLoader().getPropertyAsInteger(
 				BenchmarkerParameters.class.getName() + ".NUM_RTES", 1);
+		
+		RTE_SLEEP_TIME = BenchProperties.getLoader().getPropertyAsLong(
+				BenchmarkerParameters.class.getName() + ".RTE_SLEEP_TIME", 0);
 		
 		SERVER_IP = BenchProperties.getLoader().getPropertyAsString(
 				BenchmarkerParameters.class.getName() + ".SERVER_IP", "127.0.0.1");

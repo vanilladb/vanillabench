@@ -1,5 +1,30 @@
 # Release Notes
 
+## Version 0.4.1 (2021-06-13)
+
+### Enhancements
+
+- Add a thread to compress the resulted report in order to minimize memory footprint ([#27], [#31])
+- Update the version of dependencies (VanillaCore and JUnit) ([#32])
+
+### Refactor
+
+- Refactor `StatisticsMgr` ([#28])
+
+### Bug Fixes
+
+- Fix the problem that TpccCheckingProc creates too many temp files ([#26])
+- Fix a type in `VanillaBench` ([#30])
+- Exclude aborted transactions from the report ([#33])
+
+[#26]: https://github.com/vanilladb/vanillabench/pull/26
+[#27]: https://github.com/vanilladb/vanillabench/pull/27
+[#28]: https://github.com/vanilladb/vanillabench/pull/28
+[#30]: https://github.com/vanilladb/vanillabench/pull/30
+[#31]: https://github.com/vanilladb/vanillabench/pull/31
+[#32]: https://github.com/vanilladb/vanillabench/pull/32
+[#33]: https://github.com/vanilladb/vanillabench/pull/33
+
 ## Version 0.4.0 (2020-02-25)
 
 All the following changes were merged in [#23].
@@ -24,7 +49,7 @@ All the following changes were merged in [#23].
 - Change the way that `StatisticMgr` records time (more accurately)
 - Simplify the action of `StoredProcedureHelper`
 
-### Bugfixes
+### Bug Fixes
 
 - Consider aborts in reports
 - Fix some typos
