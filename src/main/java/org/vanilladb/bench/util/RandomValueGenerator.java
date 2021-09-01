@@ -62,7 +62,8 @@ public class RandomValueGenerator {
 		int randNum = (int) (rng.nextDouble() * total);
 		for (int i = 0; i < range.length; i++) {
 			randNum -= range[i];
-			if (randNum <= 0) {
+			// MODIFIED: Fix bug, that write-Txn will appear in the RW_RATE=0
+			if (randNum < 0) {
 				result = i;
 				break;
 			}
