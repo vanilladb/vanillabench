@@ -4,7 +4,7 @@
 
 ### Bug Fixes
 
-- Fix the problem that `RandomValueGenerator` generates value even when the probability is 0.
+- Fix the problem that `RandomValueGenerator` generates value even when the probability is 0 ([#37])
 
 [#37]: https://github.com/vanilladb/vanillabench/pull/37
 
