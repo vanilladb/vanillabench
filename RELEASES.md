@@ -1,5 +1,13 @@
 # Release Notes
 
+## Version 0.4.2 (2021-09-02)
+
+### Bug Fixes
+
+- Fix the problem that `RandomValueGenerator` generates value even when the probability is 0 ([#37])
+
+[#37]: https://github.com/vanilladb/vanillabench/pull/37
+
 ## Version 0.4.1 (2021-06-13)
 
 ### Enhancements
