@@ -35,8 +35,8 @@ public class BenchmarkerParameters {
 	public static enum ConnectionMode { JDBC, SP };
 	public static final ConnectionMode CONNECTION_MODE;
 	
-	// Micro = 1, TPC-C = 2, TPC-E = 3, YCSB = 4
-	public static enum BenchType { MICRO, TPCC, TPCE, YCSB };
+	// Micro = 1, TPC-C = 2, TPC-E = 3, YCSB = 4, RECON = 5
+	public static enum BenchType { MICRO, TPCC, TPCE, YCSB, RECON };
 	public static final BenchType BENCH_TYPE;
 	
 	public static final boolean PROFILING_ON_SERVER;
@@ -85,6 +85,9 @@ public class BenchmarkerParameters {
 			break;
 		case 4:
 			BENCH_TYPE = BenchType.YCSB;
+			break;
+		case 5:
+			BENCH_TYPE = BenchType.RECON;
 			break;
 		default:
 			throw new IllegalArgumentException("The connection mode should be 1 (Micro), 2 (TPC-C), or 3 (TPC-E)");

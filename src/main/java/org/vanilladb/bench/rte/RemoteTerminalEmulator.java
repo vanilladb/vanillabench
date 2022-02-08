@@ -27,16 +27,18 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 
 	private static AtomicInteger rteCount = new AtomicInteger(0);
 
-	private volatile boolean stopBenchmark;
-	private volatile boolean isWarmingUp = true;
-	private SutConnection conn;
-	private StatisticMgr statMgr;
+	protected volatile boolean stopBenchmark;
+	protected volatile boolean isWarmingUp = true;
+	protected SutConnection conn;
+	protected StatisticMgr statMgr;
+	protected int rteId;
 	
 	public RemoteTerminalEmulator(SutConnection conn, StatisticMgr statMgr) {
 		this.conn = conn;
 		this.statMgr = statMgr;
 		
 		// Set the thread name
+		rteId = rteCount.get();
 		setName("RTE-" + rteCount.getAndIncrement());
 	}
 
@@ -72,7 +74,7 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 	
 	protected abstract TransactionExecutor<T> getTxExeutor(T type);
 
-	private TxnResultSet executeTxnCycle(SutConnection conn) {
+	protected TxnResultSet executeTxnCycle(SutConnection conn) {
 		T txType = getNextTxType();
 		TransactionExecutor<T> executor = getTxExeutor(txType);
 		return executor.execute(conn);
