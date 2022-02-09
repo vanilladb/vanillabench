@@ -19,9 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.vanilladb.bench.benchmarks.recon.ReconbenchConstants;
 import org.vanilladb.bench.benchmarks.recon.ReconbenchTransactionType;
-import org.vanilladb.bench.benchmarks.micro.MicrobenchConstants;
-import org.vanilladb.bench.benchmarks.micro.rte.MicrobenchmarkParamGen;
 import org.vanilladb.bench.benchmarks.tpcc.TpccValueGenerator;
 import org.vanilladb.bench.rte.TxParamGenerator;
 import org.vanilladb.bench.util.BenchProperties;
@@ -55,20 +54,20 @@ public abstract class ReconbenchmarkParamGen implements TxParamGenerator<Reconbe
 
 	static {
 		RW_TX_RATE = BenchProperties.getLoader()
-				.getPropertyAsDouble(MicrobenchmarkParamGen.class.getName() + ".RW_TX_RATE", 0.0);
+				.getPropertyAsDouble(ReconbenchmarkParamGen.class.getName() + ".RW_TX_RATE", 0.0);
 		LONG_READ_TX_RATE = BenchProperties.getLoader()
-				.getPropertyAsDouble(MicrobenchmarkParamGen.class.getName() + ".LONG_READ_TX_RATE", 0.0);
+				.getPropertyAsDouble(ReconbenchmarkParamGen.class.getName() + ".LONG_READ_TX_RATE", 0.0);
 		
 		TOTAL_READ_COUNT = BenchProperties.getLoader()
-				.getPropertyAsInteger(MicrobenchmarkParamGen.class.getName() + ".TOTAL_READ_COUNT", 10);
+				.getPropertyAsInteger(ReconbenchmarkParamGen.class.getName() + ".TOTAL_READ_COUNT", 10);
 		LOCAL_HOT_COUNT = BenchProperties.getLoader()
-				.getPropertyAsInteger(MicrobenchmarkParamGen.class.getName() + ".LOCAL_HOT_COUNT", 1);
+				.getPropertyAsInteger(ReconbenchmarkParamGen.class.getName() + ".LOCAL_HOT_COUNT", 1);
 		WRITE_RATIO_IN_RW_TX = BenchProperties.getLoader()
-				.getPropertyAsDouble(MicrobenchmarkParamGen.class.getName() + ".WRITE_RATIO_IN_RW_TX", 0.5);
+				.getPropertyAsDouble(ReconbenchmarkParamGen.class.getName() + ".WRITE_RATIO_IN_RW_TX", 0.5);
 		HOT_CONFLICT_RATE = BenchProperties.getLoader()
-				.getPropertyAsDouble(MicrobenchmarkParamGen.class.getName() + ".HOT_CONFLICT_RATE", 0.001);
+				.getPropertyAsDouble(ReconbenchmarkParamGen.class.getName() + ".HOT_CONFLICT_RATE", 0.001);
 		
-		DATA_SIZE = MicrobenchConstants.NUM_ITEMS;
+		DATA_SIZE = ReconbenchConstants.NUM_ITEMS;
 		HOT_DATA_SIZE = (int) (1.0 / HOT_CONFLICT_RATE);
 		COLD_DATA_SIZE = DATA_SIZE - HOT_DATA_SIZE;
 		

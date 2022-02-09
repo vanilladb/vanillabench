@@ -23,7 +23,6 @@ import org.vanilladb.bench.BenchTransactionType;
 import org.vanilladb.bench.Benchmark;
 import org.vanilladb.bench.BenchmarkerParameters;
 import org.vanilladb.bench.StatisticMgr;
-import org.vanilladb.bench.benchmarks.micro.MicrobenchConstants;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.rte.RemoteTerminalEmulator;
@@ -43,7 +42,7 @@ public class ReconBenchmark extends Benchmark {
 	@Override
 	public void executeLoadingProcedure(SutConnection conn) throws SQLException {
 		conn.callStoredProc(ReconbenchTransactionType.TESTBED_LOADER.getProcedureId(),
-				MicrobenchConstants.NUM_ITEMS);
+				ReconbenchConstants.NUM_ITEMS);
 	}
 
 	@Override
@@ -56,7 +55,7 @@ public class ReconBenchmark extends Benchmark {
 	public boolean executeDatabaseCheckProcedure(SutConnection conn) throws SQLException {
 		SutResultSet result = null;
 		ReconbenchTransactionType txnType = ReconbenchTransactionType.CHECK_DATABASE;
-		Object[] params = new Object[] {MicrobenchConstants.NUM_ITEMS};
+		Object[] params = new Object[] {ReconbenchConstants.NUM_ITEMS};
 		
 		switch (BenchmarkerParameters.CONNECTION_MODE) {
 		case JDBC:

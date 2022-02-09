@@ -15,7 +15,6 @@
  *******************************************************************************/
 package org.vanilladb.bench.benchmarks.recon;
 
-import org.vanilladb.bench.benchmarks.micro.MicrobenchConstants;
 import org.vanilladb.bench.util.BenchProperties;
 
 public class ReconbenchConstants {
@@ -24,7 +23,7 @@ public class ReconbenchConstants {
 	
 	static {
 		NUM_ITEMS = BenchProperties.getLoader().getPropertyAsInteger(
-				MicrobenchConstants.class.getName() + ".NUM_ITEMS", 100000);
+				ReconbenchConstants.class.getName() + ".NUM_ITEMS", 100000);
 	}
 
 }
