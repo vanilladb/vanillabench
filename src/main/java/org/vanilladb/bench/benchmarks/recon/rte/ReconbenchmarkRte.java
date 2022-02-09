@@ -21,7 +21,6 @@ import java.util.Map;
 import org.vanilladb.bench.BenchTransactionType;
 import org.vanilladb.bench.BenchmarkerParameters;
 import org.vanilladb.bench.StatisticMgr;
-import org.vanilladb.bench.TxnResultSet;
 import org.vanilladb.bench.benchmarks.recon.ReconbenchTransactionType;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.rte.RemoteTerminalEmulator;
@@ -50,18 +49,6 @@ public class ReconbenchmarkRte extends RemoteTerminalEmulator<ReconbenchTransact
 		executors.put(ReconbenchTransactionType.UPDATE, new ReconbenchmarkTxExecutor(new UpdateParamGen()));
 	}
 	
-	@Override
-	public void run() {
-		while (!stopBenchmark) {
-			TxnResultSet rs = executeTxnCycle(conn);
-			if (!isWarmingUp)
-				statMgr.processTxnResult(rs);
-			
-			// Sleep for a while
-			sleep();
-		}
-	}
-	
 	protected ReconbenchTransactionType getNextTxType() {
 		if (rteId == 0)
 			return ReconbenchTransactionType.UPDATE;
@@ -73,10 +60,16 @@ public class ReconbenchmarkRte extends RemoteTerminalEmulator<ReconbenchTransact
 		return executors.get(type);
 	}
 	
-	private void sleep() {
+	@ Override
+	protected void sleep() {
 		if (rteId == 0) {
 			while(System.currentTimeMillis() - priviousTime < UPDATE_PERIOD) {
-				// do nothing
+				try {
+					Thread.sleep(UPDATE_PERIOD / 10);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+					throw new RuntimeException(e);
+				}
 			}
 			priviousTime = System.currentTimeMillis();
 		} else {

@@ -26,11 +26,11 @@ import org.vanilladb.bench.remote.SutConnection;
 public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> extends Thread {
 
 	private static AtomicInteger rteCount = new AtomicInteger(0);
-
-	protected volatile boolean stopBenchmark;
-	protected volatile boolean isWarmingUp = true;
-	protected SutConnection conn;
-	protected StatisticMgr statMgr;
+	
+	private volatile boolean stopBenchmark;
+	private volatile boolean isWarmingUp = true;
+	private SutConnection conn;
+	private StatisticMgr statMgr;
 	protected int rteId;
 	
 	public RemoteTerminalEmulator(SutConnection conn, StatisticMgr statMgr) {
@@ -50,14 +50,7 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 				statMgr.processTxnResult(rs);
 			
 			// Sleep for a while
-			if (BenchmarkerParameters.RTE_SLEEP_TIME > 0) {
-				try {
-					Thread.sleep(BenchmarkerParameters.RTE_SLEEP_TIME);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					throw new RuntimeException(e);
-				}
-			}
+			sleep();
 		}
 	}
 
@@ -73,8 +66,19 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 	protected abstract T getNextTxType();
 	
 	protected abstract TransactionExecutor<T> getTxExeutor(T type);
-
-	protected TxnResultSet executeTxnCycle(SutConnection conn) {
+	
+	protected void sleep() {		
+		if (BenchmarkerParameters.RTE_SLEEP_TIME > 0) {
+			try {
+				Thread.sleep(BenchmarkerParameters.RTE_SLEEP_TIME);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+		}
+	}
+	
+	private TxnResultSet executeTxnCycle(SutConnection conn) {
 		T txType = getNextTxType();
 		TransactionExecutor<T> executor = getTxExeutor(txType);
 		return executor.execute(conn);
