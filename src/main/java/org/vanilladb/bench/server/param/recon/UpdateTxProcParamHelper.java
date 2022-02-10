@@ -64,33 +64,12 @@ public class UpdateTxProcParamHelper extends StoredProcedureParamHelper {
 
 	@Override
 	public Schema getResultSetSchema() {
-		Schema sch = new Schema();
-//		if (itemName == null) {
-//			return sch; 
-//		}
-//		Type intType = Type.INTEGER;
-//		Type itemPriceType = Type.DOUBLE;
-//		Type itemNameType = Type.VARCHAR(24);
-//		sch.addField("rc", intType);
-//		for (int i = 0; i < itemName.length; i++) {
-//			sch.addField("i_name_" + i, itemNameType);
-//			sch.addField("i_price_" + i, itemPriceType);
-//		}
-		return sch;
+		return new Schema();
 	}
 
 	@Override
 	public SpResultRecord newResultSetRecord() {
-		SpResultRecord rec = new SpResultRecord();
-//		if (itemName == null) {
-//			return rec; 
-//		}
-//		rec.setVal("rc", new IntegerConstant(itemName.length));
-//		for (int i = 0; i < itemName.length; i++) {
-//			rec.setVal("i_name_" + i, new VarcharConstant(itemName[i], Type.VARCHAR(24)));
-//			rec.setVal("i_price_" + i, new DoubleConstant(itemPrice[i]));
-//		}
-		return rec;
+		return new SpResultRecord();
 	}
 
 }

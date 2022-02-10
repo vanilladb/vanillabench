@@ -15,6 +15,8 @@
  *******************************************************************************/
 package org.vanilladb.bench.benchmarks.recon.rte;
 
+import java.util.ArrayList;
+
 import org.vanilladb.bench.benchmarks.recon.ReconbenchTransactionType;
 
 public class UpdateParamGen extends ReconbenchmarkParamGen {
@@ -22,6 +24,17 @@ public class UpdateParamGen extends ReconbenchmarkParamGen {
 	@Override
 	public ReconbenchTransactionType getTxnType() {
 		return ReconbenchTransactionType.UPDATE;
+	}
+	
+	@Override
+	public Object[] generateParameter() {
+		ArrayList<Object> paramList = new ArrayList<Object>();
+		paramList.add(INDEX_UPDATE_COUNT);
+		
+		// Choose local hot records for swap
+		chooseHotData(paramList, INDEX_UPDATE_COUNT);
+		
+		return paramList.toArray(new Object[0]);
 	}
 
 }

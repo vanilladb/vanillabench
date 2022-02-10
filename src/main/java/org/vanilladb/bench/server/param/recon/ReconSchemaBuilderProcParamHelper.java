@@ -24,7 +24,7 @@ public class ReconSchemaBuilderProcParamHelper extends StoredProcedureParamHelpe
 	private static final String TABLES_DDL[] = {
 			"CREATE TABLE item ( i_id INT, i_im_id INT, i_name VARCHAR(24), "
 					+ "i_price DOUBLE, i_data VARCHAR(50) )",
-			"CREATE TABLE ref ( r_id INT, i_id INT)" };
+			"CREATE TABLE ref ( r_id INT, r_iid INT)" };
 	private static final String INDEXES_DDL[] = {
 			"CREATE INDEX idx_item ON item (i_id)",
 			"CREATE INDEX idx_ref ON ref (r_id)"};

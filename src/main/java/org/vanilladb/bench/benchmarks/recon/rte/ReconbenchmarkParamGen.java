@@ -47,7 +47,7 @@ public abstract class ReconbenchmarkParamGen implements TxParamGenerator<Reconbe
 	private static final int COLD_DATA_SIZE;
 	
 	// Index Update
-	private static final int INDEX_UPDATE_COUNT;
+	protected static final int INDEX_UPDATE_COUNT;
 	
 	// Other parameters
 	private static final int RANDOM_SWAP_FACTOR = 20;
@@ -181,11 +181,11 @@ public abstract class ReconbenchmarkParamGen implements TxParamGenerator<Reconbe
 		return results;
 	}
 
-	private void chooseHotData(List<Object> paramList, int count) {
+	protected void chooseHotData(List<Object> paramList, int count) {
 		RandomNonRepeatGenerator rg = new RandomNonRepeatGenerator(HOT_DATA_SIZE);
 		for (int i = 0; i < count; i++) {
-			int itemId = rg.next(); // 1 ~ size
-			paramList.add(itemId);
+			int choosedId = rg.next(); // 1 ~ size
+			paramList.add(choosedId);
 		}
 
 	}
@@ -195,8 +195,8 @@ public abstract class ReconbenchmarkParamGen implements TxParamGenerator<Reconbe
 		RandomNonRepeatGenerator rg = new RandomNonRepeatGenerator(COLD_DATA_SIZE);
 		for (int i = 0; i < count; i++) {
 			int tmp = rg.next(); // 1 ~ size
-			int itemId = minMainPartColdData + tmp;
-			paramList.add(itemId);
+			int choosenId = minMainPartColdData + tmp;
+			paramList.add(choosenId);
 		}
 	}
 	
