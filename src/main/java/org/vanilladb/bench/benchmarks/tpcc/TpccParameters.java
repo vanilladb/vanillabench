@@ -1,6 +1,5 @@
 package org.vanilladb.bench.benchmarks.tpcc;
 
-import org.vanilladb.bench.benchmarks.tpcc.rte.TpccTxExecutor;
 import org.vanilladb.bench.util.BenchProperties;
 
 public class TpccParameters {
@@ -20,24 +19,24 @@ public class TpccParameters {
 	
 	static {
 		NUM_WAREHOUSES = BenchProperties.getLoader().getPropertyAsInteger(
-				TpccConstants.class.getName() + ".NUM_WAREHOUSES", 1);
+				TpccParameters.class.getName() + ".NUM_WAREHOUSES", 1);
 		
 		ENABLE_THINK_AND_KEYING_TIME = BenchProperties.getLoader()
-				.getPropertyAsBoolean(TpccTxExecutor.class.getName() +
+				.getPropertyAsBoolean(TpccParameters.class.getName() +
 						".ENABLE_THINK_AND_KEYING_TIME", false);
 		
 		FREQUENCY_TOTAL = BenchProperties.getLoader().getPropertyAsInteger(
-				TpccConstants.class.getName() + ".FREQUENCY_TOTAL", 100);
+				TpccParameters.class.getName() + ".FREQUENCY_TOTAL", 100);
 		FREQUENCY_NEW_ORDER = BenchProperties.getLoader().getPropertyAsInteger(
-				TpccConstants.class.getName() + ".FREQUENCY_NEW_ORDER", 45);
+				TpccParameters.class.getName() + ".FREQUENCY_NEW_ORDER", 45);
 		FREQUENCY_PAYMENT = BenchProperties.getLoader().getPropertyAsInteger(
-				TpccConstants.class.getName() + ".FREQUENCY_PAYMENT", 43);
+				TpccParameters.class.getName() + ".FREQUENCY_PAYMENT", 43);
 		FREQUENCY_ORDER_STATUS = BenchProperties.getLoader().getPropertyAsInteger(
-				TpccConstants.class.getName() + ".FREQUENCY_ORDER_STATUS", 4);
+				TpccParameters.class.getName() + ".FREQUENCY_ORDER_STATUS", 4);
 		FREQUENCY_DELIVERY = BenchProperties.getLoader().getPropertyAsInteger(
-				TpccConstants.class.getName() + ".FREQUENCY_DELIVERY", 4);
+				TpccParameters.class.getName() + ".FREQUENCY_DELIVERY", 4);
 		FREQUENCY_STOCK_LEVEL = BenchProperties.getLoader().getPropertyAsInteger(
-				TpccConstants.class.getName() + ".FREQUENCY_STOCK_LEVEL", 4);
+				TpccParameters.class.getName() + ".FREQUENCY_STOCK_LEVEL", 4);
 	}
 
 	// Range for uniformly selecting transaction type
