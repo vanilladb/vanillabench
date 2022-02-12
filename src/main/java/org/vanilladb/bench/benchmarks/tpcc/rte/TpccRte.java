@@ -33,8 +33,8 @@ public class TpccRte extends RemoteTerminalEmulator<TpccTransactionType> {
 	private int homeWid;
 	private Map<BenchTransactionType, TpccTxExecutor> executors;
 
-	public TpccRte(SutConnection conn, StatisticMgr statMgr, int homeWarehouseId,
-			long sleepTime) {
+	public TpccRte(SutConnection conn, StatisticMgr statMgr, long sleepTime,
+			int homeWarehouseId) {
 		super(conn, statMgr, sleepTime);
 		homeWid = homeWarehouseId;
 		executors = new HashMap<BenchTransactionType, TpccTxExecutor>();

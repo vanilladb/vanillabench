@@ -52,7 +52,7 @@ public class TpceBenchmark extends Benchmark {
 	@Override
 	public RemoteTerminalEmulator<TpceTransactionType> createRte(SutConnection conn, StatisticMgr statMgr,
 			long rteSleepTime) {
-		return new TpceRte(conn, statMgr, dataMgr, rteSleepTime);
+		return new TpceRte(conn, statMgr, rteSleepTime, dataMgr);
 	}
 
 	@Override

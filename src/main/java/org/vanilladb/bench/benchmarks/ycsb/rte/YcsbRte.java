@@ -10,8 +10,7 @@ public class YcsbRte extends RemoteTerminalEmulator<YcsbTransactionType> {
 	
 	private YcsbTxExecutor executor;
 	
-	public YcsbRte(SutConnection conn, StatisticMgr statMgr,
-			long sleepTime) {
+	public YcsbRte(SutConnection conn, StatisticMgr statMgr, long sleepTime) {
 		super(conn, statMgr, sleepTime);
 		executor = new YcsbTxExecutor(new YcsbParamGen());
 	}
