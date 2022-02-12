@@ -168,7 +168,7 @@ public class StatisticMgr {
 		}
 
 		if (logger.isLoggable(Level.INFO))
-			logger.info("Finnish creating tpcc benchmark report");
+			logger.info("Finnish creating benchmark report");
 	}
 
 	private void outputDetailReport(String fileName) throws IOException {
