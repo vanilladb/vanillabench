@@ -25,7 +25,9 @@ import org.vanilladb.bench.remote.SutConnection;
 public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> extends Thread {
 
 	private static AtomicInteger rteCount = new AtomicInteger(0);
-
+	
+	protected int rteId;
+	
 	private volatile boolean stopBenchmark;
 	private volatile boolean isWarmingUp = true;
 	private SutConnection conn;
@@ -39,7 +41,8 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 		this.sleepTime = sleepTime;
 		
 		// Set the thread name
-		setName("RTE-" + rteCount.getAndIncrement());
+		rteId = rteCount.getAndIncrement();
+		setName("RTE-" + rteId);
 	}
 
 	@Override
@@ -50,14 +53,7 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 				statMgr.processTxnResult(rs);
 			
 			// Sleep for a while
-			if (sleepTime > 0) {
-				try {
-					Thread.sleep(sleepTime);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					throw new RuntimeException(e);
-				}
-			}
+			sleep();
 		}
 	}
 
@@ -73,7 +69,18 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 	protected abstract T getNextTxType();
 	
 	protected abstract TransactionExecutor<T> getTxExeutor(T type);
-
+	
+	protected void sleep() {		
+		if (sleepTime > 0) {
+			try {
+				Thread.sleep(sleepTime);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+		}
+	}
+	
 	private TxnResultSet executeTxnCycle(SutConnection conn) {
 		T txType = getNextTxType();
 		TransactionExecutor<T> executor = getTxExeutor(txType);
