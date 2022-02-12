@@ -16,6 +16,7 @@
 package org.vanilladb.bench.benchmarks.tpcc.rte;
 
 import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
+import org.vanilladb.bench.benchmarks.tpcc.TpccParameters;
 import org.vanilladb.bench.benchmarks.tpcc.TpccTransactionType;
 import org.vanilladb.bench.benchmarks.tpcc.TpccValueGenerator;
 
@@ -48,8 +49,8 @@ public class PaymentParamGen implements TpccTxParamGenerator {
 		 * Customer resident warehouse is the home warehouse 85% of the time and
 		 * is a randomly selected remote warehouse 15% of the time.
 		 */
-		if (valueGen.rng().nextDouble() >= 0.85 && TpccConstants.NUM_WAREHOUSES > 1) {
-			pars[2] = valueGen.numberExcluding(1, TpccConstants.NUM_WAREHOUSES, homeWid);
+		if (valueGen.rng().nextDouble() >= 0.85 && TpccParameters.NUM_WAREHOUSES > 1) {
+			pars[2] = valueGen.numberExcluding(1, TpccParameters.NUM_WAREHOUSES, homeWid);
 			pars[3] = valueGen.number(1, 10);
 		} else {
 			pars[2] = homeWid;

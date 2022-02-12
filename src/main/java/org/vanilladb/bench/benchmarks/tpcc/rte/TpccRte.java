@@ -21,7 +21,7 @@ import java.util.Random;
 
 import org.vanilladb.bench.BenchTransactionType;
 import org.vanilladb.bench.StatisticMgr;
-import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
+import org.vanilladb.bench.benchmarks.tpcc.TpccParameters;
 import org.vanilladb.bench.benchmarks.tpcc.TpccTransactionType;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.rte.RemoteTerminalEmulator;
@@ -46,14 +46,14 @@ public class TpccRte extends RemoteTerminalEmulator<TpccTransactionType> {
 	}
 	
 	protected TpccTransactionType getNextTxType() {
-		int index = TX_TYPE_RANDOM.nextInt(TpccConstants.FREQUENCY_TOTAL);
-		if (index < TpccConstants.RANGE_NEW_ORDER)
+		int index = TX_TYPE_RANDOM.nextInt(TpccParameters.FREQUENCY_TOTAL);
+		if (index < TpccParameters.RANGE_NEW_ORDER)
 			return TpccTransactionType.NEW_ORDER;
-		else if (index < TpccConstants.RANGE_PAYMENT)
+		else if (index < TpccParameters.RANGE_PAYMENT)
 			return TpccTransactionType.PAYMENT;
-		else if (index < TpccConstants.RANGE_ORDER_STATUS)
+		else if (index < TpccParameters.RANGE_ORDER_STATUS)
 			return TpccTransactionType.ORDER_STATUS;
-		else if (index < TpccConstants.RANGE_DELIVERY)
+		else if (index < TpccParameters.RANGE_DELIVERY)
 			return TpccTransactionType.DELIVERY;
 		else
 			return TpccTransactionType.STOCK_LEVEL;

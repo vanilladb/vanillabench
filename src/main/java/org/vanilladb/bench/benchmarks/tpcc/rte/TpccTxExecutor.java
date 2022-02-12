@@ -17,21 +17,14 @@ package org.vanilladb.bench.benchmarks.tpcc.rte;
 
 import org.vanilladb.bench.TxnResultSet;
 import org.vanilladb.bench.VanillaBenchParameters;
+import org.vanilladb.bench.benchmarks.tpcc.TpccParameters;
 import org.vanilladb.bench.benchmarks.tpcc.TpccTransactionType;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.rte.TransactionExecutor;
 import org.vanilladb.bench.rte.jdbc.JdbcExecutor;
-import org.vanilladb.bench.util.BenchProperties;
 
 public class TpccTxExecutor extends TransactionExecutor<TpccTransactionType> {
-
-	private final static boolean ENABLE_THINK_AND_KEYING_TIME;
-
-	static {
-		ENABLE_THINK_AND_KEYING_TIME = BenchProperties.getLoader()
-				.getPropertyAsBoolean(TpccTxExecutor.class.getName() + ".ENABLE_THINK_AND_KEYING_TIME", false);
-	}
 	
 	private TpccTxParamGenerator tpccPg;
 
@@ -44,7 +37,7 @@ public class TpccTxExecutor extends TransactionExecutor<TpccTransactionType> {
 	public TxnResultSet execute(SutConnection conn) {
 		try {
 			// keying
-			if (ENABLE_THINK_AND_KEYING_TIME) {
+			if (TpccParameters.ENABLE_THINK_AND_KEYING_TIME) {
 				// wait for a keying time and generate parameters
 				long t = tpccPg.getKeyingTime();
 				Thread.sleep(t);
@@ -67,7 +60,7 @@ public class TpccTxExecutor extends TransactionExecutor<TpccTransactionType> {
 				System.out.println(pg.getTxnType() + " " + result.outputMsg());
 
 			// thinking
-			if (ENABLE_THINK_AND_KEYING_TIME) {
+			if (TpccParameters.ENABLE_THINK_AND_KEYING_TIME) {
 				// wait for a think time
 				long t = tpccPg.getThinkTime();
 				Thread.sleep(t);

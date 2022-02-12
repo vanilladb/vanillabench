@@ -52,7 +52,7 @@ public class TpccBenchmark extends Benchmark {
 	public RemoteTerminalEmulator<TpccTransactionType> createRte(SutConnection conn, StatisticMgr statMgr,
 			long rteSleepTime) {
 		TpccRte rte = new TpccRte(conn, statMgr, rteSleepTime, nextWid + 1);
-		nextWid = (nextWid + 1) % TpccConstants.NUM_WAREHOUSES;
+		nextWid = (nextWid + 1) % TpccParameters.NUM_WAREHOUSES;
 		return rte;
 	}
 

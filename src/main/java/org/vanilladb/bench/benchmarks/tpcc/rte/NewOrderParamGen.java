@@ -16,6 +16,7 @@
 package org.vanilladb.bench.benchmarks.tpcc.rte;
 
 import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
+import org.vanilladb.bench.benchmarks.tpcc.TpccParameters;
 import org.vanilladb.bench.benchmarks.tpcc.TpccTransactionType;
 import org.vanilladb.bench.benchmarks.tpcc.TpccValueGenerator;
 
@@ -69,8 +70,8 @@ public class NewOrderParamGen implements TpccTxParamGenerator {
 
 			// TODO: Verify this
 			// ol_supply_w_id. 1% of items are supplied by remote warehouse
-			if (valueGen.rng().nextDouble() < 0.05 && TpccConstants.NUM_WAREHOUSES > 1) {
-				pars[++j] = valueGen.numberExcluding(1, TpccConstants.NUM_WAREHOUSES, homeWid);
+			if (valueGen.rng().nextDouble() < 0.05 && TpccParameters.NUM_WAREHOUSES > 1) {
+				pars[++j] = valueGen.numberExcluding(1, TpccParameters.NUM_WAREHOUSES, homeWid);
 				allLocal = false;
 			} else
 				pars[++j] = homeWid;
