@@ -20,12 +20,10 @@ public class VanillaBench {
 	
 	private SutDriver driver;
 	private Benchmark benchmarker;
-	private StatisticMgr statMgr;
 	
 	public VanillaBench() {
 		driver = newDriver();
 		benchmarker = newBenchmarker();
-		statMgr = newStatisticMgr(benchmarker);
 	}
 
 	public void loadTestbed() {
@@ -63,13 +61,16 @@ public class VanillaBench {
 				logger.info("database check passed.");
 
 			if (logger.isLoggable(Level.INFO))
-				logger.info("creating " + BenchmarkerParameters.NUM_RTES + " emulators...");
+				logger.info("creating " + VanillaBenchParameters.NUM_RTES + " emulators...");
 			
+			StatisticMgr statMgr = newStatisticMgr(benchmarker);
 			int rteCount = benchmarker.getNumOfRTEs();
 			RemoteTerminalEmulator<?>[] emulators = new RemoteTerminalEmulator[rteCount];
-			emulators[0] = benchmarker.createRte(conn, statMgr); // Reuse the connection
+			emulators[0] = benchmarker.createRte(conn, statMgr,
+					VanillaBenchParameters.RTE_SLEEP_TIME); // Reuse the connection
 			for (int i = 1; i < emulators.length; i++)
-				emulators[i] = benchmarker.createRte(getConnection(), statMgr);
+				emulators[i] = benchmarker.createRte(getConnection(), statMgr,
+						VanillaBenchParameters.RTE_SLEEP_TIME);
 
 			if (logger.isLoggable(Level.INFO))
 				logger.info("waiting for connections...");
@@ -86,12 +87,12 @@ public class VanillaBench {
 				emulators[i].start();
 
 			// Waits for the warming up finishes
-			Thread.sleep(BenchmarkerParameters.WARM_UP_INTERVAL);
+			Thread.sleep(VanillaBenchParameters.WARM_UP_INTERVAL);
 
 			if (logger.isLoggable(Level.INFO))
 				logger.info("warm up period finished.");
 
-			if (BenchmarkerParameters.PROFILING_ON_SERVER) {
+			if (VanillaBenchParameters.PROFILING_ON_SERVER) {
 				if (logger.isLoggable(Level.INFO))
 					logger.info("starting the profiler on the server-side");
 
@@ -106,7 +107,7 @@ public class VanillaBench {
 				emulators[i].startRecordStatistic();
 
 			// waiting
-			Thread.sleep(BenchmarkerParameters.BENCHMARK_INTERVAL);
+			Thread.sleep(VanillaBenchParameters.BENCHMARK_INTERVAL);
 
 			if (logger.isLoggable(Level.INFO))
 				logger.info("benchmark period finished. Stoping RTEs...");
@@ -115,7 +116,7 @@ public class VanillaBench {
 			for (int i = 0; i < emulators.length; i++)
 				emulators[i].stopBenchmark();
 
-			if (BenchmarkerParameters.PROFILING_ON_SERVER) {
+			if (VanillaBenchParameters.PROFILING_ON_SERVER) {
 				if (logger.isLoggable(Level.INFO))
 					logger.info("stoping the profiler on the server-side");
 
@@ -143,7 +144,7 @@ public class VanillaBench {
 	
 	private SutDriver newDriver() {
 		// Create a driver for connection
-		switch (BenchmarkerParameters.CONNECTION_MODE) {
+		switch (VanillaBenchParameters.CONNECTION_MODE) {
 		case JDBC:
 			return new VanillaDbJdbcDriver();
 		case SP:
@@ -153,7 +154,7 @@ public class VanillaBench {
 	}
 	
 	private Benchmark newBenchmarker() {
-		switch (BenchmarkerParameters.BENCH_TYPE) {
+		switch (VanillaBenchParameters.BENCH_TYPE) {
 		case MICRO:
 			return new MicroBenchmark();
 		case TPCC:
@@ -169,7 +170,12 @@ public class VanillaBench {
 	private StatisticMgr newStatisticMgr(Benchmark benchmarker) {
 		Set<BenchTransactionType> txnTypes = benchmarker.getBenchmarkingTxTypes();
 		String reportPostfix = benchmarker.getBenchmarkName();
-		return new StatisticMgr(txnTypes, reportPostfix);
+		return new StatisticMgr(
+				txnTypes,
+				VanillaBenchParameters.REPORT_OUTPUT_DIRECTORY,
+				reportPostfix,
+				VanillaBenchParameters.REPORT_TIMELINE_GRANULARITY
+		);
 	}
 	
 	private SutConnection getConnection() throws SQLException {

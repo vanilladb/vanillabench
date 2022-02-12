@@ -15,14 +15,14 @@
  *******************************************************************************/
 package org.vanilladb.bench.server;
 
-import org.vanilladb.bench.BenchmarkerParameters;
+import org.vanilladb.bench.VanillaBenchParameters;
 
 public class StartUp {
 
 	public static void main(String[] args) throws Exception {
 		SutStartUp sut = null;
 		
-		switch (BenchmarkerParameters.CONNECTION_MODE) {
+		switch (VanillaBenchParameters.CONNECTION_MODE) {
 		case JDBC:
 			sut = new VanillaDbJdbcStartUp();
 			break;

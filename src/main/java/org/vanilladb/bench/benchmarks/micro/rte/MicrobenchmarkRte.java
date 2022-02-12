@@ -24,8 +24,9 @@ public class MicrobenchmarkRte extends RemoteTerminalEmulator<MicrobenchTransact
 	
 	private MicrobenchmarkTxExecutor executor;
 
-	public MicrobenchmarkRte(SutConnection conn, StatisticMgr statMgr) {
-		super(conn, statMgr);
+	public MicrobenchmarkRte(SutConnection conn, StatisticMgr statMgr,
+			long sleepTime) {
+		super(conn, statMgr, sleepTime);
 		executor = new MicrobenchmarkTxExecutor(new MicrobenchmarkParamGen());
 	}
 	

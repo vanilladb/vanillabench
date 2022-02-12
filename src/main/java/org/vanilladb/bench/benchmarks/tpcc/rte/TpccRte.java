@@ -19,8 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.BenchTransactionType;
+import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
 import org.vanilladb.bench.benchmarks.tpcc.TpccTransactionType;
 import org.vanilladb.bench.remote.SutConnection;
@@ -33,8 +33,9 @@ public class TpccRte extends RemoteTerminalEmulator<TpccTransactionType> {
 	private int homeWid;
 	private Map<BenchTransactionType, TpccTxExecutor> executors;
 
-	public TpccRte(SutConnection conn, StatisticMgr statMgr, int homeWarehouseId) {
-		super(conn, statMgr);
+	public TpccRte(SutConnection conn, StatisticMgr statMgr, int homeWarehouseId,
+			long sleepTime) {
+		super(conn, statMgr, sleepTime);
 		homeWid = homeWarehouseId;
 		executors = new HashMap<BenchTransactionType, TpccTxExecutor>();
 		executors.put(TpccTransactionType.NEW_ORDER, new TpccTxExecutor(new NewOrderParamGen(homeWid)));

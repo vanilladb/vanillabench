@@ -32,7 +32,7 @@ public abstract class Benchmark {
 	}
 	
 	public int getNumOfRTEs() {
-		return BenchmarkerParameters.NUM_RTES;
+		return VanillaBenchParameters.NUM_RTES;
 	}
 	
 	public abstract Set<BenchTransactionType> getBenchmarkingTxTypes();
@@ -41,7 +41,8 @@ public abstract class Benchmark {
 	
 	public abstract boolean executeDatabaseCheckProcedure(SutConnection conn) throws SQLException;
 	
-	public abstract RemoteTerminalEmulator<?> createRte(SutConnection conn, StatisticMgr statMgr);
+	public abstract RemoteTerminalEmulator<?> createRte(SutConnection conn, StatisticMgr statMgr,
+			long rteSleepTime);
 	
 	public abstract String getBenchmarkName();
 }

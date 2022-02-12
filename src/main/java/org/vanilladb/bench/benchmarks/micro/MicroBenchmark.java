@@ -22,7 +22,7 @@ import java.util.Set;
 
 import org.vanilladb.bench.BenchTransactionType;
 import org.vanilladb.bench.Benchmark;
-import org.vanilladb.bench.BenchmarkerParameters;
+import org.vanilladb.bench.VanillaBenchParameters;
 import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.benchmarks.micro.rte.MicrobenchmarkRte;
 import org.vanilladb.bench.benchmarks.micro.rte.jdbc.MicrobenchJdbcExecutor;
@@ -49,8 +49,9 @@ public class MicroBenchmark extends Benchmark {
 	}
 
 	@Override
-	public RemoteTerminalEmulator<MicrobenchTransactionType> createRte(SutConnection conn, StatisticMgr statMgr) {
-		return new MicrobenchmarkRte(conn, statMgr);
+	public RemoteTerminalEmulator<MicrobenchTransactionType> createRte(SutConnection conn, StatisticMgr statMgr,
+			long rteSleepTime) {
+		return new MicrobenchmarkRte(conn, statMgr, rteSleepTime);
 	}
 
 	@Override
@@ -59,7 +60,7 @@ public class MicroBenchmark extends Benchmark {
 		MicrobenchTransactionType txnType = MicrobenchTransactionType.CHECK_DATABASE;
 		Object[] params = new Object[] {MicrobenchConstants.NUM_ITEMS};
 		
-		switch (BenchmarkerParameters.CONNECTION_MODE) {
+		switch (VanillaBenchParameters.CONNECTION_MODE) {
 		case JDBC:
 			Connection jdbcConn = conn.toJdbcConnection();
 			jdbcConn.setAutoCommit(false);

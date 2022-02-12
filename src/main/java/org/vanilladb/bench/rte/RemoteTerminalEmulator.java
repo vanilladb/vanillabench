@@ -17,9 +17,8 @@ package org.vanilladb.bench.rte;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.BenchTransactionType;
-import org.vanilladb.bench.BenchmarkerParameters;
+import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.TxnResultSet;
 import org.vanilladb.bench.remote.SutConnection;
 
@@ -31,10 +30,13 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 	private volatile boolean isWarmingUp = true;
 	private SutConnection conn;
 	private StatisticMgr statMgr;
+	private long sleepTime;
 	
-	public RemoteTerminalEmulator(SutConnection conn, StatisticMgr statMgr) {
+	public RemoteTerminalEmulator(SutConnection conn, StatisticMgr statMgr,
+			long sleepTime) {
 		this.conn = conn;
 		this.statMgr = statMgr;
+		this.sleepTime = sleepTime;
 		
 		// Set the thread name
 		setName("RTE-" + rteCount.getAndIncrement());
@@ -48,9 +50,9 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 				statMgr.processTxnResult(rs);
 			
 			// Sleep for a while
-			if (BenchmarkerParameters.RTE_SLEEP_TIME > 0) {
+			if (sleepTime > 0) {
 				try {
-					Thread.sleep(BenchmarkerParameters.RTE_SLEEP_TIME);
+					Thread.sleep(sleepTime);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 					throw new RuntimeException(e);
