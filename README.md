@@ -123,7 +123,7 @@ The project is a Maven project, which means you can do all the work for running 
 <dependency>
   <groupId>org.vanilladb</groupId>
   <artifactId>bench</artifactId>
-  <version>0.4.2</version>
+  <version>0.5.0</version>
 </dependency>
 ```
 
@@ -133,6 +133,6 @@ If you have any question, you can either open an issue here or contact [vanillad
 
 ## License
 
-Copyright 2016-2020 vanilladb.org contributors
+Copyright 2016-2022 vanilladb.org contributors
 
 Licensed under the [Apache License 2.0](LICENSE)
