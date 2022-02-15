@@ -15,14 +15,10 @@
  *******************************************************************************/
 package org.vanilladb.bench.benchmarks.tpcc;
 
-import org.vanilladb.bench.util.BenchProperties;
-
 /** Holds TPC-C constants. */
 
 public class TpccConstants {
 
-	// Scaling parameters
-	public static final int NUM_WAREHOUSES;
 	public static final int NUM_ITEMS = 100000;
 	public static final int DISTRICTS_PER_WAREHOUSE = 10;
 	public static final int CUSTOMERS_PER_DISTRICT = 3000;
@@ -33,11 +29,6 @@ public class TpccConstants {
 	public static final int NEW_ORDERS_PER_DISTRICT = 3000;
 	public static final int NEW_ORDER_START_ID = (int) (NEW_ORDERS_PER_DISTRICT * ((double) 2101 / 3000));
 	public static final int NUM_DISTINCT_CLAST = (int) NEW_ORDERS_PER_DISTRICT / 3;
-
-	static {
-		NUM_WAREHOUSES = BenchProperties.getLoader().getPropertyAsInteger(
-				TpccConstants.class.getName() + ".NUM_WAREHOUSES", 1);
-	}
 
 	// 9 tables's names
 	public static final String TABLENAME_WAREHOUSE = "warehouse";
@@ -53,38 +44,6 @@ public class TpccConstants {
 			TABLENAME_DISTRICT, TABLENAME_ITEM, TABLENAME_CUSTOMER,
 			TABLENAME_HISTORY, TABLENAME_STOCK, TABLENAME_ORDERS,
 			TABLENAME_NEW_ORDER, TABLENAME_ORDER_LINE, };
-
-	// Transaction frequency follows the mixture requirement
-	public static final int FREQUENCY_TOTAL;
-	public static final int FREQUENCY_NEW_ORDER;
-	public static final int FREQUENCY_PAYMENT;
-	public static final int FREQUENCY_ORDER_STATUS;
-	public static final int FREQUENCY_DELIVERY;
-	public static final int FREQUENCY_STOCK_LEVEL;
-	static {
-		FREQUENCY_TOTAL = BenchProperties.getLoader().getPropertyAsInteger(
-				TpccConstants.class.getName() + ".FREQUENCY_TOTAL", 100);
-		FREQUENCY_NEW_ORDER = BenchProperties.getLoader().getPropertyAsInteger(
-				TpccConstants.class.getName() + ".FREQUENCY_NEW_ORDER", 45);
-		FREQUENCY_PAYMENT = BenchProperties.getLoader().getPropertyAsInteger(
-				TpccConstants.class.getName() + ".FREQUENCY_PAYMENT", 43);
-		FREQUENCY_ORDER_STATUS = BenchProperties.getLoader().getPropertyAsInteger(
-				TpccConstants.class.getName() + ".FREQUENCY_ORDER_STATUS", 4);
-		FREQUENCY_DELIVERY = BenchProperties.getLoader().getPropertyAsInteger(
-				TpccConstants.class.getName() + ".FREQUENCY_DELIVERY", 4);
-		FREQUENCY_STOCK_LEVEL = BenchProperties.getLoader().getPropertyAsInteger(
-				TpccConstants.class.getName() + ".FREQUENCY_STOCK_LEVEL", 4);
-	}
-
-	// Range for uniformly selecting transaction type
-	public static final int RANGE_NEW_ORDER = FREQUENCY_NEW_ORDER;
-	public static final int RANGE_PAYMENT = RANGE_NEW_ORDER + FREQUENCY_PAYMENT;
-	public static final int RANGE_ORDER_STATUS = RANGE_PAYMENT
-			+ FREQUENCY_ORDER_STATUS;
-	public static final int RANGE_DELIVERY = RANGE_ORDER_STATUS
-			+ FREQUENCY_DELIVERY;
-	public static final int RANGE_STOCK_LEVEL = RANGE_DELIVERY
-			+ FREQUENCY_STOCK_LEVEL;
 
 	// Minimal keying time in second
 	public static final int KEYING_NEW_ORDER = 18;

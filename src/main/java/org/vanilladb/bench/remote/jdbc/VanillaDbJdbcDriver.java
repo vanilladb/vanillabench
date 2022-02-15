@@ -18,14 +18,14 @@ package org.vanilladb.bench.remote.jdbc;
 import java.sql.Driver;
 import java.sql.SQLException;
 
-import org.vanilladb.bench.BenchmarkerParameters;
+import org.vanilladb.bench.VanillaBenchParameters;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutDriver;
 import org.vanilladb.core.remote.jdbc.JdbcDriver;
 
 public class VanillaDbJdbcDriver implements SutDriver {
 	
-	private static final String URL = "jdbc:vanilladb://" + BenchmarkerParameters.SERVER_IP;
+	private static final String URL = "jdbc:vanilladb://" + VanillaBenchParameters.SERVER_IP;
 	
 	private Driver driver;
 	

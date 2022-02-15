@@ -15,13 +15,14 @@
  *******************************************************************************/
 package org.vanilladb.bench;
 
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.vanilladb.bench.util.BenchProperties;
 
-public class BenchmarkerParameters {
-	private static Logger logger = Logger.getLogger(BenchmarkerParameters.class
+public class VanillaBenchParameters {
+	private static Logger logger = Logger.getLogger(VanillaBenchParameters.class
 			.getName());
 	
 	public static final long WARM_UP_INTERVAL;
@@ -40,26 +41,31 @@ public class BenchmarkerParameters {
 	public static final BenchType BENCH_TYPE;
 	
 	public static final boolean PROFILING_ON_SERVER;
+	
+	public static final File REPORT_OUTPUT_DIRECTORY;
+	public static final int REPORT_TIMELINE_GRANULARITY;
+	
+	public static final boolean SHOW_TXN_RESPONSE_ON_CONSOLE;
 
 	static {
 		WARM_UP_INTERVAL = BenchProperties.getLoader().getPropertyAsLong(
-				BenchmarkerParameters.class.getName() + ".WARM_UP_INTERVAL", 60000);
+				VanillaBenchParameters.class.getName() + ".WARM_UP_INTERVAL", 60000);
 
 		BENCHMARK_INTERVAL = BenchProperties.getLoader().getPropertyAsLong(
-				BenchmarkerParameters.class.getName() + ".BENCHMARK_INTERVAL",
+				VanillaBenchParameters.class.getName() + ".BENCHMARK_INTERVAL",
 				60000);
 
 		NUM_RTES = BenchProperties.getLoader().getPropertyAsInteger(
-				BenchmarkerParameters.class.getName() + ".NUM_RTES", 1);
+				VanillaBenchParameters.class.getName() + ".NUM_RTES", 1);
 		
 		RTE_SLEEP_TIME = BenchProperties.getLoader().getPropertyAsLong(
-				BenchmarkerParameters.class.getName() + ".RTE_SLEEP_TIME", 0);
+				VanillaBenchParameters.class.getName() + ".RTE_SLEEP_TIME", 0);
 		
 		SERVER_IP = BenchProperties.getLoader().getPropertyAsString(
-				BenchmarkerParameters.class.getName() + ".SERVER_IP", "127.0.0.1");
+				VanillaBenchParameters.class.getName() + ".SERVER_IP", "127.0.0.1");
 		
 		int conMode = BenchProperties.getLoader().getPropertyAsInteger(
-				BenchmarkerParameters.class.getName() + ".CONNECTION_MODE", 1);
+				VanillaBenchParameters.class.getName() + ".CONNECTION_MODE", 1);
 		switch (conMode) {
 		case 1:
 			CONNECTION_MODE = ConnectionMode.JDBC;
@@ -72,7 +78,7 @@ public class BenchmarkerParameters {
 		}
 
 		int benchType = BenchProperties.getLoader().getPropertyAsInteger(
-				BenchmarkerParameters.class.getName() + ".BENCH_TYPE", 1);
+				VanillaBenchParameters.class.getName() + ".BENCH_TYPE", 1);
 		switch (benchType) {
 		case 1:
 			BENCH_TYPE = BenchType.MICRO;
@@ -94,6 +100,27 @@ public class BenchmarkerParameters {
 			logger.info("Using " + BENCH_TYPE + " benchmarks");
 		
 		PROFILING_ON_SERVER = BenchProperties.getLoader().getPropertyAsBoolean(
-				BenchmarkerParameters.class.getName() + ".PROFILING_ON_SERVER", false);
+				VanillaBenchParameters.class.getName() + ".PROFILING_ON_SERVER", false);
+		
+		// Report Output Directory
+		String outputDirPath = BenchProperties.getLoader()
+				.getPropertyAsString(
+						VanillaBenchParameters.class.getName() + ".REPORT_OUTPUT_DIRECTORY",null);
+
+		if (outputDirPath == null) {
+			REPORT_OUTPUT_DIRECTORY = new File(System.getProperty("user.home"), "benchmark_results");
+		} else {
+			REPORT_OUTPUT_DIRECTORY = new File(outputDirPath);
+		}
+
+		// Create the directory if that doesn't exist
+		if (!REPORT_OUTPUT_DIRECTORY.exists())
+			REPORT_OUTPUT_DIRECTORY.mkdir();
+
+		REPORT_TIMELINE_GRANULARITY = BenchProperties.getLoader().getPropertyAsInteger(
+				VanillaBenchParameters.class.getName() + ".REPORT_TIMELINE_GRANULARITY", 3000);
+		
+		SHOW_TXN_RESPONSE_ON_CONSOLE = BenchProperties.getLoader().getPropertyAsBoolean(
+				VanillaBenchParameters.class.getName() + ".SHOW_TXN_RESPONSE_ON_CONSOLE", false);
 	}
 }

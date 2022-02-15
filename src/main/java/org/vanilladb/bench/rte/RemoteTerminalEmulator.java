@@ -17,27 +17,32 @@ package org.vanilladb.bench.rte;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.BenchTransactionType;
-import org.vanilladb.bench.BenchmarkerParameters;
+import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.TxnResultSet;
 import org.vanilladb.bench.remote.SutConnection;
 
 public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> extends Thread {
 
 	private static AtomicInteger rteCount = new AtomicInteger(0);
-
+	
+	protected int rteId;
+	
 	private volatile boolean stopBenchmark;
 	private volatile boolean isWarmingUp = true;
 	private SutConnection conn;
 	private StatisticMgr statMgr;
+	private long sleepTime;
 	
-	public RemoteTerminalEmulator(SutConnection conn, StatisticMgr statMgr) {
+	public RemoteTerminalEmulator(SutConnection conn, StatisticMgr statMgr,
+			long sleepTime) {
 		this.conn = conn;
 		this.statMgr = statMgr;
+		this.sleepTime = sleepTime;
 		
 		// Set the thread name
-		setName("RTE-" + rteCount.getAndIncrement());
+		rteId = rteCount.getAndIncrement();
+		setName("RTE-" + rteId);
 	}
 
 	@Override
@@ -48,14 +53,7 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 				statMgr.processTxnResult(rs);
 			
 			// Sleep for a while
-			if (BenchmarkerParameters.RTE_SLEEP_TIME > 0) {
-				try {
-					Thread.sleep(BenchmarkerParameters.RTE_SLEEP_TIME);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-					throw new RuntimeException(e);
-				}
-			}
+			sleep();
 		}
 	}
 
@@ -71,7 +69,18 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 	protected abstract T getNextTxType();
 	
 	protected abstract TransactionExecutor<T> getTxExeutor(T type);
-
+	
+	protected void sleep() {		
+		if (sleepTime > 0) {
+			try {
+				Thread.sleep(sleepTime);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+		}
+	}
+	
 	private TxnResultSet executeTxnCycle(SutConnection conn) {
 		T txType = getNextTxType();
 		TransactionExecutor<T> executor = getTxExeutor(txType);

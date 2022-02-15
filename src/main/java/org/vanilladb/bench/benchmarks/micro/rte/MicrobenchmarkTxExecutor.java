@@ -16,6 +16,7 @@
 package org.vanilladb.bench.benchmarks.micro.rte;
 
 import org.vanilladb.bench.TxnResultSet;
+import org.vanilladb.bench.VanillaBenchParameters;
 import org.vanilladb.bench.benchmarks.micro.MicrobenchTransactionType;
 import org.vanilladb.bench.benchmarks.micro.rte.jdbc.MicrobenchJdbcExecutor;
 import org.vanilladb.bench.remote.SutConnection;
@@ -47,7 +48,7 @@ public class MicrobenchmarkTxExecutor extends TransactionExecutor<MicrobenchTran
 			txnRT = txnEndTime - txnRT;
 
 			// display output
-			if (TransactionExecutor.DISPLAY_RESULT)
+			if (VanillaBenchParameters.SHOW_TXN_RESPONSE_ON_CONSOLE)
 				System.out.println(pg.getTxnType() + " " + result.outputMsg());
 
 			return new TxnResultSet(pg.getTxnType(), txnRT, txnEndTime,

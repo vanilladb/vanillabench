@@ -21,7 +21,7 @@ import java.util.Set;
 
 import org.vanilladb.bench.BenchTransactionType;
 import org.vanilladb.bench.Benchmark;
-import org.vanilladb.bench.BenchmarkerParameters;
+import org.vanilladb.bench.VanillaBenchParameters;
 import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.benchmarks.tpce.data.TpceDataManager;
 import org.vanilladb.bench.benchmarks.tpce.rte.TpceRte;
@@ -50,8 +50,9 @@ public class TpceBenchmark extends Benchmark {
 	}
 
 	@Override
-	public RemoteTerminalEmulator<TpceTransactionType> createRte(SutConnection conn, StatisticMgr statMgr) {
-		return new TpceRte(conn, statMgr, dataMgr);
+	public RemoteTerminalEmulator<TpceTransactionType> createRte(SutConnection conn, StatisticMgr statMgr,
+			long rteSleepTime) {
+		return new TpceRte(conn, statMgr, rteSleepTime, dataMgr);
 	}
 
 	@Override
@@ -60,7 +61,7 @@ public class TpceBenchmark extends Benchmark {
 		TpceTransactionType txnType = TpceTransactionType.CHECK_DATABASE;
 		Object[] params = new Object[0];
 		
-		switch (BenchmarkerParameters.CONNECTION_MODE) {
+		switch (VanillaBenchParameters.CONNECTION_MODE) {
 		case JDBC:
 			throw new RuntimeException("We do not implement checking procedure for JDBC");
 		case SP:

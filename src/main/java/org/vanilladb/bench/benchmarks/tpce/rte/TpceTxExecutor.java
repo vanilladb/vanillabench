@@ -16,6 +16,7 @@
 package org.vanilladb.bench.benchmarks.tpce.rte;
 
 import org.vanilladb.bench.TxnResultSet;
+import org.vanilladb.bench.VanillaBenchParameters;
 import org.vanilladb.bench.benchmarks.tpce.TpceTransactionType;
 import org.vanilladb.bench.remote.SutConnection;
 import org.vanilladb.bench.remote.SutResultSet;
@@ -50,7 +51,7 @@ public class TpceTxExecutor extends TransactionExecutor<TpceTransactionType> {
 			paramGen.onResponseReceived(result);
 
 			// display output
-			if (TransactionExecutor.DISPLAY_RESULT)
+			if (VanillaBenchParameters.SHOW_TXN_RESPONSE_ON_CONSOLE)
 				System.out.println(pg.getTxnType() + " " + result.outputMsg());
 
 			return new TxnResultSet(pg.getTxnType(), txnRT, txnEndTime,
