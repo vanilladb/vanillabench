@@ -18,7 +18,7 @@ package org.vanilladb.bench.server;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.vanilladb.bench.BenchmarkerParameters;
+import org.vanilladb.bench.VanillaBenchParameters;
 import org.vanilladb.bench.server.procedure.BasicStoredProcFactory;
 import org.vanilladb.bench.server.procedure.micro.MicrobenchStoredProcFactory;
 import org.vanilladb.bench.server.procedure.tpcc.TpccStoredProcFactory;
@@ -50,7 +50,7 @@ public class VanillaDbSpStartUp implements SutStartUp {
 	
 	private StoredProcedureFactory getStoredProcedureFactory() {
 		StoredProcedureFactory factory = null;
-		switch (BenchmarkerParameters.BENCH_TYPE) {
+		switch (VanillaBenchParameters.BENCH_TYPE) {
 		case MICRO:
 			if (logger.isLoggable(Level.INFO))
 				logger.info("using Micro-benchmark stored procedures");

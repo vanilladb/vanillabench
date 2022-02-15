@@ -36,31 +36,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.vanilladb.bench.util.BenchProperties;
-
 public class StatisticMgr {
 	private static Logger logger = Logger.getLogger(StatisticMgr.class.getName());
-
-	private static final File OUTPUT_DIR;
-	private static int GRANULARITY;
-
-	static {
-		String outputDirPath = BenchProperties.getLoader()
-				.getPropertyAsString(StatisticMgr.class.getName() + ".OUTPUT_DIR", null);
-
-		if (outputDirPath == null) {
-			OUTPUT_DIR = new File(System.getProperty("user.home"), "benchmark_results");
-		} else {
-			OUTPUT_DIR = new File(outputDirPath);
-		}
-
-		// Create the directory if that doesn't exist
-		if (!OUTPUT_DIR.exists())
-			OUTPUT_DIR.mkdir();
-
-		GRANULARITY = BenchProperties.getLoader().getPropertyAsInteger(
-				StatisticMgr.class.getName() + ".GRANULARITY", 3000);
-	}
 
 	private static class TxnStatistic {
 		private BenchTransactionType mType;
@@ -100,6 +77,8 @@ public class StatisticMgr {
 		}
 	}
 	
+	private File outputDir;
+	private int timelineGranularity;
 	private BlockingQueue<TxnResultSet> resultSets = new ArrayBlockingQueue<TxnResultSet>(100_000);
 	private int totalTxnCount;
 	private double totalResTimeMs;
@@ -111,14 +90,12 @@ public class StatisticMgr {
 	private Map<BenchTransactionType, TxnStatistic> txnStatistics = new HashMap<BenchTransactionType, TxnStatistic>();
 	private Map<BenchTransactionType, Integer> abortedCounts = new HashMap<BenchTransactionType, Integer>();
 
-	public StatisticMgr(Collection<BenchTransactionType> txTypes) {
-		allTxTypes = new LinkedList<BenchTransactionType>(txTypes);
-		initZipThread();
-	}
-
-	public StatisticMgr(Collection<BenchTransactionType> txTypes, String namePostfix) {
-		allTxTypes = new LinkedList<BenchTransactionType>(txTypes);
-		fileNamePostfix = namePostfix;
+	public StatisticMgr(Collection<BenchTransactionType> txTypes, File outputDir,
+			String namePostfix, int timelineGranularity) {
+		this.allTxTypes = new LinkedList<BenchTransactionType>(txTypes);
+		this.outputDir = outputDir;
+		this.fileNamePostfix = namePostfix;
+		this.timelineGranularity = timelineGranularity;
 		initZipThread();
 	}
 	
@@ -139,7 +116,7 @@ public class StatisticMgr {
 			while (!stop||!resultSets.isEmpty()) {
 				try {
 					TxnResultSet resultSet = resultSets.poll(1, TimeUnit.SECONDS);
-					if (resultSet!=null) {
+					if (resultSet != null) {
 						analyzeResultSet(resultSet);
 					}
 				} catch (InterruptedException e) {
@@ -191,12 +168,12 @@ public class StatisticMgr {
 		}
 
 		if (logger.isLoggable(Level.INFO))
-			logger.info("Finnish creating tpcc benchmark report");
+			logger.info("Finnish creating benchmark report");
 	}
 
 	private void outputDetailReport(String fileName) throws IOException {
 		try (BufferedWriter writer = new BufferedWriter(
-				new FileWriter(new File(OUTPUT_DIR, fileName + ".txt")))) {
+				new FileWriter(new File(outputDir, fileName + ".txt")))) {
 			// First line: total transaction count
 			writer.write("# of txns (including aborted) during benchmark period: " + totalTxnCount);
 			writer.newLine();
@@ -230,12 +207,12 @@ public class StatisticMgr {
 	}
 
 	private void outputTimelineReport(String fileName) throws IOException {
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(OUTPUT_DIR, fileName + ".csv")))) {
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(outputDir, fileName + ".csv")))) {
 			writer.write(
 					"time(sec), throughput(txs), avg_latency(ms), min(ms), max(ms), 25th_lat(ms), median_lat(ms), 75th_lat(ms)");
 			writer.newLine();
 
-			int timeAdvance = GRANULARITY / 1000;
+			int timeAdvance = timelineGranularity / 1000;
 			for (long timeBound = 0, outCount = 0; outCount < latencyHistory.size(); timeBound += timeAdvance) {
 				List<Long> slot = latencyHistory.get(timeBound);
 				if (slot != null) {
@@ -250,7 +227,8 @@ public class StatisticMgr {
 
 	private void analyzeResultSet(TxnResultSet rs) {
 		long elapsedTime = TimeUnit.NANOSECONDS.toMillis(rs.getTxnEndTime() - recordStartTime);
-		long timeSlotBoundary = (elapsedTime / GRANULARITY) * GRANULARITY / 1000; // in seconds
+		long timeSlotBoundary = 
+				(elapsedTime / timelineGranularity) * timelineGranularity / 1000; // in seconds
 
 		ArrayList<Long> timeSlot = latencyHistory.get(timeSlotBoundary);
 		if (timeSlot == null) {

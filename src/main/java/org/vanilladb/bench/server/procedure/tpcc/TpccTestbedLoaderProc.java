@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
+import org.vanilladb.bench.benchmarks.tpcc.TpccParameters;
 import org.vanilladb.bench.benchmarks.tpcc.TpccValueGenerator;
 import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
 import org.vanilladb.bench.util.DoublePlainPrinter;
@@ -52,7 +53,7 @@ public class TpccTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 		generateItems(1, TpccConstants.NUM_ITEMS);
 
 		// Generate warehouse
-		for (int wid = 1; wid <= TpccConstants.NUM_WAREHOUSES; wid++)
+		for (int wid = 1; wid <= TpccParameters.NUM_WAREHOUSES; wid++)
 			generateWarehouseInstance(wid);
 
 		if (logger.isLoggable(Level.INFO))

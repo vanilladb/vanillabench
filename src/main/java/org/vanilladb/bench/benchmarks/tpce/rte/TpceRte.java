@@ -30,8 +30,9 @@ public class TpceRte extends RemoteTerminalEmulator<TpceTransactionType> {
 	
 	private TpceDataManager dataMgr;
 	
-	public TpceRte(SutConnection conn, StatisticMgr statMgr, TpceDataManager dataMgr) {
-		super(conn, statMgr);
+	public TpceRte(SutConnection conn, StatisticMgr statMgr, long sleepTime, 
+			TpceDataManager dataMgr) {
+		super(conn, statMgr, sleepTime);
 		this.dataMgr = dataMgr;
 	}
 
