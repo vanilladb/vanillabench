@@ -15,7 +15,7 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure.tpce;
 
-import org.vanilladb.bench.server.param.tpce.TradeOrderParamHelper;
+import org.vanilladb.bench.server.param.tpce.TradeOrderSpParamHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
@@ -31,7 +31,7 @@ import org.vanilladb.core.storage.tx.Transaction;
  * @author SLMT
  *
  */
-public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
+public class TradeOrderProc extends StoredProcedure<TradeOrderSpParamHelper> {
 	
 	String acctName, custFName, custLName, taxId, brokerName, exchId, sName, statusId;
 	long brokerId, custId, coId;
@@ -39,7 +39,7 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 	double marketPrice;
 
 	public TradeOrderProc() {
-		super(new TradeOrderParamHelper());
+		super(new TradeOrderSpParamHelper());
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 	 * Get customer, customer account, and broker information
 	 */
 	private void frame1() {
-		TradeOrderParamHelper paramHelper = getParamHelper();
+		TradeOrderSpParamHelper paramHelper = getParamHelper();
 		Transaction tx = getTransaction();
 		
 		// SELECT acct_name = ca_name, broker_id = ca_b_id, 
@@ -116,7 +116,7 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 	 * Estimate overall effects of the trade
 	 */
 	private void frame3() {
-		TradeOrderParamHelper paramHelper = getParamHelper();
+		TradeOrderSpParamHelper paramHelper = getParamHelper();
 		Transaction tx = getTransaction();
 		
 		// ===== Simplified Version =====
@@ -202,7 +202,7 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 	 * Record the trade request by making all related updates
 	 */
 	private void frame4() {
-		TradeOrderParamHelper paramHelper = getParamHelper();
+		TradeOrderSpParamHelper paramHelper = getParamHelper();
 		Transaction tx = getTransaction();
 		long currentTime = System.currentTimeMillis();
 		

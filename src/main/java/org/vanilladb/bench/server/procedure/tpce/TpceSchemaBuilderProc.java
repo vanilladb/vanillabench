@@ -18,16 +18,16 @@ package org.vanilladb.bench.server.procedure.tpce;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.vanilladb.bench.server.param.tpce.TpceSchemaBuilderParamHelper;
+import org.vanilladb.bench.server.param.tpce.TpceSchemaBuilderSpParamHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;
 
-public class TpceSchemaBuilderProc extends StoredProcedure<TpceSchemaBuilderParamHelper> {
+public class TpceSchemaBuilderProc extends StoredProcedure<TpceSchemaBuilderSpParamHelper> {
 	private static Logger logger = Logger.getLogger(TpceSchemaBuilderProc.class.getName());
 
 	public TpceSchemaBuilderProc() {
-		super(new TpceSchemaBuilderParamHelper());
+		super(new TpceSchemaBuilderSpParamHelper());
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class TpceSchemaBuilderProc extends StoredProcedure<TpceSchemaBuilderPara
 		if (logger.isLoggable(Level.FINE))
 			logger.info("Create schema for tpce testbed...");
 
-		TpceSchemaBuilderParamHelper paramHelper = getParamHelper();
+		TpceSchemaBuilderSpParamHelper paramHelper = getParamHelper();
 		Transaction tx = getTransaction();
 		for (String sql : paramHelper.getTableSchemas())
 			StoredProcedureHelper.executeUpdate(sql, tx);

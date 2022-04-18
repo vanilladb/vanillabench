@@ -15,21 +15,21 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure.tpce;
 
-import org.vanilladb.bench.server.param.tpce.TradeResultParamHelper;
+import org.vanilladb.bench.server.param.tpce.TradeResultSpParamHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;
 
-public class TradeResultProc extends StoredProcedure<TradeResultParamHelper> {
+public class TradeResultProc extends StoredProcedure<TradeResultSpParamHelper> {
 	
 	public TradeResultProc() {
-		super(new TradeResultParamHelper());
+		super(new TradeResultSpParamHelper());
 	}
 
 	@Override
 	protected void executeSql() {
-		TradeResultParamHelper paramHelper = getParamHelper();
+		TradeResultSpParamHelper paramHelper = getParamHelper();
 		Transaction tx = getTransaction();
 		
 		// SELECT ca_name, ca_b_id, ca_c_id FROM customer_account WHERE
