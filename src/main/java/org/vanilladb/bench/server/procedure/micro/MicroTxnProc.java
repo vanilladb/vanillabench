@@ -15,21 +15,21 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure.micro;
 
-import org.vanilladb.bench.server.param.micro.MicroTxnProcParamHelper;
+import org.vanilladb.bench.server.param.micro.MicroTxnSpParamHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;
 
-public class MicroTxnProc extends StoredProcedure<MicroTxnProcParamHelper> {
+public class MicroTxnProc extends StoredProcedure<MicroTxnSpParamHelper> {
 
 	public MicroTxnProc() {
-		super(new MicroTxnProcParamHelper());
+		super(new MicroTxnSpParamHelper());
 	}
 
 	@Override
 	protected void executeSql() {
-		MicroTxnProcParamHelper paramHelper = getParamHelper();
+		MicroTxnSpParamHelper paramHelper = getParamHelper();
 		Transaction tx = getTransaction();
 		
 		// SELECT

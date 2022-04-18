@@ -3,16 +3,16 @@ package org.vanilladb.bench.server.procedure.micro;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.vanilladb.bench.server.param.micro.TestbedLoaderParamHelper;
+import org.vanilladb.bench.server.param.micro.MicroTestbedLoaderSpParamHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 
-public class MicroCheckDatabaseProc extends StoredProcedure<TestbedLoaderParamHelper> {
+public class MicroCheckDatabaseProc extends StoredProcedure<MicroTestbedLoaderSpParamHelper> {
 	private static Logger logger = Logger.getLogger(MicroCheckDatabaseProc.class.getName());
 	
 	public MicroCheckDatabaseProc() {
-		super(new TestbedLoaderParamHelper());
+		super(new MicroTestbedLoaderSpParamHelper());
 	}
 
 	@Override

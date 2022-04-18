@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
-import org.vanilladb.bench.server.param.micro.TestbedLoaderParamHelper;
+import org.vanilladb.bench.server.param.micro.MicroTestbedLoaderSpParamHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
 import org.vanilladb.core.server.VanillaDb;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
@@ -27,11 +27,11 @@ import org.vanilladb.core.storage.tx.Transaction;
 import org.vanilladb.core.storage.tx.recovery.CheckpointTask;
 import org.vanilladb.core.storage.tx.recovery.RecoveryMgr;
 
-public class MicroTestbedLoaderProc extends StoredProcedure<TestbedLoaderParamHelper> {
+public class MicroTestbedLoaderProc extends StoredProcedure<MicroTestbedLoaderSpParamHelper> {
 	private static Logger logger = Logger.getLogger(MicroTestbedLoaderProc.class.getName());
 	
 	public MicroTestbedLoaderProc() {
-		super(new TestbedLoaderParamHelper());
+		super(new MicroTestbedLoaderSpParamHelper());
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class MicroTestbedLoaderProc extends StoredProcedure<TestbedLoaderParamHe
 	}
 	
 	private void createSchemas() {
-		TestbedLoaderParamHelper paramHelper = getParamHelper();
+		MicroTestbedLoaderSpParamHelper paramHelper = getParamHelper();
 		Transaction tx = getTransaction();
 		
 		if (logger.isLoggable(Level.FINE))
