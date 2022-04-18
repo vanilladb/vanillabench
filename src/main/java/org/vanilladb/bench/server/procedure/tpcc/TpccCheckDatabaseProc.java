@@ -14,7 +14,7 @@ public class TpccCheckDatabaseProc extends StoredProcedure<StoredProcedureParamH
 	private static Logger logger = Logger.getLogger(TpccCheckDatabaseProc.class.getName());
 	
 	public TpccCheckDatabaseProc() {
-		super(StoredProcedureParamHelper.newDefaultParamHelper());
+		super(StoredProcedureParamHelper.DEFAULT_HELPER);
 	}
 
 	@Override

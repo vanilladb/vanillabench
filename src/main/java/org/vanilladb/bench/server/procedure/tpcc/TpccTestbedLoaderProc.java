@@ -37,7 +37,7 @@ public class TpccTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 	private TpccValueGenerator rg = new TpccValueGenerator();
 
 	public TpccTestbedLoaderProc() {
-		super(StoredProcedureParamHelper.newDefaultParamHelper());
+		super(StoredProcedureParamHelper.DEFAULT_HELPER);
 	}
 	
 	@Override

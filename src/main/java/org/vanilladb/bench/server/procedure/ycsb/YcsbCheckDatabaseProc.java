@@ -13,7 +13,7 @@ public class YcsbCheckDatabaseProc extends StoredProcedure<StoredProcedureParamH
 	private static Logger logger = Logger.getLogger(YcsbCheckDatabaseProc.class.getName());
 	
 	public YcsbCheckDatabaseProc() {
-		super(StoredProcedureParamHelper.newDefaultParamHelper());
+		super(StoredProcedureParamHelper.DEFAULT_HELPER);
 	}
 
 	@Override

@@ -16,7 +16,7 @@ public class YcsbTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 	private static Logger logger = Logger.getLogger(YcsbTestbedLoaderProc.class.getName());
 	
 	public YcsbTestbedLoaderProc() {
-		super(StoredProcedureParamHelper.newDefaultParamHelper());
+		super(StoredProcedureParamHelper.DEFAULT_HELPER);
 	}
 	
 	@Override
