@@ -15,7 +15,7 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure.tpcc;
 
-import org.vanilladb.bench.server.param.tpcc.NewOrderProcParamHelper;
+import org.vanilladb.bench.server.param.tpcc.NewOrderSpParamHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
@@ -37,15 +37,15 @@ import org.vanilladb.core.storage.tx.Transaction;
  * @author yslin
  *
  */
-public class NewOrderProc extends StoredProcedure<NewOrderProcParamHelper> {
+public class NewOrderProc extends StoredProcedure<NewOrderSpParamHelper> {
 
 	public NewOrderProc() {
-		super(new NewOrderProcParamHelper());
+		super(new NewOrderSpParamHelper());
 	}
 
 	@Override
 	protected void executeSql() {
-		NewOrderProcParamHelper paramHelper = getParamHelper();
+		NewOrderSpParamHelper paramHelper = getParamHelper();
 		Transaction tx = getTransaction();
 		int wid = paramHelper.getWid();
 		int did = paramHelper.getDid();

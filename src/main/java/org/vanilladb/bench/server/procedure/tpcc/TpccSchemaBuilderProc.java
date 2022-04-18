@@ -15,20 +15,20 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure.tpcc;
 
-import org.vanilladb.bench.server.param.tpcc.TpccSchemaBuilderProcParamHelper;
+import org.vanilladb.bench.server.param.tpcc.TpccSchemaBuilderSpParamHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;
 
-public class TpccSchemaBuilderProc extends StoredProcedure<TpccSchemaBuilderProcParamHelper> {
+public class TpccSchemaBuilderProc extends StoredProcedure<TpccSchemaBuilderSpParamHelper> {
 
 	public TpccSchemaBuilderProc() {
-		super(new TpccSchemaBuilderProcParamHelper());
+		super(new TpccSchemaBuilderSpParamHelper());
 	}
 
 	@Override
 	protected void executeSql() {
-		TpccSchemaBuilderProcParamHelper paramHelper = getParamHelper();
+		TpccSchemaBuilderSpParamHelper paramHelper = getParamHelper();
 		Transaction tx = getTransaction();
 		for (String sql : paramHelper.getTableSchemas())
 			StoredProcedureHelper.executeUpdate(sql, tx);

@@ -1,27 +1,8 @@
-/*******************************************************************************
- * Copyright 2016, 2017 vanilladb.org contributors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
-package org.vanilladb.bench.server.param.tpcc;
+package org.vanilladb.bench.benchmarks.tpcc.rte;
 
-import org.vanilladb.core.sql.Schema;
-import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+public class TpccSchemaBuilderParamHelper {
 
-public class TpccSchemaBuilderProcParamHelper extends StoredProcedureParamHelper {
-
-	private final String TABLES_DDL[] = {
+	private static final String TABLES_DDL[] = {
 			"CREATE TABLE warehouse ( w_id INT, w_name VARCHAR(10), "
 					+ "w_street_1 VARCHAR(20), w_street_2 VARCHAR(20), w_city VARCHAR(20), "
 					+ "w_state VARCHAR(2), w_zip VARCHAR(9), w_tax DOUBLE,  w_ytd DOUBLE )",
@@ -54,7 +35,7 @@ public class TpccSchemaBuilderProcParamHelper extends StoredProcedureParamHelper
 					+ "s_dist_07 VARCHAR(24), s_dist_08 VARCHAR(24), s_dist_09 VARCHAR(24), "
 					+ "s_dist_10 VARCHAR(24), s_ytd INT, s_order_cnt INT, s_remote_cnt INT, "
 					+ "s_data VARCHAR(50) )" };
-	private final String INDEXES_DDL[] = {
+	private static final String INDEXES_DDL[] = {
 			"CREATE INDEX idx_warehouse ON warehouse (w_id)",
 			"CREATE INDEX idx_district ON district (d_id)",
 			"CREATE INDEX idx_customer ON customer (c_id)",
@@ -71,20 +52,5 @@ public class TpccSchemaBuilderProcParamHelper extends StoredProcedureParamHelper
 
 	public String[] getIndexSchemas() {
 		return INDEXES_DDL;
-	}
-
-	@Override
-	public void prepareParameters(Object... pars) {
-		// nothing to do
-	}
-
-	@Override
-	public Schema getResultSetSchema() {
-		return new Schema();
-	}
-
-	@Override
-	public SpResultRecord newResultSetRecord() {
-		return new SpResultRecord();
 	}
 }

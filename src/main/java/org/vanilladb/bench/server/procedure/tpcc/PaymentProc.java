@@ -15,25 +15,25 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure.tpcc;
 
-import org.vanilladb.bench.server.param.tpcc.PaymentProcParamHelper;
+import org.vanilladb.bench.server.param.tpcc.PaymentSpParamHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;
 
-public class PaymentProc extends StoredProcedure<PaymentProcParamHelper> {
+public class PaymentProc extends StoredProcedure<PaymentSpParamHelper> {
 
 	public PaymentProc() {
-		super(new PaymentProcParamHelper());
+		super(new PaymentSpParamHelper());
 	}
 
 	@Override
 	protected void executeSql() {
-		PaymentProcParamHelper paramHelper = getParamHelper();
+		PaymentSpParamHelper paramHelper = getParamHelper();
 		Transaction tx = getTransaction();
 		int wid = paramHelper.getWid();
 		int did = paramHelper.getDid();
-		int cid = paramHelper.getcid();
+		int cid = paramHelper.getCid();
 		int cwid = paramHelper.getCwid();
 		int cdid = paramHelper.getCdid();
 		double hAmount = paramHelper.getHamount();

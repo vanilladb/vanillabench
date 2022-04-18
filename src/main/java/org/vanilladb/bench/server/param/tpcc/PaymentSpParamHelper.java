@@ -15,6 +15,7 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.param.tpcc;
 
+import org.vanilladb.bench.benchmarks.tpcc.rte.PaymentParamHelper;
 import org.vanilladb.core.sql.BigIntConstant;
 import org.vanilladb.core.sql.DoubleConstant;
 import org.vanilladb.core.sql.IntegerConstant;
@@ -24,28 +25,20 @@ import org.vanilladb.core.sql.VarcharConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 
-public class PaymentProcParamHelper extends StoredProcedureParamHelper {
+public class PaymentSpParamHelper extends PaymentParamHelper
+		implements StoredProcedureParamHelper {
 
-	protected int wid, did, cwid, cdid, cid;
 	protected String cDataStr, cLast, cMiddle, cFirst, cStreet1, cStreet2, cCity, cState, cZip, cPhone, cCredit;
 	protected long cSince;
 	protected double cBalance, cCreditLim, cDiscount;
 	String wName, wStreet1, wStreet2, wCity, wState, wZip;
 
 	protected long hDateLong;
-	protected double hAmount;
 	protected boolean isBadCredit = false;
 
 	@Override
 	public void prepareParameters(Object... pars) {
-		if (pars.length != 6)
-			throw new RuntimeException("wrong pars list");
-		wid = (Integer) pars[0];
-		did = (Integer) pars[1];
-		cwid = (Integer) pars[2];
-		cdid = (Integer) pars[3];
-		cid = (Integer) pars[4];
-		hAmount = (Double) pars[5];
+		unpackParameters(pars);
 	}
 
 	@Override
@@ -79,7 +72,7 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 	@Override
 	public SpResultRecord newResultSetRecord() {
 		SpResultRecord rec = new SpResultRecord();
-		rec.setVal("cid", new IntegerConstant(cid));
+		rec.setVal("cid", new IntegerConstant(getCid()));
 		rec.setVal("c_first", new VarcharConstant(cFirst, Type.VARCHAR(16)));
 		rec.setVal("c_last", new VarcharConstant(cLast, Type.VARCHAR(16)));
 		rec.setVal("c_middle", new VarcharConstant(cMiddle, Type.VARCHAR(2)));
@@ -100,28 +93,9 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 		return rec;
 	}
 
-	public int getWid() {
-		return wid;
-	}
-
-	public int getDid() {
-		return did;
-	}
-
-	public int getCwid() {
-		return cwid;
-	}
-
-	public int getCdid() {
-		return cdid;
-	}
-
-	public double getHamount() {
-		return hAmount;
-	}
-
-	public int getcid() {
-		return cid;
+	@Override
+	public boolean isReadOnly() {
+		return false;
 	}
 
 	public void setcLast(String x) {
@@ -186,8 +160,8 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 	public void setcData(String cDataStr){
 		this.cDataStr = cDataStr;
 	}
+	
 	public void sethDate(long hDateLong){
 		this.hDateLong = hDateLong;
 	}
-
 }
