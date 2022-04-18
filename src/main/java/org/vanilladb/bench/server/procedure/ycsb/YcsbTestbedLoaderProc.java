@@ -4,19 +4,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.vanilladb.bench.benchmarks.ycsb.YcsbConstants;
-import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
+import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.server.VanillaDb;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 import org.vanilladb.core.storage.tx.Transaction;
 import org.vanilladb.core.storage.tx.recovery.CheckpointTask;
 import org.vanilladb.core.storage.tx.recovery.RecoveryMgr;
 
-public class YcsbTestbedLoaderProc extends StoredProcedure<StoredProcedureParamHelper> {
+public class YcsbTestbedLoaderProc extends StoredProcedure<StoredProcedureHelper> {
 	private static Logger logger = Logger.getLogger(YcsbTestbedLoaderProc.class.getName());
 	
 	public YcsbTestbedLoaderProc() {
-		super(StoredProcedureParamHelper.DEFAULT_HELPER);
+		super(StoredProcedureHelper.DEFAULT_HELPER);
 	}
 	
 	@Override
@@ -80,7 +80,7 @@ public class YcsbTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 			}
 			sql += ")";
 
-			StoredProcedureHelper.executeUpdate(sql, tx);
+			StoredProcedureUtils.executeUpdate(sql, tx);
 			
 			if (recCount % 50000 == 0)
 				if (logger.isLoggable(Level.INFO))

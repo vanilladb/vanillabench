@@ -3,10 +3,10 @@ package org.vanilladb.bench.server.param.ycsb;
 import org.vanilladb.bench.benchmarks.ycsb.rte.YcsbSchemaBuilderParamHelper;
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class YcsbSchemaBuilderSpParamHelper extends YcsbSchemaBuilderParamHelper
-		implements StoredProcedureParamHelper {
+public class YcsbSchemaBuilderSpHelper extends YcsbSchemaBuilderParamHelper
+		implements StoredProcedureHelper {
 	
 	@Override
 	public void prepareParameters(Object... pars) {

@@ -23,10 +23,10 @@ import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.sql.VarcharConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class PaymentSpParamHelper extends PaymentParamHelper
-		implements StoredProcedureParamHelper {
+public class PaymentSpHelper extends PaymentParamHelper
+		implements StoredProcedureHelper {
 
 	protected String cDataStr, cLast, cMiddle, cFirst, cStreet1, cStreet2, cCity, cState, cZip, cPhone, cCredit;
 	protected long cSince;

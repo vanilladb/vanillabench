@@ -15,20 +15,22 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.param.tpce;
 
-import org.vanilladb.bench.benchmarks.tpce.rte.TradeOrderParamHelper;
+import org.vanilladb.bench.benchmarks.tpce.rte.TradeResultParamHelper;
 import org.vanilladb.core.sql.BigIntConstant;
 import org.vanilladb.core.sql.DoubleConstant;
+import org.vanilladb.core.sql.IntegerConstant;
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class TradeOrderSpParamHelper extends TradeOrderParamHelper
-		implements StoredProcedureParamHelper {
+public class TradeResultSpHelper extends TradeResultParamHelper
+		implements StoredProcedureHelper {
 	
 	// Outputs
-	private double buyValue, sellValue, taxAmount;
-	private long newTradeId;
+	private double acctBal;
+	private int loadUnit;
+	private long newAcctId;
 
 	@Override
 	public void prepareParameters(Object... pars) {
@@ -38,20 +40,18 @@ public class TradeOrderSpParamHelper extends TradeOrderParamHelper
 	@Override
 	public Schema getResultSetSchema() {
 		Schema sch = new Schema();
-		sch.addField("buy_value", Type.DOUBLE);
-		sch.addField("sell_value", Type.DOUBLE);
-		sch.addField("tax_amount", Type.DOUBLE);
-		sch.addField("trade_id", Type.BIGINT);
+		sch.addField("acct_bal", Type.DOUBLE);
+		sch.addField("acct_id", Type.BIGINT);
+		sch.addField("load_unit", Type.INTEGER);
 		return sch;
 	}
 
 	@Override
 	public SpResultRecord newResultSetRecord() {
 		SpResultRecord rec = new SpResultRecord();
-		rec.setVal("buy_value", new DoubleConstant(buyValue));
-		rec.setVal("sell_value", new DoubleConstant(sellValue));
-		rec.setVal("tax_amount", new DoubleConstant(taxAmount));
-		rec.setVal("trade_id", new BigIntConstant(newTradeId));
+		rec.setVal("acct_bal", new DoubleConstant(acctBal));
+		rec.setVal("acct_id", new BigIntConstant(newAcctId));
+		rec.setVal("load_unit", new IntegerConstant(loadUnit));
 		return rec;
 	}
 
@@ -60,21 +60,17 @@ public class TradeOrderSpParamHelper extends TradeOrderParamHelper
 		return false;
 	}
 	
-	// Set outputs
-	
-	public void setBuyValue(double buyValue) {
-		this.buyValue = buyValue;
+	// Outputs
+
+	public void setAcctBal(double acctBal) {
+		this.acctBal = acctBal;
 	}
 
-	public void setSellValue(double sellValue) {
-		this.sellValue = sellValue;
+	public void setAcctId(long acctId) {
+		this.newAcctId = acctId;
 	}
 	
-	public void setTaxAmount(double taxAmount) {
-		this.taxAmount = taxAmount;
-	}
-	
-	public void setTradeId(long tradeId) {
-		this.newTradeId = tradeId;
+	public void setLoadUnit(int loadUnit) {
+		this.loadUnit = loadUnit;
 	}
 }

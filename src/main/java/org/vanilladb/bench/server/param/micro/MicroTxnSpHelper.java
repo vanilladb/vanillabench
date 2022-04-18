@@ -22,10 +22,10 @@ import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.sql.VarcharConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class MicroTxnSpParamHelper extends MicroTxnParamHelper
-		implements StoredProcedureParamHelper {
+public class MicroTxnSpHelper extends MicroTxnParamHelper
+		implements StoredProcedureHelper {
 
 	private String[] itemName;
 	private double[] itemPrice;

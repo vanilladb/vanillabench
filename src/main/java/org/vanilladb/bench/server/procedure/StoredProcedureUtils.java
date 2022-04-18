@@ -13,33 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.vanilladb.bench.server.param.tpce;
+package org.vanilladb.bench.server.procedure;
 
-import org.vanilladb.bench.benchmarks.tpce.rte.TpceSchemaBuilderParamHelper;
-import org.vanilladb.core.sql.Schema;
-import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.query.algebra.Plan;
+import org.vanilladb.core.query.algebra.Scan;
+import org.vanilladb.core.server.VanillaDb;
+import org.vanilladb.core.storage.tx.Transaction;
 
-public class TpceSchemaBuilderSpParamHelper extends TpceSchemaBuilderParamHelper
-		implements StoredProcedureParamHelper {
-
-	@Override
-	public void prepareParameters(Object... pars) {
-		// nothing to do
-	}
-
-	@Override
-	public Schema getResultSetSchema() {
-		return new Schema();
-	}
-
-	@Override
-	public SpResultRecord newResultSetRecord() {
-		return new SpResultRecord();
+public class StoredProcedureUtils {
+	
+	public static Scan executeQuery(String sql, Transaction tx) {
+		Plan p = VanillaDb.newPlanner().createQueryPlan(sql, tx);
+		return p.open();
 	}
 	
-	@Override
-	public boolean isReadOnly() {
-		return false;
+	public static int executeUpdate(String sql, Transaction tx) {
+		return VanillaDb.newPlanner().executeUpdate(sql, tx);
 	}
 }

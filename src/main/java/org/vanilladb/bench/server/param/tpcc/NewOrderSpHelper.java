@@ -23,10 +23,10 @@ import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.sql.VarcharConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class NewOrderSpParamHelper extends NewOrderParamHelper
-		implements StoredProcedureParamHelper {
+public class NewOrderSpHelper extends NewOrderParamHelper
+		implements StoredProcedureHelper {
 
 	protected double wTax, dTax, cDiscount, totalAmount;
 	protected long oEntryDate;

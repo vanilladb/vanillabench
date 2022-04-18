@@ -3,16 +3,16 @@ package org.vanilladb.bench.server.procedure.micro;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.vanilladb.bench.server.param.micro.MicroTestbedLoaderSpParamHelper;
-import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
+import org.vanilladb.bench.server.param.micro.MicroTestbedLoaderSpHelper;
+import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 
-public class MicroCheckDatabaseProc extends StoredProcedure<MicroTestbedLoaderSpParamHelper> {
+public class MicroCheckDatabaseProc extends StoredProcedure<MicroTestbedLoaderSpHelper> {
 	private static Logger logger = Logger.getLogger(MicroCheckDatabaseProc.class.getName());
 	
 	public MicroCheckDatabaseProc() {
-		super(new MicroTestbedLoaderSpParamHelper());
+		super(new MicroTestbedLoaderSpHelper());
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class MicroCheckDatabaseProc extends StoredProcedure<MicroTestbedLoaderSp
 		
 		// Scan the table
 		String sql = "SELECT i_id FROM item";
-		Scan scan = StoredProcedureHelper.executeQuery(sql, getTransaction());
+		Scan scan = StoredProcedureUtils.executeQuery(sql, getTransaction());
 		scan.beforeFirst();
 		for (int i = startIId, count = 0; i <= endIId; i++) {
 			if (!scan.next()) {

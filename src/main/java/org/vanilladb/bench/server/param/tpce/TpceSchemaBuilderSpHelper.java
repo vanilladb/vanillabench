@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2016, 2018 vanilladb.org contributors
+ * Copyright 2016, 2017 vanilladb.org contributors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.vanilladb.bench.server.param.micro;
+package org.vanilladb.bench.server.param.tpce;
 
-import org.vanilladb.bench.benchmarks.micro.rte.MicroTestbedParamHelper;
+import org.vanilladb.bench.benchmarks.tpce.rte.TpceSchemaBuilderParamHelper;
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class MicroTestbedLoaderSpParamHelper extends MicroTestbedParamHelper
-		implements StoredProcedureParamHelper {
+public class TpceSchemaBuilderSpHelper extends TpceSchemaBuilderParamHelper
+		implements StoredProcedureHelper {
 
 	@Override
 	public void prepareParameters(Object... pars) {
-		super.unpackParameters(pars);
+		// nothing to do
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class MicroTestbedLoaderSpParamHelper extends MicroTestbedParamHelper
 	public SpResultRecord newResultSetRecord() {
 		return new SpResultRecord();
 	}
-
+	
 	@Override
 	public boolean isReadOnly() {
 		return false;

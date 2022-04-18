@@ -19,19 +19,19 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
-import org.vanilladb.bench.server.param.micro.MicroTestbedLoaderSpParamHelper;
-import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
+import org.vanilladb.bench.server.param.micro.MicroTestbedLoaderSpHelper;
+import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.server.VanillaDb;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;
 import org.vanilladb.core.storage.tx.recovery.CheckpointTask;
 import org.vanilladb.core.storage.tx.recovery.RecoveryMgr;
 
-public class MicroTestbedLoaderProc extends StoredProcedure<MicroTestbedLoaderSpParamHelper> {
+public class MicroTestbedLoaderProc extends StoredProcedure<MicroTestbedLoaderSpHelper> {
 	private static Logger logger = Logger.getLogger(MicroTestbedLoaderProc.class.getName());
 	
 	public MicroTestbedLoaderProc() {
-		super(new MicroTestbedLoaderSpParamHelper());
+		super(new MicroTestbedLoaderSpHelper());
 	}
 
 	@Override
@@ -74,20 +74,20 @@ public class MicroTestbedLoaderProc extends StoredProcedure<MicroTestbedLoaderSp
 	}
 	
 	private void createSchemas() {
-		MicroTestbedLoaderSpParamHelper paramHelper = getParamHelper();
+		MicroTestbedLoaderSpHelper paramHelper = getParamHelper();
 		Transaction tx = getTransaction();
 		
 		if (logger.isLoggable(Level.FINE))
 			logger.info("Create tables...");
 		
 		for (String sql : paramHelper.getTableSchemas())
-			StoredProcedureHelper.executeUpdate(sql, tx);
+			StoredProcedureUtils.executeUpdate(sql, tx);
 		
 		if (logger.isLoggable(Level.FINE))
 			logger.info("Create indexes...");
 
 		for (String sql : paramHelper.getIndexSchemas())
-			StoredProcedureHelper.executeUpdate(sql, tx);
+			StoredProcedureUtils.executeUpdate(sql, tx);
 		
 		if (logger.isLoggable(Level.FINE))
 			logger.info("Finish creating schemas.");
@@ -113,7 +113,7 @@ public class MicroTestbedLoaderProc extends StoredProcedure<MicroTestbedLoaderSp
 
 			sql = "INSERT INTO item(i_id, i_im_id, i_name, i_price, i_data) VALUES (" + iid + ", " + iimid + ", '"
 					+ iname + "', " + iprice + ", '" + idata + "' )";
-			StoredProcedureHelper.executeUpdate(sql, tx);
+			StoredProcedureUtils.executeUpdate(sql, tx);
 		}
 
 		if (logger.isLoggable(Level.FINE))

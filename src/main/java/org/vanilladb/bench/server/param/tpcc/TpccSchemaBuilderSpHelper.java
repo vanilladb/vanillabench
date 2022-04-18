@@ -18,10 +18,10 @@ package org.vanilladb.bench.server.param.tpcc;
 import org.vanilladb.bench.benchmarks.tpcc.rte.TpccSchemaBuilderParamHelper;
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class TpccSchemaBuilderSpParamHelper extends TpccSchemaBuilderParamHelper
-		implements StoredProcedureParamHelper {
+public class TpccSchemaBuilderSpHelper extends TpccSchemaBuilderParamHelper
+		implements StoredProcedureHelper {
 
 
 	@Override

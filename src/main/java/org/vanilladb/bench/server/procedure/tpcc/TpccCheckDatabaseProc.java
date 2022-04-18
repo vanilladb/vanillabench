@@ -5,16 +5,16 @@ import java.util.logging.Logger;
 
 import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
 import org.vanilladb.bench.benchmarks.tpcc.TpccParameters;
-import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
+import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class TpccCheckDatabaseProc extends StoredProcedure<StoredProcedureParamHelper> {
+public class TpccCheckDatabaseProc extends StoredProcedure<StoredProcedureHelper> {
 	private static Logger logger = Logger.getLogger(TpccCheckDatabaseProc.class.getName());
 	
 	public TpccCheckDatabaseProc() {
-		super(StoredProcedureParamHelper.DEFAULT_HELPER);
+		super(StoredProcedureHelper.DEFAULT_HELPER);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class TpccCheckDatabaseProc extends StoredProcedure<StoredProcedureParamH
 		
 		// Check warehouse records
 		String sql = "SELECT w_id FROM warehouse WHERE w_id = " + wid;
-		Scan s = StoredProcedureHelper.executeQuery(sql, getTransaction());
+		Scan s = StoredProcedureUtils.executeQuery(sql, getTransaction());
 		s.beforeFirst();
 		if (!s.next())
 			return false;
@@ -152,7 +152,7 @@ public class TpccCheckDatabaseProc extends StoredProcedure<StoredProcedureParamH
 			checked[i] = false;
 		
 		// Check records
-		Scan scan = StoredProcedureHelper.executeQuery(sql, getTransaction());
+		Scan scan = StoredProcedureUtils.executeQuery(sql, getTransaction());
 		scan.beforeFirst();
 		for (int count = 0; count < total; count++) {
 			if (!scan.next()) {
@@ -183,7 +183,7 @@ public class TpccCheckDatabaseProc extends StoredProcedure<StoredProcedureParamH
 			checked[i] = false;
 		
 		// Check records
-		Scan scan = StoredProcedureHelper.executeQuery(sql, getTransaction());
+		Scan scan = StoredProcedureUtils.executeQuery(sql, getTransaction());
 		scan.beforeFirst();
 		while (scan.next()) {
 			int id = (Integer) scan.getVal(checkField).asJavaVal();

@@ -15,27 +15,27 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure.micro;
 
-import org.vanilladb.bench.server.param.micro.MicroTxnSpParamHelper;
-import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
+import org.vanilladb.bench.server.param.micro.MicroTxnSpHelper;
+import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;
 
-public class MicroTxnProc extends StoredProcedure<MicroTxnSpParamHelper> {
+public class MicroTxnProc extends StoredProcedure<MicroTxnSpHelper> {
 
 	public MicroTxnProc() {
-		super(new MicroTxnSpParamHelper());
+		super(new MicroTxnSpHelper());
 	}
 
 	@Override
 	protected void executeSql() {
-		MicroTxnSpParamHelper paramHelper = getParamHelper();
+		MicroTxnSpHelper paramHelper = getParamHelper();
 		Transaction tx = getTransaction();
 		
 		// SELECT
 		for (int idx = 0; idx < paramHelper.getReadCount(); idx++) {
 			int iid = paramHelper.getReadItemId(idx);
-			Scan s = StoredProcedureHelper.executeQuery(
+			Scan s = StoredProcedureUtils.executeQuery(
 				"SELECT i_name, i_price FROM item WHERE i_id = " + iid,
 				tx
 			);
@@ -56,7 +56,7 @@ public class MicroTxnProc extends StoredProcedure<MicroTxnSpParamHelper> {
 		for (int idx = 0; idx < paramHelper.getWriteCount(); idx++) {
 			int iid = paramHelper.getWriteItemId(idx);
 			double newPrice = paramHelper.getNewItemPrice(idx);
-			StoredProcedureHelper.executeUpdate(
+			StoredProcedureUtils.executeUpdate(
 				"UPDATE item SET i_price = " + newPrice + " WHERE i_id =" + iid,
 				tx
 			);

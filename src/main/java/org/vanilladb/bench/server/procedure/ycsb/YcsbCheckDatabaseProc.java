@@ -4,16 +4,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.vanilladb.bench.benchmarks.ycsb.YcsbConstants;
-import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
+import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class YcsbCheckDatabaseProc extends StoredProcedure<StoredProcedureParamHelper> {
+public class YcsbCheckDatabaseProc extends StoredProcedure<StoredProcedureHelper> {
 	private static Logger logger = Logger.getLogger(YcsbCheckDatabaseProc.class.getName());
 	
 	public YcsbCheckDatabaseProc() {
-		super(StoredProcedureParamHelper.DEFAULT_HELPER);
+		super(StoredProcedureHelper.DEFAULT_HELPER);
 	}
 
 	@Override
@@ -41,7 +41,7 @@ public class YcsbCheckDatabaseProc extends StoredProcedure<StoredProcedureParamH
 		
 		// Scan the table
 		String sql = "SELECT ycsb_id FROM ycsb";
-		Scan scan = StoredProcedureHelper.executeQuery(sql, getTransaction());
+		Scan scan = StoredProcedureUtils.executeQuery(sql, getTransaction());
 		scan.beforeFirst();
 		for (int i = startIId, count = 0; i <= endIId; i++) {
 			if (!scan.next()) {
