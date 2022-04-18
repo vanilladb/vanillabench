@@ -1,16 +1,12 @@
-package org.vanilladb.bench.server.param.ycsb;
+package org.vanilladb.bench.benchmarks.ycsb.rte;
 
 import java.util.HashMap;
 
 import org.vanilladb.bench.benchmarks.ycsb.YcsbConstants;
 import org.vanilladb.core.sql.Constant;
-import org.vanilladb.core.sql.Schema;
-import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.sql.VarcharConstant;
-import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
 
-public class YcsbBenchmarkProcParamHelper extends StoredProcedureParamHelper {
+public class YcsbTxParamHelper {
 	
 	private int readCount;
 	private int writeCount;
@@ -20,9 +16,9 @@ public class YcsbBenchmarkProcParamHelper extends StoredProcedureParamHelper {
 	private Integer[] insertIds;
 	private String[] writeVals;
 	private String[] insertVals; // All fields use the same value to reduce transmission cost
-	private String[] ycsb_1;
+	private int latestId;
 	
-	private int latestId = -1;
+	private boolean isReadOnly;
 
 	public int getReadCount() {
 		return readCount;
@@ -68,8 +64,8 @@ public class YcsbBenchmarkProcParamHelper extends StoredProcedureParamHelper {
 		return latestId;
 	}
 	
-	public void setYcsb(String s, int idx) {
-		ycsb_1[idx] = s;
+	public boolean isReadOnly() {
+		return isReadOnly;
 	}
 	
 	public HashMap<String, Constant> getInsertVals(int index) {
@@ -83,13 +79,11 @@ public class YcsbBenchmarkProcParamHelper extends StoredProcedureParamHelper {
 		return fldVals;
 	}
 
-	@Override
-	public void prepareParameters(Object... pars) {
+	public void unpackParameters(Object... pars) {
 		int indexCnt = 0;
 
 		readCount = (Integer) pars[indexCnt++];
 		readIds = new Integer[readCount];
-		ycsb_1 = new String[readCount];
 		for (int i = 0; i < readCount; i++)
 			readIds[i] = (Integer) pars[indexCnt++];
 
@@ -112,24 +106,6 @@ public class YcsbBenchmarkProcParamHelper extends StoredProcedureParamHelper {
 			insertVals[i] = (String) pars[indexCnt++];
 
 		if (writeCount == 0 && insertCount == 0)
-			setReadOnly(true);
-	}
-
-	@Override
-	public Schema getResultSetSchema() {
-		Schema sch = new Schema();
-		Type ycsb1Type = Type.VARCHAR(YcsbConstants.CHARS_PER_FIELD);
-		for (int i = 0; i < readCount; i++)
-			sch.addField("ycsb1_" + i, ycsb1Type);
-		return sch;
-	}
-
-	@Override
-	public SpResultRecord newResultSetRecord() {
-		SpResultRecord rec = new SpResultRecord();
-		Type ycsb1Type = Type.VARCHAR(YcsbConstants.CHARS_PER_FIELD);
-		for (int i = 0; i < readCount; i++)
-			rec.setVal("ycsb1_" + i, new VarcharConstant(ycsb_1[i], ycsb1Type));
-		return rec;
+			isReadOnly = true;
 	}
 }

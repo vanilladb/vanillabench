@@ -3,22 +3,22 @@ package org.vanilladb.bench.server.procedure.ycsb;
 import java.util.HashMap;
 
 import org.vanilladb.bench.benchmarks.ycsb.YcsbConstants;
-import org.vanilladb.bench.server.param.ycsb.YcsbBenchmarkProcParamHelper;
+import org.vanilladb.bench.server.param.ycsb.YcsbTxSpParamHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.Constant;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;
 
-public class YcsbProc extends StoredProcedure<YcsbBenchmarkProcParamHelper> {
+public class YcsbProc extends StoredProcedure<YcsbTxSpParamHelper> {
 	
 	public YcsbProc() {
-		super(new YcsbBenchmarkProcParamHelper());
+		super(new YcsbTxSpParamHelper());
 	}
 	
 	@Override
 	protected void executeSql() {
-		YcsbBenchmarkProcParamHelper paramHelper = getParamHelper();
+		YcsbTxSpParamHelper paramHelper = getParamHelper();
 		Transaction tx = getTransaction();
 
 		for (int idx = 0; idx < paramHelper.getReadCount(); idx++) {
