@@ -15,7 +15,6 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure.micro;
 
-import org.vanilladb.bench.server.param.micro.MicroTxnSpHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;

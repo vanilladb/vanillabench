@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.vanilladb.bench.server.param.tpcc;
+package org.vanilladb.bench.server.procedure.tpcc;
 
 import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
 import org.vanilladb.bench.benchmarks.tpcc.rte.NewOrderParamHelper;

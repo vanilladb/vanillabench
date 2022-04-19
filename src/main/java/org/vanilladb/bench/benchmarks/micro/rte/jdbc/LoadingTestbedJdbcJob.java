@@ -25,7 +25,7 @@ import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
 import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.remote.jdbc.VanillaDbJdbcResultSet;
 import org.vanilladb.bench.rte.jdbc.JdbcJob;
-import org.vanilladb.bench.server.param.micro.MicroTestbedLoaderSpHelper;
+import org.vanilladb.bench.server.procedure.micro.MicroTestbedLoaderSpHelper;
 
 public class LoadingTestbedJdbcJob implements JdbcJob {
 	private static Logger logger = Logger.getLogger(LoadingTestbedJdbcJob.class.getName());

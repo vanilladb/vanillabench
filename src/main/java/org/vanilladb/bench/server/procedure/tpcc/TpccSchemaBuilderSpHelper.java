@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.vanilladb.bench.server.param.tpce;
+package org.vanilladb.bench.server.procedure.tpcc;
 
-import org.vanilladb.bench.benchmarks.tpce.rte.TpceSchemaBuilderParamHelper;
+import org.vanilladb.bench.benchmarks.tpcc.rte.TpccSchemaBuilderParamHelper;
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class TpceSchemaBuilderSpHelper extends TpceSchemaBuilderParamHelper
+public class TpccSchemaBuilderSpHelper extends TpccSchemaBuilderParamHelper
 		implements StoredProcedureHelper {
+
 
 	@Override
 	public void prepareParameters(Object... pars) {
@@ -37,7 +38,7 @@ public class TpceSchemaBuilderSpHelper extends TpceSchemaBuilderParamHelper
 	public SpResultRecord newResultSetRecord() {
 		return new SpResultRecord();
 	}
-	
+
 	@Override
 	public boolean isReadOnly() {
 		return false;

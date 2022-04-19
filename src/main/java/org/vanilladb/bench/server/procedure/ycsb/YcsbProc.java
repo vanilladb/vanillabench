@@ -3,7 +3,6 @@ package org.vanilladb.bench.server.procedure.ycsb;
 import java.util.HashMap;
 
 import org.vanilladb.bench.benchmarks.ycsb.YcsbConstants;
-import org.vanilladb.bench.server.param.ycsb.YcsbTxSpHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.Constant;

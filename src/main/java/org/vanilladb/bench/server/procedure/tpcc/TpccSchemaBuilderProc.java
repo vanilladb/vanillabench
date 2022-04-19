@@ -15,7 +15,6 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure.tpcc;
 
-import org.vanilladb.bench.server.param.tpcc.TpccSchemaBuilderSpHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;

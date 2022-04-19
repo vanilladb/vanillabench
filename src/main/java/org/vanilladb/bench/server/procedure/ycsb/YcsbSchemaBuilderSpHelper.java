@@ -1,4 +1,4 @@
-package org.vanilladb.bench.server.param.ycsb;
+package org.vanilladb.bench.server.procedure.ycsb;
 
 import org.vanilladb.bench.benchmarks.ycsb.rte.YcsbSchemaBuilderParamHelper;
 import org.vanilladb.core.sql.Schema;

@@ -18,7 +18,6 @@ package org.vanilladb.bench.server.procedure.tpce;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.vanilladb.bench.server.param.tpce.TpceSchemaBuilderSpHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;

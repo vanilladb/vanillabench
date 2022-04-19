@@ -1,6 +1,5 @@
 package org.vanilladb.bench.server.procedure.ycsb;
 
-import org.vanilladb.bench.server.param.ycsb.YcsbSchemaBuilderSpHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;

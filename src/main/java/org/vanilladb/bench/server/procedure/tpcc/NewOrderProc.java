@@ -15,7 +15,6 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure.tpcc;
 
-import org.vanilladb.bench.server.param.tpcc.NewOrderSpHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
