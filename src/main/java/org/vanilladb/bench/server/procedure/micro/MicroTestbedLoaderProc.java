@@ -46,7 +46,7 @@ public class MicroTestbedLoaderProc extends StoredProcedure<MicroTestbedLoaderSp
 		createSchemas();
 
 		// Generate item records
-		generateItems(1, getParamHelper().getNumberOfItems());
+		generateItems(1, getHelper().getNumberOfItems());
 
 		if (logger.isLoggable(Level.INFO))
 			logger.info("Loading completed. Flush all loading data to disks...");
@@ -73,19 +73,19 @@ public class MicroTestbedLoaderProc extends StoredProcedure<MicroTestbedLoaderSp
 	}
 	
 	private void createSchemas() {
-		MicroTestbedLoaderSpHelper paramHelper = getParamHelper();
+		MicroTestbedLoaderSpHelper helper = getHelper();
 		Transaction tx = getTransaction();
 		
 		if (logger.isLoggable(Level.FINE))
 			logger.info("Create tables...");
 		
-		for (String sql : paramHelper.getTableSchemas())
+		for (String sql : helper.getTableSchemas())
 			StoredProcedureUtils.executeUpdate(sql, tx);
 		
 		if (logger.isLoggable(Level.FINE))
 			logger.info("Create indexes...");
 
-		for (String sql : paramHelper.getIndexSchemas())
+		for (String sql : helper.getIndexSchemas())
 			StoredProcedureUtils.executeUpdate(sql, tx);
 		
 		if (logger.isLoggable(Level.FINE))

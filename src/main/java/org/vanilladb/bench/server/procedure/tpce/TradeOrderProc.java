@@ -55,14 +55,14 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderSpHelper> {
 	 * Get customer, customer account, and broker information
 	 */
 	private void frame1() {
-		TradeOrderSpHelper paramHelper = getParamHelper();
+		TradeOrderSpHelper helper = getHelper();
 		Transaction tx = getTransaction();
 		
 		// SELECT acct_name = ca_name, broker_id = ca_b_id, 
 		// cust_id = ca_c_id, tax_status = ca_tax_st FROM
 		// customer_account WHERE ca_id = acct_id
 		String sql = "SELECT ca_name, ca_b_id, ca_c_id, ca_tax_st FROM customer_account"
-				+ " WHERE ca_id = " + paramHelper.getAcctId();
+				+ " WHERE ca_id = " + helper.getAcctId();
 		Scan s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
@@ -115,7 +115,7 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderSpHelper> {
 	 * Estimate overall effects of the trade
 	 */
 	private void frame3() {
-		TradeOrderSpHelper paramHelper = getParamHelper();
+		TradeOrderSpHelper paramHelper = getHelper();
 		Transaction tx = getTransaction();
 		
 		// ===== Simplified Version =====
@@ -201,7 +201,7 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderSpHelper> {
 	 * Record the trade request by making all related updates
 	 */
 	private void frame4() {
-		TradeOrderSpHelper paramHelper = getParamHelper();
+		TradeOrderSpHelper paramHelper = getHelper();
 		Transaction tx = getTransaction();
 		long currentTime = System.currentTimeMillis();
 		

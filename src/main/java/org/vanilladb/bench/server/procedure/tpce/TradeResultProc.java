@@ -28,13 +28,13 @@ public class TradeResultProc extends StoredProcedure<TradeResultSpHelper> {
 
 	@Override
 	protected void executeSql() {
-		TradeResultSpHelper paramHelper = getParamHelper();
+		TradeResultSpHelper helper = getHelper();
 		Transaction tx = getTransaction();
 		
 		// SELECT ca_name, ca_b_id, ca_c_id FROM customer_account WHERE
 		// ca_id = acctId
 		String sql = "SELECT ca_name, ca_b_id, ca_c_id FROM customer_account WHERE "
-				+ "ca_id = " + paramHelper.getAcctId();
+				+ "ca_id = " + helper.getAcctId();
 		Scan s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
@@ -44,7 +44,7 @@ public class TradeResultProc extends StoredProcedure<TradeResultSpHelper> {
 		s.getVal("ca_c_id").asJavaVal();
 
 		// SELECT c_name FROM customer WHERE c_id = customerKey
-		sql = "SELECT c_f_name FROM customer WHERE c_id = " + paramHelper.getCustomerId();
+		sql = "SELECT c_f_name FROM customer WHERE c_id = " + helper.getCustomerId();
 		s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
@@ -52,7 +52,7 @@ public class TradeResultProc extends StoredProcedure<TradeResultSpHelper> {
 		s.getVal("c_f_name").asJavaVal();
 
 		// SELECT b_name FROM broker WHERE b_id = brokerId
-		sql = "SELECT b_name FROM broker WHERE b_id = " + paramHelper.getBrokerId();
+		sql = "SELECT b_name FROM broker WHERE b_id = " + helper.getBrokerId();
 		s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
@@ -60,7 +60,7 @@ public class TradeResultProc extends StoredProcedure<TradeResultSpHelper> {
 		s.getVal("b_name").asJavaVal();
 
 		// SELECT t_trade_price FROM trade WHERE t_id = tradeId
-		sql = "SELECT t_trade_price FROM trade WHERE t_id = " + paramHelper.getTradeId();
+		sql = "SELECT t_trade_price FROM trade WHERE t_id = " + helper.getTradeId();
 		s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
@@ -70,13 +70,13 @@ public class TradeResultProc extends StoredProcedure<TradeResultSpHelper> {
 		// INSERT INTO trade_history (th_t_id, th_dts, th_st_id) VALUES (...)
 		long currentTime = System.currentTimeMillis();
 		sql = String.format("INSERT INTO trade_history (th_t_id, th_dts, th_st_id) VALUES "
-				+ "(%d, %d, '%s')",  paramHelper.getTradeId(), currentTime, "A");
+				+ "(%d, %d, '%s')",  helper.getTradeId(), currentTime, "A");
 		StoredProcedureUtils.executeUpdate(sql, tx);
 
 		// UPDATE customer_account SET ca_bal = ca_bal + tradePrice WHERE
 		// ca_id = acctId
 		sql = String.format("UPDATE customer_account SET ca_bal = %f WHERE ca_id = %d", 
-				1000.0, paramHelper.getAcctId());
+				1000.0, helper.getAcctId());
 		StoredProcedureUtils.executeUpdate(sql, tx);
 	}
 }

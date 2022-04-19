@@ -34,11 +34,11 @@ public class TpceSchemaBuilderProc extends StoredProcedure<TpceSchemaBuilderSpHe
 		if (logger.isLoggable(Level.FINE))
 			logger.info("Create schema for tpce testbed...");
 
-		TpceSchemaBuilderSpHelper paramHelper = getParamHelper();
+		TpceSchemaBuilderSpHelper helper = getHelper();
 		Transaction tx = getTransaction();
-		for (String sql : paramHelper.getTableSchemas())
+		for (String sql : helper.getTableSchemas())
 			StoredProcedureUtils.executeUpdate(sql, tx);
-		for (String sql : paramHelper.getIndexSchemas())
+		for (String sql : helper.getIndexSchemas())
 			StoredProcedureUtils.executeUpdate(sql, tx);
 	}
 }

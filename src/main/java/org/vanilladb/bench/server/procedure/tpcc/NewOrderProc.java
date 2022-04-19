@@ -44,11 +44,11 @@ public class NewOrderProc extends StoredProcedure<NewOrderSpHelper> {
 
 	@Override
 	protected void executeSql() {
-		NewOrderSpHelper paramHelper = getParamHelper();
+		NewOrderSpHelper helper = getHelper();
 		Transaction tx = getTransaction();
-		int wid = paramHelper.getWid();
-		int did = paramHelper.getDid();
-		int cid = paramHelper.getCid();
+		int wid = helper.getWid();
+		int did = helper.getDid();
+		int cid = helper.getCid();
 		int nextOid = -1;
 		
 		// SELECT w_tax FROM warehouse WHERE w_id = wid
@@ -57,7 +57,7 @@ public class NewOrderProc extends StoredProcedure<NewOrderSpHelper> {
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
-		paramHelper.setWTax((Double) s.getVal("w_tax").asJavaVal());
+		helper.setWTax((Double) s.getVal("w_tax").asJavaVal());
 		s.close();
 
 		// SELECT d_tax, d_next_o_id FROM district WHERE d_w_id = wid AND d_id =
@@ -69,7 +69,7 @@ public class NewOrderProc extends StoredProcedure<NewOrderSpHelper> {
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
 		nextOid = (Integer) s.getVal("d_next_o_id").asJavaVal();
-		paramHelper.setdTax((Double) s.getVal("d_tax").asJavaVal());
+		helper.setdTax((Double) s.getVal("d_tax").asJavaVal());
 		s.close();
 		
 		if (nextOid < 0)
@@ -89,18 +89,18 @@ public class NewOrderProc extends StoredProcedure<NewOrderSpHelper> {
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
-		paramHelper.setcDiscount((Double) s.getVal("c_discount").asJavaVal());
-		paramHelper.setcLast((String) s.getVal("c_last").asJavaVal());
-		paramHelper.setcCredit((String) s.getVal("c_credit").asJavaVal());
+		helper.setcDiscount((Double) s.getVal("c_discount").asJavaVal());
+		helper.setcLast((String) s.getVal("c_last").asJavaVal());
+		helper.setcCredit((String) s.getVal("c_credit").asJavaVal());
 		s.close();
 
 		// INSERT INTO orders (o_id, o_w_id, o_d_id, o_c_id, o_entry_d,
 		// o_carrier_id, o_ol_cnt, o_all_local) VALUES (nextOId, wid,
 		// did, cid, currentTime, 0, olCount, isAllLocal)
-		int isAllLocal = paramHelper.isAllLocal() ? 1 : 0;
+		int isAllLocal = helper.isAllLocal() ? 1 : 0;
 		long oEntryDate = System.currentTimeMillis();
-		int olCount = paramHelper.getOlCount();
-		paramHelper.setoEntryDate(oEntryDate);
+		int olCount = helper.getOlCount();
+		helper.setoEntryDate(oEntryDate);
 		
 		sql = String.format("INSERT INTO orders (o_id, o_w_id, o_d_id, o_c_id, o_entry_d,"
 				+ "o_carrier_id, o_ol_cnt, o_all_local) VALUES (%d, %d," +
@@ -116,8 +116,8 @@ public class NewOrderProc extends StoredProcedure<NewOrderSpHelper> {
 
 		// For each order line
 		int totalAmount = 0;
-		int[][] items = paramHelper.getItems();
-		int orderLineCount = paramHelper.getOlCount();
+		int[][] items = helper.getItems();
+		int orderLineCount = helper.getOlCount();
 		for (int i = 0; i < orderLineCount; i++) {
 			int olIId = items[i][0];
 			int olSupplyWId = items[i][1];
@@ -138,10 +138,10 @@ public class NewOrderProc extends StoredProcedure<NewOrderSpHelper> {
 			// SELECT s_quantity, sDistXX, s_data, s_ytd, s_order_cnt FROM
 			// stock WHERE s_i_id = olIId AND s_w_id = olSupplyWId
 			String sDistXX;
-			if (paramHelper.getDid() == 10)
+			if (helper.getDid() == 10)
 				sDistXX = "s_dist_10";
 			else
-				sDistXX = "s_dist_0" + paramHelper.getDid();
+				sDistXX = "s_dist_0" + helper.getDid();
 			
 			sql = "SELECT s_quantity, " + sDistXX +
 					", s_data, s_ytd, s_order_cnt FROM stock WHERE s_i_id = " + olIId +
@@ -190,8 +190,8 @@ public class NewOrderProc extends StoredProcedure<NewOrderSpHelper> {
 			// record amounts
 			totalAmount += olAmount;
 		}
-		paramHelper.setTotalAmount(
-				totalAmount * (1 - paramHelper.getcDiscount()) * (1 + paramHelper.getwTax() + paramHelper.getdTax()));
+		helper.setTotalAmount(
+				totalAmount * (1 - helper.getcDiscount()) * (1 + helper.getwTax() + helper.getdTax()));
 
 	}
 }

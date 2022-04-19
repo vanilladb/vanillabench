@@ -12,11 +12,11 @@ public class YcsbSchemaBuilderProc extends StoredProcedure<YcsbSchemaBuilderSpHe
 
 	@Override
 	protected void executeSql() {
-		YcsbSchemaBuilderSpHelper paramHelper = getParamHelper();
+		YcsbSchemaBuilderSpHelper helper = getHelper();
 		Transaction tx = getTransaction();
-		for (String sql : paramHelper.getTableSchemas())
+		for (String sql : helper.getTableSchemas())
 			StoredProcedureUtils.executeUpdate(sql, tx);
-		for (String sql : paramHelper.getIndexSchemas())
+		for (String sql : helper.getIndexSchemas())
 			StoredProcedureUtils.executeUpdate(sql, tx);
 	}
 }

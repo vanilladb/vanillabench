@@ -27,11 +27,11 @@ public class TpccSchemaBuilderProc extends StoredProcedure<TpccSchemaBuilderSpHe
 
 	@Override
 	protected void executeSql() {
-		TpccSchemaBuilderSpHelper paramHelper = getParamHelper();
+		TpccSchemaBuilderSpHelper helper = getHelper();
 		Transaction tx = getTransaction();
-		for (String sql : paramHelper.getTableSchemas())
+		for (String sql : helper.getTableSchemas())
 			StoredProcedureUtils.executeUpdate(sql, tx);
-		for (String sql : paramHelper.getIndexSchemas())
+		for (String sql : helper.getIndexSchemas())
 			StoredProcedureUtils.executeUpdate(sql, tx);
 	}
 }
