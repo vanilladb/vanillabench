@@ -1,5 +1,13 @@
 # Release Notes
 
+## Version 0.5.0 (2022-02-15)
+
+### Refactor
+
+- Refactor the code and put general configurations in a single class. ([#43])
+
+[#43]: https://github.com/vanilladb/vanillabench/pull/43
+
 ## Version 0.4.2 (2021-09-02)
 
 ### Bug Fixes
