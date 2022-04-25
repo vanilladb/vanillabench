@@ -13,7 +13,7 @@ public class BasicStoredProcFactory implements StoredProcedureFactory {
 	}
 
 	@Override
-	public StoredProcedure<?> getStroredProcedure(int pid) {
+	public StoredProcedure<?> getStoredProcedure(int pid) {
 		ControlTransactionType txnType = ControlTransactionType.fromProcedureId(pid);
 		if (txnType != null) {
 			switch (txnType) {
@@ -24,6 +24,6 @@ public class BasicStoredProcFactory implements StoredProcedureFactory {
 			}
 		}
 		
-		return underlayerFactory.getStroredProcedure(pid);
+		return underlayerFactory.getStoredProcedure(pid);
 	}
 }

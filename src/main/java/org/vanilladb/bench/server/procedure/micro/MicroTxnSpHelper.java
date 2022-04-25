@@ -13,45 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.vanilladb.bench.server.param.micro;
+package org.vanilladb.bench.server.procedure.micro;
 
+import org.vanilladb.bench.benchmarks.micro.rte.MicroTxnParamHelper;
 import org.vanilladb.core.sql.DoubleConstant;
 import org.vanilladb.core.sql.IntegerConstant;
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.sql.VarcharConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class MicroTxnProcParamHelper extends StoredProcedureParamHelper {
+public class MicroTxnSpHelper extends MicroTxnParamHelper
+		implements StoredProcedureHelper {
 
-	private int readCount;
-	private int writeCount;
-	private int[] readItemId;
-	private int[] writeItemId;
-	private double[] newItemPrice;
 	private String[] itemName;
 	private double[] itemPrice;
-
-	public int getReadCount() {
-		return readCount;
-	}
-
-	public int getWriteCount() {
-		return writeCount;
-	}
-
-	public int getReadItemId(int index) {
-		return readItemId[index];
-	}
-
-	public int getWriteItemId(int index) {
-		return writeItemId[index];
-	}
-
-	public double getNewItemPrice(int index) {
-		return newItemPrice[index];
-	}
 
 	public void setItemName(String s, int idx) {
 		itemName[idx] = s;
@@ -63,30 +40,10 @@ public class MicroTxnProcParamHelper extends StoredProcedureParamHelper {
 
 	@Override
 	public void prepareParameters(Object... pars) {
-
-		// Show the contents of paramters
-	   //System.out.println("Params: " + Arrays.toString(pars));
-
-		int indexCnt = 0;
-
-		readCount = (Integer) pars[indexCnt++];
-		readItemId = new int[readCount];
-		itemName = new String[readCount];
-		itemPrice = new double[readCount];
-
-		for (int i = 0; i < readCount; i++)
-			readItemId[i] = (Integer) pars[indexCnt++];
-
-		writeCount = (Integer) pars[indexCnt++];
-		writeItemId = new int[writeCount];
-		for (int i = 0; i < writeCount; i++)
-			writeItemId[i] = (Integer) pars[indexCnt++];
-		newItemPrice = new double[writeCount];
-		for (int i = 0; i < writeCount; i++)
-			newItemPrice[i] = (Double) pars[indexCnt++];
-
-		if (writeCount == 0)
-			setReadOnly(true);
+		unpackParameters(pars);
+		
+		itemName = new String[getReadCount()];
+		itemPrice = new double[getReadCount()];
 	}
 
 	@Override
@@ -113,5 +70,4 @@ public class MicroTxnProcParamHelper extends StoredProcedureParamHelper {
 		}
 		return rec;
 	}
-
 }

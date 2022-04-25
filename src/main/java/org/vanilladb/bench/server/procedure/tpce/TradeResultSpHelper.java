@@ -13,40 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.vanilladb.bench.server.param.tpce;
+package org.vanilladb.bench.server.procedure.tpce;
 
+import org.vanilladb.bench.benchmarks.tpce.rte.TradeResultParamHelper;
 import org.vanilladb.core.sql.BigIntConstant;
 import org.vanilladb.core.sql.DoubleConstant;
 import org.vanilladb.core.sql.IntegerConstant;
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class TradeResultParamHelper extends StoredProcedureParamHelper {
-	
-	// Inputs
-	private long tradeId;
-	private double tradePrice;
+public class TradeResultSpHelper extends TradeResultParamHelper
+		implements StoredProcedureHelper {
 	
 	// Outputs
 	private double acctBal;
-	private long acctId;
 	private int loadUnit;
-	
-	// XXX: inputs that are not in the spec.
-	protected long customerId;
-	protected long brokerId;
+	private long newAcctId;
 
 	@Override
 	public void prepareParameters(Object... pars) {
-		if (pars.length != 4)
-			throw new RuntimeException("wrong pars list");
-		int idxCntr = 0;
-		tradeId = (Long) pars[idxCntr++];
-		customerId = (Long) pars[idxCntr++];
-		acctId = (Long) pars[idxCntr++];
-		brokerId = (Long) pars[idxCntr++];
+		unpackParameters(pars);
 	}
 
 	@Override
@@ -62,25 +50,14 @@ public class TradeResultParamHelper extends StoredProcedureParamHelper {
 	public SpResultRecord newResultSetRecord() {
 		SpResultRecord rec = new SpResultRecord();
 		rec.setVal("acct_bal", new DoubleConstant(acctBal));
-		rec.setVal("acct_id", new BigIntConstant(acctId));
+		rec.setVal("acct_id", new BigIntConstant(newAcctId));
 		rec.setVal("load_unit", new IntegerConstant(loadUnit));
 		return rec;
 	}
 
-	public long getCustomerId() {
-		return customerId;
-	}
-
-	public long getAcctId() {
-		return acctId;
-	}
-
-	public long getBrokerId() {
-		return brokerId;
-	}
-
-	public long getTradeId() {
-		return tradeId;
+	@Override
+	public boolean isReadOnly() {
+		return false;
 	}
 	
 	// Outputs
@@ -90,7 +67,7 @@ public class TradeResultParamHelper extends StoredProcedureParamHelper {
 	}
 
 	public void setAcctId(long acctId) {
-		this.acctId = acctId;
+		this.newAcctId = acctId;
 	}
 	
 	public void setLoadUnit(int loadUnit) {

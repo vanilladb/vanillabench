@@ -15,28 +15,27 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure.tpce;
 
-import org.vanilladb.bench.server.param.tpce.TradeResultParamHelper;
-import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
+import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;
 
-public class TradeResultProc extends StoredProcedure<TradeResultParamHelper> {
+public class TradeResultProc extends StoredProcedure<TradeResultSpHelper> {
 	
 	public TradeResultProc() {
-		super(new TradeResultParamHelper());
+		super(new TradeResultSpHelper());
 	}
 
 	@Override
 	protected void executeSql() {
-		TradeResultParamHelper paramHelper = getParamHelper();
+		TradeResultSpHelper helper = getHelper();
 		Transaction tx = getTransaction();
 		
 		// SELECT ca_name, ca_b_id, ca_c_id FROM customer_account WHERE
 		// ca_id = acctId
 		String sql = "SELECT ca_name, ca_b_id, ca_c_id FROM customer_account WHERE "
-				+ "ca_id = " + paramHelper.getAcctId();
-		Scan s = StoredProcedureHelper.executeQuery(sql, tx);
+				+ "ca_id = " + helper.getAcctId();
+		Scan s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
@@ -45,24 +44,24 @@ public class TradeResultProc extends StoredProcedure<TradeResultParamHelper> {
 		s.getVal("ca_c_id").asJavaVal();
 
 		// SELECT c_name FROM customer WHERE c_id = customerKey
-		sql = "SELECT c_f_name FROM customer WHERE c_id = " + paramHelper.getCustomerId();
-		s = StoredProcedureHelper.executeQuery(sql, tx);
+		sql = "SELECT c_f_name FROM customer WHERE c_id = " + helper.getCustomerId();
+		s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
 		s.getVal("c_f_name").asJavaVal();
 
 		// SELECT b_name FROM broker WHERE b_id = brokerId
-		sql = "SELECT b_name FROM broker WHERE b_id = " + paramHelper.getBrokerId();
-		s = StoredProcedureHelper.executeQuery(sql, tx);
+		sql = "SELECT b_name FROM broker WHERE b_id = " + helper.getBrokerId();
+		s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
 		s.getVal("b_name").asJavaVal();
 
 		// SELECT t_trade_price FROM trade WHERE t_id = tradeId
-		sql = "SELECT t_trade_price FROM trade WHERE t_id = " + paramHelper.getTradeId();
-		s = StoredProcedureHelper.executeQuery(sql, tx);
+		sql = "SELECT t_trade_price FROM trade WHERE t_id = " + helper.getTradeId();
+		s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
@@ -71,13 +70,13 @@ public class TradeResultProc extends StoredProcedure<TradeResultParamHelper> {
 		// INSERT INTO trade_history (th_t_id, th_dts, th_st_id) VALUES (...)
 		long currentTime = System.currentTimeMillis();
 		sql = String.format("INSERT INTO trade_history (th_t_id, th_dts, th_st_id) VALUES "
-				+ "(%d, %d, '%s')",  paramHelper.getTradeId(), currentTime, "A");
-		StoredProcedureHelper.executeUpdate(sql, tx);
+				+ "(%d, %d, '%s')",  helper.getTradeId(), currentTime, "A");
+		StoredProcedureUtils.executeUpdate(sql, tx);
 
 		// UPDATE customer_account SET ca_bal = ca_bal + tradePrice WHERE
 		// ca_id = acctId
 		sql = String.format("UPDATE customer_account SET ca_bal = %f WHERE ca_id = %d", 
-				1000.0, paramHelper.getAcctId());
-		StoredProcedureHelper.executeUpdate(sql, tx);
+				1000.0, helper.getAcctId());
+		StoredProcedureUtils.executeUpdate(sql, tx);
 	}
 }

@@ -22,10 +22,10 @@ import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.vanilladb.bench.benchmarks.micro.rte.MicroTxnParamHelper;
 import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.remote.jdbc.VanillaDbJdbcResultSet;
 import org.vanilladb.bench.rte.jdbc.JdbcJob;
-import org.vanilladb.bench.server.param.micro.MicroTxnProcParamHelper;
 
 public class MicroTxnJdbcJob implements JdbcJob {
 	private static Logger logger = Logger.getLogger(MicroTxnJdbcJob.class
@@ -33,8 +33,8 @@ public class MicroTxnJdbcJob implements JdbcJob {
 	
 	@Override
 	public SutResultSet execute(Connection conn, Object[] pars) throws SQLException {
-		MicroTxnProcParamHelper paramHelper = new MicroTxnProcParamHelper();
-		paramHelper.prepareParameters(pars);
+		MicroTxnParamHelper paramHelper = new MicroTxnParamHelper();
+		paramHelper.unpackParameters(pars);
 		
 		// Output message
 		StringBuilder outputMsg = new StringBuilder("[");

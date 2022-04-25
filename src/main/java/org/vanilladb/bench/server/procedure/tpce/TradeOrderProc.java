@@ -15,8 +15,7 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure.tpce;
 
-import org.vanilladb.bench.server.param.tpce.TradeOrderParamHelper;
-import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
+import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;
@@ -31,7 +30,7 @@ import org.vanilladb.core.storage.tx.Transaction;
  * @author SLMT
  *
  */
-public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
+public class TradeOrderProc extends StoredProcedure<TradeOrderSpHelper> {
 	
 	String acctName, custFName, custLName, taxId, brokerName, exchId, sName, statusId;
 	long brokerId, custId, coId;
@@ -39,7 +38,7 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 	double marketPrice;
 
 	public TradeOrderProc() {
-		super(new TradeOrderParamHelper());
+		super(new TradeOrderSpHelper());
 	}
 
 	@Override
@@ -56,15 +55,15 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 	 * Get customer, customer account, and broker information
 	 */
 	private void frame1() {
-		TradeOrderParamHelper paramHelper = getParamHelper();
+		TradeOrderSpHelper helper = getHelper();
 		Transaction tx = getTransaction();
 		
 		// SELECT acct_name = ca_name, broker_id = ca_b_id, 
 		// cust_id = ca_c_id, tax_status = ca_tax_st FROM
 		// customer_account WHERE ca_id = acct_id
 		String sql = "SELECT ca_name, ca_b_id, ca_c_id, ca_tax_st FROM customer_account"
-				+ " WHERE ca_id = " + paramHelper.getAcctId();
-		Scan s = StoredProcedureHelper.executeQuery(sql, tx);
+				+ " WHERE ca_id = " + helper.getAcctId();
+		Scan s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
@@ -82,7 +81,7 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 		// customer WHERE c_id = cust_id
 		sql = "SELECT c_f_name, c_l_name, c_tier, c_tax_id FROM customer"
 				+ " WHERE c_id = " + custId;
-		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
@@ -94,7 +93,7 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 		
 		// SELECT broker_name = b_name FROM broker WHERE b_id = broker_id
 		sql = "SELECT b_name FROM broker WHERE b_id = " + brokerId;
-		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
@@ -116,7 +115,7 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 	 * Estimate overall effects of the trade
 	 */
 	private void frame3() {
-		TradeOrderParamHelper paramHelper = getParamHelper();
+		TradeOrderSpHelper paramHelper = getHelper();
 		Transaction tx = getTransaction();
 		
 		// ===== Simplified Version =====
@@ -125,7 +124,7 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 		// FROM security WHERE s_symb = symbol
 		String sql = "SELECT s_co_id, s_ex_id, s_name FROM security WHERE "
 				+ "s_symb = " + paramHelper.getSymbol();
-		Scan s = StoredProcedureHelper.executeQuery(sql, tx);
+		Scan s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
@@ -138,7 +137,7 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 		// WHERE lt_s_symb = symbol
 		sql = "SELECT lt_price FROM last_trade WHERE "
 				+ "lt_s_symb = " + paramHelper.getSymbol();
-		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
@@ -149,7 +148,7 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 		// FROM trade_type WHERE tt_id = trade_type_id
 		sql = "SELECT tt_is_mrkt, tt_is_sell FROM trade_type WHERE "
 				+ "tt_id = " + paramHelper.getTradeTypeId();
-		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
@@ -202,7 +201,7 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 	 * Record the trade request by making all related updates
 	 */
 	private void frame4() {
-		TradeOrderParamHelper paramHelper = getParamHelper();
+		TradeOrderSpHelper paramHelper = getHelper();
 		Transaction tx = getTransaction();
 		long currentTime = System.currentTimeMillis();
 		
@@ -219,7 +218,7 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 				paramHelper.getTradeTypeId(), 1, paramHelper.getSymbol(),
 				paramHelper.getTradeQty(), marketPrice, paramHelper.getAcctId(), "exec_name",
 				paramHelper.getTradePrice(), 0.0, 0.0, 0.0, 1);
-		StoredProcedureHelper.executeUpdate(sql, tx);
+		StoredProcedureUtils.executeUpdate(sql, tx);
 		
 		// TODO: Implement this (not in the simplified version)
 		// Record pending trade information in TRADE_REQUEST table 
@@ -231,6 +230,6 @@ public class TradeOrderProc extends StoredProcedure<TradeOrderParamHelper> {
 		// INSERT INTO trade_history (th_t_id, th_dts, th_st_id) VALUES (...)
 		sql = String.format("INSERT INTO trade_history (th_t_id, th_dts, th_st_id) VALUES "
 				+ "(%d, %d, '%s')",  paramHelper.getTradeId(), currentTime, statusId);
-		StoredProcedureHelper.executeUpdate(sql, tx);
+		StoredProcedureUtils.executeUpdate(sql, tx);
 	}
 }

@@ -13,20 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.vanilladb.bench.server.procedure;
+package org.vanilladb.bench.server.procedure.tpcc;
 
-import org.vanilladb.core.server.VanillaDb;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
+import org.vanilladb.bench.benchmarks.tpcc.rte.TpccSchemaBuilderParamHelper;
+import org.vanilladb.core.sql.Schema;
+import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class StartProfilingProc extends StoredProcedure<StoredProcedureHelper> {
+public class TpccSchemaBuilderSpHelper extends TpccSchemaBuilderParamHelper
+		implements StoredProcedureHelper {
 
-	public StartProfilingProc() {
-		super(StoredProcedureHelper.DEFAULT_HELPER);
+
+	@Override
+	public void prepareParameters(Object... pars) {
+		// nothing to do
 	}
 
 	@Override
-	protected void executeSql() {
-		VanillaDb.initAndStartProfiler();
+	public Schema getResultSetSchema() {
+		return new Schema();
+	}
+
+	@Override
+	public SpResultRecord newResultSetRecord() {
+		return new SpResultRecord();
+	}
+
+	@Override
+	public boolean isReadOnly() {
+		return false;
 	}
 }

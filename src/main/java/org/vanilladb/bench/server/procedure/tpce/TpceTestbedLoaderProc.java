@@ -26,15 +26,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.vanilladb.bench.benchmarks.tpce.data.TpceDataManager;
-import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
+import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.server.VanillaDb;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 import org.vanilladb.core.storage.tx.Transaction;
 import org.vanilladb.core.storage.tx.recovery.CheckpointTask;
 import org.vanilladb.core.storage.tx.recovery.RecoveryMgr;
 
-public class TpceTestbedLoaderProc extends StoredProcedure<StoredProcedureParamHelper> {
+public class TpceTestbedLoaderProc extends StoredProcedure<StoredProcedureHelper> {
 	private static Logger logger = Logger.getLogger(TpceTestbedLoaderProc.class.getName());
 	
 	private static interface RowProcessor {
@@ -42,7 +42,7 @@ public class TpceTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 	}
 
 	public TpceTestbedLoaderProc() {
-		super(StoredProcedureParamHelper.newDefaultParamHelper());
+		super(StoredProcedureHelper.DEFAULT_HELPER);
 	}
 
 	@Override
@@ -127,7 +127,7 @@ public class TpceTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 						columns[12], columns[13], columns[14], columns[15], columns[16],
 						columns[17], columns[18], columns[19], columns[20], columns[21],
 						columns[22], columns[23]);
-				StoredProcedureHelper.executeUpdate(sql, tx);
+				StoredProcedureUtils.executeUpdate(sql, tx);
 			}
 			
 		});
@@ -143,7 +143,7 @@ public class TpceTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 						+ "ca_c_id, ca_name, ca_tax_st, ca_bal) VALUES (%s, %s, %s, '%s', "
 						+ "%s, %s)", columns[0], columns[1], columns[2], columns[3], 
 						columns[4], columns[5]);
-				StoredProcedureHelper.executeUpdate(sql, tx);
+				StoredProcedureUtils.executeUpdate(sql, tx);
 			}
 			
 		});
@@ -158,7 +158,7 @@ public class TpceTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 				String sql = String.format("INSERT INTO broker (b_id, b_st_id, b_name, "
 						+ "b_num_trades, b_comm_total) VALUES (%s, '%s', '%s', %s, %s)", 
 						columns[0], columns[1], columns[2], columns[3], columns[4]);
-				StoredProcedureHelper.executeUpdate(sql, tx);
+				StoredProcedureUtils.executeUpdate(sql, tx);
 			}
 			
 		});
@@ -173,7 +173,7 @@ public class TpceTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 				String sql = String.format("INSERT INTO trade_type (tt_id, tt_name, "
 						+ "tt_is_sell, tt_is_mrkt) VALUES ('%s', '%s', %s, %s)", 
 						columns[0], columns[1], columns[2], columns[3]);
-				StoredProcedureHelper.executeUpdate(sql, tx);
+				StoredProcedureUtils.executeUpdate(sql, tx);
 			}
 			
 		});
@@ -192,7 +192,7 @@ public class TpceTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 						+ "VALUES (%s, '%s', '%s', '%s', '%s', '%s', %s, '%s', %d)", 
 						columns[0], columns[1], columns[2], columns[3], columns[4], 
 						columns[5], columns[6], columns[7], coOpenDate);
-				StoredProcedureHelper.executeUpdate(sql, tx);
+				StoredProcedureUtils.executeUpdate(sql, tx);
 			}
 			
 		});
@@ -209,7 +209,7 @@ public class TpceTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 				String sql = String.format("INSERT INTO last_trade (lt_s_symb, lt_dts, "
 						+ "lt_price, lt_open_price, lt_vol) VALUES ('%s', %d, %s, %s, %s)", 
 						columns[0], ltDts, columns[2], columns[3], columns[4]);
-				StoredProcedureHelper.executeUpdate(sql, tx);
+				StoredProcedureUtils.executeUpdate(sql, tx);
 			}
 			
 		});
@@ -234,7 +234,7 @@ public class TpceTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 						columns[1], columns[2], columns[3], columns[4], columns[5], 
 						columns[6], sStartDate, sExchDate, columns[9], columns[10], 
 						s52wkHighDate, columns[12], s52wkLowDate, columns[14], columns[15]);
-				StoredProcedureHelper.executeUpdate(sql, tx);
+				StoredProcedureUtils.executeUpdate(sql, tx);
 			}
 			
 		});

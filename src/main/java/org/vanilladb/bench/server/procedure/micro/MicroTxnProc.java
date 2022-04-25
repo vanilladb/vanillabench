@@ -15,27 +15,26 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure.micro;
 
-import org.vanilladb.bench.server.param.micro.MicroTxnProcParamHelper;
-import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
+import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;
 
-public class MicroTxnProc extends StoredProcedure<MicroTxnProcParamHelper> {
+public class MicroTxnProc extends StoredProcedure<MicroTxnSpHelper> {
 
 	public MicroTxnProc() {
-		super(new MicroTxnProcParamHelper());
+		super(new MicroTxnSpHelper());
 	}
 
 	@Override
 	protected void executeSql() {
-		MicroTxnProcParamHelper paramHelper = getParamHelper();
+		MicroTxnSpHelper helper = getHelper();
 		Transaction tx = getTransaction();
 		
 		// SELECT
-		for (int idx = 0; idx < paramHelper.getReadCount(); idx++) {
-			int iid = paramHelper.getReadItemId(idx);
-			Scan s = StoredProcedureHelper.executeQuery(
+		for (int idx = 0; idx < helper.getReadCount(); idx++) {
+			int iid = helper.getReadItemId(idx);
+			Scan s = StoredProcedureUtils.executeQuery(
 				"SELECT i_name, i_price FROM item WHERE i_id = " + iid,
 				tx
 			);
@@ -44,8 +43,8 @@ public class MicroTxnProc extends StoredProcedure<MicroTxnProcParamHelper> {
 				String name = (String) s.getVal("i_name").asJavaVal();
 				double price = (Double) s.getVal("i_price").asJavaVal();
 
-				paramHelper.setItemName(name, idx);
-				paramHelper.setItemPrice(price, idx);
+				helper.setItemName(name, idx);
+				helper.setItemPrice(price, idx);
 			} else
 				throw new RuntimeException("Cloud not find item record with i_id = " + iid);
 
@@ -53,10 +52,10 @@ public class MicroTxnProc extends StoredProcedure<MicroTxnProcParamHelper> {
 		}
 		
 		// UPDATE
-		for (int idx = 0; idx < paramHelper.getWriteCount(); idx++) {
-			int iid = paramHelper.getWriteItemId(idx);
-			double newPrice = paramHelper.getNewItemPrice(idx);
-			StoredProcedureHelper.executeUpdate(
+		for (int idx = 0; idx < helper.getWriteCount(); idx++) {
+			int iid = helper.getWriteItemId(idx);
+			double newPrice = helper.getNewItemPrice(idx);
+			StoredProcedureUtils.executeUpdate(
 				"UPDATE item SET i_price = " + newPrice + " WHERE i_id =" + iid,
 				tx
 			);

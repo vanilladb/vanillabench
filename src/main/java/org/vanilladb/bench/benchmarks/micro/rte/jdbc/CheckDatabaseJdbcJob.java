@@ -25,17 +25,17 @@ import java.util.logging.Logger;
 import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.bench.remote.jdbc.VanillaDbJdbcResultSet;
 import org.vanilladb.bench.rte.jdbc.JdbcJob;
-import org.vanilladb.bench.server.param.micro.TestbedLoaderParamHelper;
+import org.vanilladb.bench.server.procedure.micro.MicroTestbedLoaderSpHelper;
 
 public class CheckDatabaseJdbcJob implements JdbcJob {
 	private static Logger logger = Logger.getLogger(CheckDatabaseJdbcJob.class.getName());
 	
-	TestbedLoaderParamHelper paramHelper;
+	MicroTestbedLoaderSpHelper paramHelper;
 
 	@Override
 	public SutResultSet execute(Connection conn, Object[] pars) throws SQLException {
 		// Parse parameters
-		paramHelper = new TestbedLoaderParamHelper();
+		paramHelper = new MicroTestbedLoaderSpHelper();
 		paramHelper.prepareParameters(pars);
 		
 		// Execute logic

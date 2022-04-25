@@ -13,51 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.vanilladb.bench.server.param.tpce;
+package org.vanilladb.bench.server.procedure.tpce;
 
+import org.vanilladb.bench.benchmarks.tpce.rte.TradeOrderParamHelper;
 import org.vanilladb.core.sql.BigIntConstant;
 import org.vanilladb.core.sql.DoubleConstant;
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class TradeOrderParamHelper extends StoredProcedureParamHelper {
-	
-	// Inputs
-	private long acctId;
-	private String coName, execFName, execLName, execTaxId, issue, stPendingId, 
-			stSubmittedId, symbol, tradeTypeId;
-	private int isLifo, tradeQty, typeIsMargin;
-	private double requestedPrice;
-	private boolean rollItBack;
+public class TradeOrderSpHelper extends TradeOrderParamHelper
+		implements StoredProcedureHelper {
 	
 	// Outputs
 	private double buyValue, sellValue, taxAmount;
-//	private long tradeId;
-	
-	// XXX: inputs that are not in the spec.
-	protected long customerId;
-	protected String customerName;
-	protected long brokerId;
-	protected double marketPrice;
-	protected double tradePrice;
-	protected long tradeId;
+	private long newTradeId;
 
 	@Override
 	public void prepareParameters(Object... pars) {
-		if (pars.length != 10)
-			throw new RuntimeException("wrong pars list");
-		acctId = (Long) pars[0];
-		customerId = (Long) pars[1];
-		brokerId = (Long) pars[2];
-		coName = (String) pars[3];
-		requestedPrice = (Double) pars[4];
-		rollItBack = (Boolean) pars[5];
-		symbol = (String) pars[6];
-		tradeQty = (Integer) pars[7];
-		tradeTypeId = (String) pars[8];
-		tradeId = (Long) pars[9];
+		unpackParameters(pars);
 	}
 
 	@Override
@@ -76,60 +51,13 @@ public class TradeOrderParamHelper extends StoredProcedureParamHelper {
 		rec.setVal("buy_value", new DoubleConstant(buyValue));
 		rec.setVal("sell_value", new DoubleConstant(sellValue));
 		rec.setVal("tax_amount", new DoubleConstant(taxAmount));
-		rec.setVal("trade_id", new BigIntConstant(tradeId));
+		rec.setVal("trade_id", new BigIntConstant(newTradeId));
 		return rec;
 	}
 
-	public long getAcctId() {
-		return acctId;
-	}
-
-	public int getTradeQty() {
-		return tradeQty;
-	}
-
-	public String getTradeTypeId() {
-		return tradeTypeId;
-	}
-
-	public boolean isRollback() {
-		return rollItBack;
-	}
-
-	public double getRequestedPrice() {
-		return requestedPrice;
-	}
-
-	public String getCoName() {
-		return coName;
-	}
-
-	public String getSymbol() {
-		return symbol;
-	}
-
-	public long getCustomerId() {
-		return customerId;
-	}
-
-	public String getCustomerName() {
-		return customerName;
-	}
-
-	public long getBrokerId() {
-		return brokerId;
-	}
-
-	public double getMarketPrice() {
-		return marketPrice;
-	}
-
-	public double getTradePrice() {
-		return tradePrice;
-	}
-	
-	public long getTradeId() {
-		return tradeId;
+	@Override
+	public boolean isReadOnly() {
+		return false;
 	}
 	
 	// Set outputs
@@ -147,6 +75,6 @@ public class TradeOrderParamHelper extends StoredProcedureParamHelper {
 	}
 	
 	public void setTradeId(long tradeId) {
-		this.tradeId = tradeId;
+		this.newTradeId = tradeId;
 	}
 }

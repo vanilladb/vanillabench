@@ -15,34 +15,33 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure.tpcc;
 
-import org.vanilladb.bench.server.param.tpcc.PaymentProcParamHelper;
-import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
+import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;
 
-public class PaymentProc extends StoredProcedure<PaymentProcParamHelper> {
+public class PaymentProc extends StoredProcedure<PaymentSpHelper> {
 
 	public PaymentProc() {
-		super(new PaymentProcParamHelper());
+		super(new PaymentSpHelper());
 	}
 
 	@Override
 	protected void executeSql() {
-		PaymentProcParamHelper paramHelper = getParamHelper();
+		PaymentSpHelper helper = getHelper();
 		Transaction tx = getTransaction();
-		int wid = paramHelper.getWid();
-		int did = paramHelper.getDid();
-		int cid = paramHelper.getcid();
-		int cwid = paramHelper.getCwid();
-		int cdid = paramHelper.getCdid();
-		double hAmount = paramHelper.getHamount();
+		int wid = helper.getWid();
+		int did = helper.getDid();
+		int cid = helper.getCid();
+		int cwid = helper.getCwid();
+		int cdid = helper.getCdid();
+		double hAmount = helper.getHamount();
 		
 		// SELECT w_name, w_street_1, w_street_2, w_city, w_state, w_zip, w_ytd
 		// FROM warehouse WHERE w_id = wid;
 		String sql = "SELECT w_name, w_street_1, w_street_2, w_city,w_state, w_zip, w_ytd "
 				+ "FROM warehouse WHERE w_id = " + wid;
-		Scan s = StoredProcedureHelper.executeQuery(sql, tx);
+		Scan s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
@@ -59,13 +58,13 @@ public class PaymentProc extends StoredProcedure<PaymentProcParamHelper> {
 		sql = "UPDATE warehouse SET w_ytd = " + 
 				String.format("%f", wYtd + hAmount) +
 				" WHERE w_id = " + wid;
-		StoredProcedureHelper.executeUpdate(sql, tx);
+		StoredProcedureUtils.executeUpdate(sql, tx);
 		
 		// SELECT d_name, d_street_1, d_street_2, d_city, d_state, d_zip, d_ytd
 		// FROM district WHERE d_w_id = wid AND d_id = did;
 		sql = "SELECT d_name, d_street_1, d_street_2, d_city, d_state, d_zip, d_ytd "
 				+ "FROM district WHERE d_w_id = " + wid + " AND d_id = " + did;
-		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
@@ -83,7 +82,7 @@ public class PaymentProc extends StoredProcedure<PaymentProcParamHelper> {
 		sql = "UPDATE district SET d_ytd = " + 
 				String.format("%f", dYtd + hAmount) +
 				" WHERE d_w_id = " + wid + " AND d_id = " + did;
-		StoredProcedureHelper.executeUpdate(sql, tx);
+		StoredProcedureUtils.executeUpdate(sql, tx);
 		
 		// TODO: Add select by name
 		
@@ -97,38 +96,38 @@ public class PaymentProc extends StoredProcedure<PaymentProcParamHelper> {
 				"c_state, c_zip, c_phone, c_credit, c_credit_lim, " +
 				"c_discount, c_balance, c_since FROM customer " +
 				"WHERE c_w_id = " + cwid + " AND c_d_id = " + cdid + " AND c_id = " + cid;
-		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
-		paramHelper.setcFirst((String) s.getVal("c_first").asJavaVal());
-		paramHelper.setcMiddle((String) s.getVal("c_middle").asJavaVal());
-		paramHelper.setcLast((String) s.getVal("c_last").asJavaVal());
-		paramHelper.setcStreet1((String) s.getVal("c_street_1").asJavaVal());
-		paramHelper.setcStreet2((String) s.getVal("c_street_2").asJavaVal());
-		paramHelper.setcCity((String) s.getVal("c_city").asJavaVal());
-		paramHelper.setcState((String) s.getVal("c_state").asJavaVal());
-		paramHelper.setcZip((String) s.getVal("c_zip").asJavaVal());
-		paramHelper.setcPhone((String) s.getVal("c_phone").asJavaVal());
+		helper.setcFirst((String) s.getVal("c_first").asJavaVal());
+		helper.setcMiddle((String) s.getVal("c_middle").asJavaVal());
+		helper.setcLast((String) s.getVal("c_last").asJavaVal());
+		helper.setcStreet1((String) s.getVal("c_street_1").asJavaVal());
+		helper.setcStreet2((String) s.getVal("c_street_2").asJavaVal());
+		helper.setcCity((String) s.getVal("c_city").asJavaVal());
+		helper.setcState((String) s.getVal("c_state").asJavaVal());
+		helper.setcZip((String) s.getVal("c_zip").asJavaVal());
+		helper.setcPhone((String) s.getVal("c_phone").asJavaVal());
 		String cCredit = (String) s.getVal("c_credit").asJavaVal();
-		paramHelper.setcCredit(cCredit);
-		paramHelper.setcCreditLim((double) s.getVal("c_credit_lim").asJavaVal());
-		paramHelper.setcDiscount((double) s.getVal("c_discount").asJavaVal());
+		helper.setcCredit(cCredit);
+		helper.setcCreditLim((double) s.getVal("c_credit_lim").asJavaVal());
+		helper.setcDiscount((double) s.getVal("c_discount").asJavaVal());
 		double cBalance = (double) s.getVal("c_balance").asJavaVal();
-		paramHelper.setcBalance(cBalance);
-		paramHelper.setcSince((long) s.getVal("c_since").asJavaVal());
+		helper.setcBalance(cBalance);
+		helper.setcSince((long) s.getVal("c_since").asJavaVal());
 		s.close();
 		
 		cBalance += hAmount;
 		
 		if (cCredit.equals("BC")) {
-			paramHelper.setisBadCredit(true);
+			helper.setisBadCredit(true);
 			
 			// SELECT c_data FROM customer WHERE c_w_id = cwid AND
 			// c_d_id = cdid AND c_id = cid;
 			sql = "SELECT c_data FROM customer WHERE c_w_id = " + cwid +
 					" AND c_d_id = " + cdid + " AND c_id = " + cid;
-			s = StoredProcedureHelper.executeQuery(sql, tx);
+			s = StoredProcedureUtils.executeQuery(sql, tx);
 			s.beforeFirst();
 			if (!s.next())
 				throw new RuntimeException("Executing '" + sql + "' fails");
@@ -140,7 +139,7 @@ public class PaymentProc extends StoredProcedure<PaymentProcParamHelper> {
 			cNewData += cData;
 			if (cNewData.length() > 499)
 				cNewData = cNewData.substring(0, 499);
-			paramHelper.setcData(cNewData);
+			helper.setcData(cNewData);
 			
 			// UPDATE customer SET c_balance = cBalance, c_data = 'cNewData'
 			// WHERE c_w_id = cwid AND c_d_id = cdid AND c_id = cid
@@ -148,7 +147,7 @@ public class PaymentProc extends StoredProcedure<PaymentProcParamHelper> {
 					String.format("%f", cBalance) +
 					", c_data = '" + cNewData + "' WHERE c_w_id = " + cwid +
 					" AND c_d_id = " + cdid + " AND c_id = " + cid;
-			StoredProcedureHelper.executeUpdate(sql, tx);
+			StoredProcedureUtils.executeUpdate(sql, tx);
 		} else {
 			// UPDATE customer SET c_balance = cBalance
 			// WHERE c_w_id = cwid AND c_d_id = cdid AND c_id = cid
@@ -156,12 +155,12 @@ public class PaymentProc extends StoredProcedure<PaymentProcParamHelper> {
 					String.format("%f", cBalance) +
 					" WHERE c_w_id = " + cwid +
 					" AND c_d_id = " + cdid + " AND c_id = " + cid;
-			StoredProcedureHelper.executeUpdate(sql, tx);
+			StoredProcedureUtils.executeUpdate(sql, tx);
 		}
 		
 		String hData = wName + "    " + dName;
 		long hDate = System.currentTimeMillis();
-		paramHelper.sethDate(hDate);
+		helper.sethDate(hDate);
 		
 		// INSERT INTO history (h_c_id, h_c_d_id, h_c_w_id, h_d_id, h_w_id,
 		// h_date, h_amount, h_data) VALUES (cid, cdid, cwid, did, wid, hDate,
@@ -170,6 +169,6 @@ public class PaymentProc extends StoredProcedure<PaymentProcParamHelper> {
 				+ "h_w_id, h_date, h_amount, h_data) VALUES ( %d, %d, %d, %d, "
 				+ "%d, %d, %f, '%s')",
 				cid, cdid, cwid, did, wid, hDate, hAmount, hData);
-		StoredProcedureHelper.executeUpdate(sql, tx);
+		StoredProcedureUtils.executeUpdate(sql, tx);
 	}
 }

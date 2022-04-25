@@ -21,23 +21,23 @@ import java.util.logging.Logger;
 import org.vanilladb.bench.benchmarks.tpcc.TpccConstants;
 import org.vanilladb.bench.benchmarks.tpcc.TpccParameters;
 import org.vanilladb.bench.benchmarks.tpcc.TpccValueGenerator;
-import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
+import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.bench.util.DoublePlainPrinter;
 import org.vanilladb.bench.util.RandomPermutationGenerator;
 import org.vanilladb.core.server.VanillaDb;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 import org.vanilladb.core.storage.tx.Transaction;
 import org.vanilladb.core.storage.tx.recovery.CheckpointTask;
 import org.vanilladb.core.storage.tx.recovery.RecoveryMgr;
 
-public class TpccTestbedLoaderProc extends StoredProcedure<StoredProcedureParamHelper> {
+public class TpccTestbedLoaderProc extends StoredProcedure<StoredProcedureHelper> {
 	private static Logger logger = Logger.getLogger(TpccTestbedLoaderProc.class.getName());
 
 	private TpccValueGenerator rg = new TpccValueGenerator();
 
 	public TpccTestbedLoaderProc() {
-		super(StoredProcedureParamHelper.newDefaultParamHelper());
+		super(StoredProcedureHelper.DEFAULT_HELPER);
 	}
 	
 	@Override
@@ -106,7 +106,7 @@ public class TpccTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 
 			sql = "INSERT INTO item(i_id, i_im_id, i_name, i_price, i_data) VALUES (" + iid + ", " + iimid + ", '"
 					+ iname + "', " + DoublePlainPrinter.toPlainString(iprice) + ", '" + idata + "' )";
-			StoredProcedureHelper.executeUpdate(sql, tx);
+			StoredProcedureUtils.executeUpdate(sql, tx);
 		}
 
 		if (logger.isLoggable(Level.FINE))
@@ -160,7 +160,7 @@ public class TpccTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 		sb.append("', '").append(wcity).append("', '").append(wstate);
 		sb.append("', '").append(wzip).append("', ").append(DoublePlainPrinter.toPlainString(wtax));
 		sb.append(", ").append(DoublePlainPrinter.toPlainString(wytd)).append(" )");
-		StoredProcedureHelper.executeUpdate(sb.toString(), tx);
+		StoredProcedureUtils.executeUpdate(sb.toString(), tx);
 	}
 
 	private void generateStocks(int wid) {
@@ -193,7 +193,7 @@ public class TpccTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 					+ "s_ytd, s_order_cnt, s_remote_cnt, s_data) VALUES (" + siid + ", " + swid + ", " + squantity
 					+ ", '" + sd1 + "', '" + sd2 + "', '" + sd3 + "', '" + sd4 + "', '" + sd5 + "', '" + sd6 + "', '"
 					+ sd7 + "', '" + sd8 + "', '" + sd9 + "', '" + sd10 + "', 0, 0, 0, '" + sdata + "')";
-			StoredProcedureHelper.executeUpdate(sql, tx);
+			StoredProcedureUtils.executeUpdate(sql, tx);
 		}
 	}
 
@@ -220,7 +220,7 @@ public class TpccTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 					+ "', '" + dst2 + "', '" + dcity + "', '" + dstate + "', '" + dzip + "', "
 					+ DoublePlainPrinter.toPlainString(dtax) + ", " + DoublePlainPrinter.toPlainString(dytd) + ", "
 					+ (TpccConstants.CUSTOMERS_PER_DISTRICT + 1) + ")";
-			StoredProcedureHelper.executeUpdate(sql, tx);
+			StoredProcedureUtils.executeUpdate(sql, tx);
 		}
 	}
 
@@ -268,7 +268,7 @@ public class TpccTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 					+ DoublePlainPrinter.toPlainString(ccl) + ", " + DoublePlainPrinter.toPlainString(cdiscount) + ", "
 					+ DoublePlainPrinter.toPlainString(cbal) + ", " + DoublePlainPrinter.toPlainString(cytdpay)
 					+ ", 1, 0, '" + cdata + "')";
-			StoredProcedureHelper.executeUpdate(sql, tx);
+			StoredProcedureUtils.executeUpdate(sql, tx);
 		}
 		if (logger.isLoggable(Level.FINE))
 			logger.info("Finish populating customers for district " + did);
@@ -289,7 +289,7 @@ public class TpccTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 					+ "h_d_id,h_w_id, h_date, h_amount, h_data ) VALUES (" + hcid + ", " + did + "," + wid + ","
 					+ did + "," + wid + "," + hdate + "," + DoublePlainPrinter.toPlainString(hamount) + ", '" + hdata
 					+ "')";
-			StoredProcedureHelper.executeUpdate(sql, tx);
+			StoredProcedureUtils.executeUpdate(sql, tx);
 		}
 	}
 
@@ -312,7 +312,7 @@ public class TpccTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 			String sql = "INSERT INTO ORDERS(o_id, o_c_id, o_d_id, "
 					+ "o_w_id, o_entry_d, o_carrier_id, o_ol_cnt, o_all_local) VALUES (" + oid + ", " + ocid + ", "
 					+ did + "," + wid + "," + oenrtyd + "," + ocarid + ", " + ol_cnt + ",1)";
-			StoredProcedureHelper.executeUpdate(sql, tx);
+			StoredProcedureUtils.executeUpdate(sql, tx);
 
 			generateOrderLine(wid, did, i, ol_cnt, oenrtyd);
 		}
@@ -342,7 +342,7 @@ public class TpccTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 					+ "ol_delivery_d, ol_quantity, ol_amount, ol_dist_info)" + " VALUES (" + orderId + "," + districtId
 					+ "," + warehouseId + "," + olnum + "," + oliid + ", " + warehouseId + ", " + oldeld + ", 5, "
 					+ DoublePlainPrinter.toPlainString(olamount) + ", '" + oldistinfo + "')";
-			StoredProcedureHelper.executeUpdate(sql, tx);
+			StoredProcedureUtils.executeUpdate(sql, tx);
 		}
 	}
 
@@ -353,7 +353,7 @@ public class TpccTestbedLoaderProc extends StoredProcedure<StoredProcedureParamH
 			nooid = i;
 			String sql = "INSERT INTO new_order(no_o_id, no_d_id, no_w_id) VALUES (" + nooid + "," + did + "," + wid
 					+ ")";
-			StoredProcedureHelper.executeUpdate(sql, tx);
+			StoredProcedureUtils.executeUpdate(sql, tx);
 		}
 	}
 

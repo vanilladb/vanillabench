@@ -19,7 +19,7 @@ import org.vanilladb.bench.benchmarks.micro.MicrobenchTransactionType;
 import org.vanilladb.bench.benchmarks.micro.MicrobenchConstants;
 import org.vanilladb.bench.rte.TxParamGenerator;
 
-public class TestbedLoaderParamGen implements TxParamGenerator<MicrobenchTransactionType> {
+public class MicroTestbedLoaderParamGen implements TxParamGenerator<MicrobenchTransactionType> {
 
 	@Override
 	public MicrobenchTransactionType getTxnType() {
