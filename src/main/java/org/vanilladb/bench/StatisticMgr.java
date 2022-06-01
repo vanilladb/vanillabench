@@ -300,10 +300,15 @@ public class StatisticMgr {
 			lowerQ = calcMedian(timeSlot.subList(0, middleOffset));
 			upperQ = calcMedian(timeSlot.subList(middleOffset + 1, count));
 		}
+		
+		Long min = new Long(0);
+		Long max = new Long(0);
 
-		Long min = Collections.min(timeSlot);
-		Long max = Collections.max(timeSlot);
-
+		if (count > 0) {
+			min = Collections.min(timeSlot);
+			max = Collections.max(timeSlot);
+		}
+		
 		return String.format("%d, %d, %f, %d, %d, %d, %d, %d",
 				timeSlotBoundary, count, mean, min, max, lowerQ, median, upperQ);
 	}
