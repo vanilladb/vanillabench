@@ -257,12 +257,14 @@ public class StatisticMgr {
 			timeSlot = new ArrayList<Long>();
 			latencyHistory.put(timeSlotBoundary, timeSlot);
 		}
-		timeSlot.add(TimeUnit.NANOSECONDS.toMillis(rs.getTxnResponseTime()));
 		
 		// there are multiple txn types
 		TxnStatistic txnStatistic = txnStatistics.get(rs.getTxnType());
 		
 		if (rs.isTxnIsCommited()) {
+			// Do not count the aborted transactions
+			timeSlot.add(TimeUnit.NANOSECONDS.toMillis(rs.getTxnResponseTime()));
+			
 			// Count transactions for each type
 			txnStatistic.addTxnResponseTimeAndCommitedTxnCount(rs.getTxnResponseTime());
 		} else {
@@ -308,6 +310,9 @@ public class StatisticMgr {
 	
 	private Long calcMedian(List<Long> timeSlot) {
 		int count = timeSlot.size();
+		if (count == 0) {
+			return new Long(0);
+		}
 		if (count % 2 != 0) // Odd
 			return timeSlot.get((count - 1) / 2);
 		else {// Even
