@@ -284,17 +284,19 @@ public class TpccValueGenerator {
 		}
 
 		private void generateC() {
-			cForCId = number(0, aForCId);
-			cForOrderLineIId = number(0, aForOrderLineIId);
-			if (TpccConstants.CUSTOMERS_PER_DISTRICT < 1000) {
+//			cForCId = number(0, aForCId);
+			cForCId = 901;
+//			cForOrderLineIId = number(0, aForOrderLineIId);
+			cForOrderLineIId = 1918;
+//			if (TpccConstants.CUSTOMERS_PER_DISTRICT < 1000) {
 				cLoadForCLast = 91;
 				cRunForCLast = 21;
-			} else {
-				cLoadForCLast = number(0, aForCLast);
-				cRunForCLast = number(0, aForCLast);
-				while (!isValidCRun())
-					cRunForCLast = number(0, aForCLast);
-			}
+//			} else {
+//				cLoadForCLast = number(0, aForCLast);
+//				cRunForCLast = number(0, aForCLast);
+//				while (!isValidCRun())
+//					cRunForCLast = number(0, aForCLast);
+//			}
 		}
 
 		private boolean isValidCRun() {
