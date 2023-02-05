@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import org.vanilladb.bench.benchmarks.ycsb.YcsbConstants;
 import org.vanilladb.bench.server.param.ycsb.YcsbBenchmarkProcParamHelper;
-import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
+import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.Constant;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
@@ -18,13 +18,13 @@ public class YcsbProc extends StoredProcedure<YcsbBenchmarkProcParamHelper> {
 	
 	@Override
 	protected void executeSql() {
-		YcsbBenchmarkProcParamHelper paramHelper = getParamHelper();
+		YcsbBenchmarkProcParamHelper paramHelper = getHelper();
 		Transaction tx = getTransaction();
 
 		for (int idx = 0; idx < paramHelper.getReadCount(); idx++) {
 			String id = paramHelper.getReadIdStr(idx);
 			String sql = "SELECT ycsb_id, ycsb_1 FROM ycsb WHERE ycsb_id = '" + id + "'";
-			Scan s = StoredProcedureHelper.executeQuery(sql, tx);
+			Scan s = StoredProcedureUtils.executeQuery(sql, tx);
 			s.beforeFirst();
 			if (s.next()) {
 				String ycsb_1 = (String) s.getVal("ycsb_1").asJavaVal();
@@ -40,7 +40,7 @@ public class YcsbProc extends StoredProcedure<YcsbBenchmarkProcParamHelper> {
 			String id = paramHelper.getWriteIdStr(idx);
 			String newYcsbVal = paramHelper.getWriteValue(idx);
 			String sql = "UPDATE ycsb SET ycsb_1 = '" + newYcsbVal + "' WHERE ycsb_id = '" + id + "'";
-			StoredProcedureHelper.executeUpdate(sql, tx);
+			StoredProcedureUtils.executeUpdate(sql, tx);
 		}
 		
 		for (int idx = 0; idx < paramHelper.getInsertCount(); idx++) {
@@ -67,7 +67,7 @@ public class YcsbProc extends StoredProcedure<YcsbBenchmarkProcParamHelper> {
 			}
 			sql.append(")");
 			
-			StoredProcedureHelper.executeUpdate(sql.toString(), tx);
+			StoredProcedureUtils.executeUpdate(sql.toString(), tx);
 		}
 	}
 }

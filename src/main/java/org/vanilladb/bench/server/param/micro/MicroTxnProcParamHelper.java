@@ -21,9 +21,9 @@ import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.sql.VarcharConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class MicroTxnProcParamHelper extends StoredProcedureParamHelper {
+public class MicroTxnProcParamHelper implements StoredProcedureHelper {
 
 	private int readCount;
 	private int writeCount;
@@ -84,9 +84,11 @@ public class MicroTxnProcParamHelper extends StoredProcedureParamHelper {
 		newItemPrice = new double[writeCount];
 		for (int i = 0; i < writeCount; i++)
 			newItemPrice[i] = (Double) pars[indexCnt++];
-
-		if (writeCount == 0)
-			setReadOnly(true);
+	}
+	
+	@Override
+	public boolean isReadOnly() {
+		return writeCount == 0;
 	}
 
 	@Override

@@ -17,12 +17,12 @@ package org.vanilladb.bench.server.procedure;
 
 import org.vanilladb.core.server.VanillaDb;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class StartProfilingProc extends StoredProcedure<StoredProcedureParamHelper> {
+public class StartProfilingProc extends StoredProcedure<StoredProcedureHelper> {
 
 	public StartProfilingProc() {
-		super(StoredProcedureParamHelper.newDefaultParamHelper());
+		super(StoredProcedureHelper.DEFAULT_HELPER);
 	}
 
 	@Override

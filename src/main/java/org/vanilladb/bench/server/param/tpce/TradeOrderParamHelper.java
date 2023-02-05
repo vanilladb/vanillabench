@@ -20,9 +20,9 @@ import org.vanilladb.core.sql.DoubleConstant;
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class TradeOrderParamHelper extends StoredProcedureParamHelper {
+public class TradeOrderParamHelper implements StoredProcedureHelper {
 	
 	// Inputs
 	private long acctId;
@@ -58,6 +58,11 @@ public class TradeOrderParamHelper extends StoredProcedureParamHelper {
 		tradeQty = (Integer) pars[7];
 		tradeTypeId = (String) pars[8];
 		tradeId = (Long) pars[9];
+	}
+	
+	@Override
+	public boolean isReadOnly() {
+		return false;
 	}
 
 	@Override

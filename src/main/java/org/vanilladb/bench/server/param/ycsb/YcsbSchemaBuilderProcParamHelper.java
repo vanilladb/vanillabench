@@ -3,9 +3,9 @@ package org.vanilladb.bench.server.param.ycsb;
 import org.vanilladb.bench.benchmarks.ycsb.YcsbConstants;
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class YcsbSchemaBuilderProcParamHelper extends StoredProcedureParamHelper {
+public class YcsbSchemaBuilderProcParamHelper implements StoredProcedureHelper {
 	private static final String YCSB_DDL;
 	
 	static {
@@ -43,6 +43,11 @@ public class YcsbSchemaBuilderProcParamHelper extends StoredProcedureParamHelper
 	@Override
 	public void prepareParameters(Object... pars) {
 		// nothing to do
+	}
+	
+	@Override
+	public boolean isReadOnly() {
+		return false;
 	}
 
 	@Override
