@@ -22,9 +22,9 @@ import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.sql.VarcharConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class OrderStatusProcParamHelper extends StoredProcedureParamHelper {
+public class OrderStatusProcParamHelper implements StoredProcedureHelper {
 	protected boolean selectByCLast;
 	protected int cwid, cdid, cid, oid, carrierId;
 	protected String cLast, cMiddle, cFirst;
@@ -42,6 +42,12 @@ public class OrderStatusProcParamHelper extends StoredProcedureParamHelper {
 			cLast = (String) pars[2];
 		} else
 			cid = (Integer) pars[2];
+	}
+	
+	@Override
+	public boolean isReadOnly() {
+		// TODO: Check if this is correct
+		return true;
 	}
 
 	@Override

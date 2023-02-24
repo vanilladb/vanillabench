@@ -17,9 +17,9 @@ package org.vanilladb.bench.server.param.tpce;
 
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class TpceSchemaBuilderParamHelper extends StoredProcedureParamHelper {
+public class TpceSchemaBuilderParamHelper implements StoredProcedureHelper {
 
 	private static final String TABLES_DDL[] = {
 			// Customer Category
@@ -98,6 +98,11 @@ public class TpceSchemaBuilderParamHelper extends StoredProcedureParamHelper {
 	@Override
 	public void prepareParameters(Object... pars) {
 		// nothing to do
+	}
+	
+	@Override
+	public boolean isReadOnly() {
+		return false;
 	}
 
 	@Override

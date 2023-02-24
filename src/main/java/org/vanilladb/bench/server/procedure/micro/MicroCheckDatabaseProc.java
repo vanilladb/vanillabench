@@ -4,7 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.vanilladb.bench.server.param.micro.TestbedLoaderParamHelper;
-import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
+import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 
@@ -21,7 +21,7 @@ public class MicroCheckDatabaseProc extends StoredProcedure<TestbedLoaderParamHe
 			logger.info("Checking database for the micro benchmarks...");
 
 		// Checking item records
-		if (!checkItemTable(1, getParamHelper().getNumberOfItems()))
+		if (!checkItemTable(1, getHelper().getNumberOfItems()))
 			abort("checking database fails");
 
 		if (logger.isLoggable(Level.INFO))
@@ -40,7 +40,7 @@ public class MicroCheckDatabaseProc extends StoredProcedure<TestbedLoaderParamHe
 		
 		// Scan the table
 		String sql = "SELECT i_id FROM item";
-		Scan scan = StoredProcedureHelper.executeQuery(sql, getTransaction());
+		Scan scan = StoredProcedureUtils.executeQuery(sql, getTransaction());
 		scan.beforeFirst();
 		for (int i = startIId, count = 0; i <= endIId; i++) {
 			if (!scan.next()) {

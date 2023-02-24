@@ -22,9 +22,9 @@ import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.sql.VarcharConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class NewOrderProcParamHelper extends StoredProcedureParamHelper {
+public class NewOrderProcParamHelper implements StoredProcedureHelper {
 	
 	// input parameters
 	protected int wid, did, cid, olCount;
@@ -52,6 +52,11 @@ public class NewOrderProcParamHelper extends StoredProcedureParamHelper {
 			items[i][2] = (Integer) pars[++j];
 		}
 		allLocal = (Boolean) pars[49];
+	}
+	
+	@Override
+	public boolean isReadOnly() {
+		return false;
 	}
 
 	@Override

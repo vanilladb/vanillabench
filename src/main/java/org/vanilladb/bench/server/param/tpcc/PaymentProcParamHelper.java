@@ -22,9 +22,9 @@ import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.sql.VarcharConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class PaymentProcParamHelper extends StoredProcedureParamHelper {
+public class PaymentProcParamHelper implements StoredProcedureHelper {
 
 	protected int wid, did, cwid, cdid, cid;
 	protected String cDataStr, cLast, cMiddle, cFirst, cStreet1, cStreet2, cCity, cState, cZip, cPhone, cCredit;
@@ -46,6 +46,11 @@ public class PaymentProcParamHelper extends StoredProcedureParamHelper {
 		cdid = (Integer) pars[3];
 		cid = (Integer) pars[4];
 		hAmount = (Double) pars[5];
+	}
+	
+	@Override
+	public boolean isReadOnly() {
+		return false;
 	}
 
 	@Override

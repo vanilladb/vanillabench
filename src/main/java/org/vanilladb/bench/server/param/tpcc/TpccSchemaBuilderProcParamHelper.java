@@ -17,9 +17,9 @@ package org.vanilladb.bench.server.param.tpcc;
 
 import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class TpccSchemaBuilderProcParamHelper extends StoredProcedureParamHelper {
+public class TpccSchemaBuilderProcParamHelper implements StoredProcedureHelper {
 
 	private final String TABLES_DDL[] = {
 			"CREATE TABLE warehouse ( w_id INT, w_name VARCHAR(10), "
@@ -76,6 +76,11 @@ public class TpccSchemaBuilderProcParamHelper extends StoredProcedureParamHelper
 	@Override
 	public void prepareParameters(Object... pars) {
 		// nothing to do
+	}
+	
+	@Override
+	public boolean isReadOnly() {
+		return false;
 	}
 
 	@Override

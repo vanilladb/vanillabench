@@ -8,9 +8,9 @@ import org.vanilladb.core.sql.Schema;
 import org.vanilladb.core.sql.Type;
 import org.vanilladb.core.sql.VarcharConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
-import org.vanilladb.core.sql.storedprocedure.StoredProcedureParamHelper;
+import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class YcsbBenchmarkProcParamHelper extends StoredProcedureParamHelper {
+public class YcsbBenchmarkProcParamHelper implements StoredProcedureHelper {
 	
 	private int readCount;
 	private int writeCount;
@@ -110,9 +110,11 @@ public class YcsbBenchmarkProcParamHelper extends StoredProcedureParamHelper {
 		insertVals = new String[insertCount];
 		for (int i = 0; i < insertCount; i++)
 			insertVals[i] = (String) pars[indexCnt++];
-
-		if (writeCount == 0 && insertCount == 0)
-			setReadOnly(true);
+	}
+	
+	@Override
+	public boolean isReadOnly() {
+		return writeCount == 0;
 	}
 
 	@Override

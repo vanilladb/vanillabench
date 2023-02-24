@@ -20,7 +20,7 @@ import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.server.VanillaDb;
 import org.vanilladb.core.storage.tx.Transaction;
 
-public class StoredProcedureHelper {
+public class StoredProcedureUtils {
 	
 	public static Scan executeQuery(String sql, Transaction tx) {
 		Plan p = VanillaDb.newPlanner().createQueryPlan(sql, tx);

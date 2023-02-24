@@ -16,7 +16,7 @@
 package org.vanilladb.bench.server.procedure.tpcc;
 
 import org.vanilladb.bench.server.param.tpcc.NewOrderProcParamHelper;
-import org.vanilladb.bench.server.procedure.StoredProcedureHelper;
+import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;
@@ -45,7 +45,7 @@ public class NewOrderProc extends StoredProcedure<NewOrderProcParamHelper> {
 
 	@Override
 	protected void executeSql() {
-		NewOrderProcParamHelper paramHelper = getParamHelper();
+		NewOrderProcParamHelper paramHelper = getHelper();
 		Transaction tx = getTransaction();
 		int wid = paramHelper.getWid();
 		int did = paramHelper.getDid();
@@ -54,7 +54,7 @@ public class NewOrderProc extends StoredProcedure<NewOrderProcParamHelper> {
 		
 		// SELECT w_tax FROM warehouse WHERE w_id = wid
 		String sql = "SELECT w_tax FROM warehouse WHERE w_id = " + wid;
-		Scan s = StoredProcedureHelper.executeQuery(sql, tx);
+		Scan s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
@@ -65,7 +65,7 @@ public class NewOrderProc extends StoredProcedure<NewOrderProcParamHelper> {
 		// did
 		sql = "SELECT d_tax, d_next_o_id FROM district WHERE d_w_id = " + wid +
 				" AND d_id = " + did;
-		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
@@ -80,13 +80,13 @@ public class NewOrderProc extends StoredProcedure<NewOrderProcParamHelper> {
 		// AND d_id = did
 		sql = "UPDATE district SET d_next_o_id = " + (nextOid + 1) +
 				" WHERE d_w_id = " + wid + " AND d_id = " + did;
-		StoredProcedureHelper.executeUpdate(sql, tx);
+		StoredProcedureUtils.executeUpdate(sql, tx);
 
 		// SELECT c_discount, c_last, c_credit FROM customer WHERE c_w_id = wid
 		// AND c_d_id = did AND c_id = cid
 		sql = "SELECT c_discount, c_last, c_credit FROM customer WHERE c_w_id = " + wid +
 				" AND c_d_id = " + did + " AND c_id = " + cid;
-		s = StoredProcedureHelper.executeQuery(sql, tx);
+		s = StoredProcedureUtils.executeQuery(sql, tx);
 		s.beforeFirst();
 		if (!s.next())
 			throw new RuntimeException("Executing '" + sql + "' fails");
@@ -107,13 +107,13 @@ public class NewOrderProc extends StoredProcedure<NewOrderProcParamHelper> {
 				+ "o_carrier_id, o_ol_cnt, o_all_local) VALUES (%d, %d," +
 				"%d, %d, %d, 0, %d, %d)", nextOid, wid, did, cid, oEntryDate,
 				olCount, isAllLocal);
-		StoredProcedureHelper.executeUpdate(sql, tx);
+		StoredProcedureUtils.executeUpdate(sql, tx);
 
 		// INSERT INTO new_order (no_o_id, no_d_id, no_w_id) VALUES
 		// (nextOId, did, wid)
 		sql = String.format("INSERT INTO new_order (no_o_id, no_d_id, no_w_id) VALUES"
 				+ " (%d, %d, %d)", nextOid, did, wid);
-		StoredProcedureHelper.executeUpdate(sql, tx);
+		StoredProcedureUtils.executeUpdate(sql, tx);
 
 		// For each order line
 		int totalAmount = 0;
@@ -126,7 +126,7 @@ public class NewOrderProc extends StoredProcedure<NewOrderProcParamHelper> {
 
 			// SELECT i_price, i_name, i_data FROM item WHERE i_id = olIId
 			sql = "SELECT i_price, i_name, i_data FROM item WHERE i_id = " + olIId;
-			s = StoredProcedureHelper.executeQuery(sql, tx);
+			s = StoredProcedureUtils.executeQuery(sql, tx);
 			s.beforeFirst();
 			if (!s.next())
 				throw new RuntimeException("Executing '" + sql + "' fails");
@@ -147,7 +147,7 @@ public class NewOrderProc extends StoredProcedure<NewOrderProcParamHelper> {
 			sql = "SELECT s_quantity, " + sDistXX +
 					", s_data, s_ytd, s_order_cnt FROM stock WHERE s_i_id = " + olIId +
 					" AND s_w_id = " + olSupplyWId;
-			s = StoredProcedureHelper.executeQuery(sql, tx);
+			s = StoredProcedureUtils.executeQuery(sql, tx);
 			s.beforeFirst();
 			if (!s.next())
 				throw new RuntimeException("Executing '" + sql + "' fails");
@@ -171,7 +171,7 @@ public class NewOrderProc extends StoredProcedure<NewOrderProcParamHelper> {
 			sql = String.format("UPDATE stock SET s_quantity = %d, s_ytd = %d, " +
 					"s_order_cnt = %d WHERE s_i_id = %d AND s_w_id = %d",
 					sQuantity, sYtd, sOrderCnt, olIId, olSupplyWId);
-			StoredProcedureHelper.executeUpdate(sql, tx);
+			StoredProcedureUtils.executeUpdate(sql, tx);
 			
 			// INSERT INTO order_line (ol_o_id, ol_d_id, ol_w_id,
 			// ol_number,ol_i_id, ol_supply_w_id, ol_delivery_d,
@@ -186,7 +186,7 @@ public class NewOrderProc extends StoredProcedure<NewOrderProcParamHelper> {
 					"%d, %d, %d, %d, %d, %d, -1, %d, %f, '%s')",
 					nextOid, did, wid, i, olIId, olSupplyWId, olQuantity,
 					olAmount, sDistInfo);
-			StoredProcedureHelper.executeUpdate(sql, tx);
+			StoredProcedureUtils.executeUpdate(sql, tx);
 
 			// record amounts
 			totalAmount += olAmount;
