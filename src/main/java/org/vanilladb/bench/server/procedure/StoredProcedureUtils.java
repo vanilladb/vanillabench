@@ -17,6 +17,7 @@ package org.vanilladb.bench.server.procedure;
 
 import org.vanilladb.core.query.algebra.Plan;
 import org.vanilladb.core.query.algebra.Scan;
+import org.vanilladb.core.query.parse.InsertData;
 import org.vanilladb.core.server.VanillaDb;
 import org.vanilladb.core.storage.tx.Transaction;
 
@@ -29,5 +30,9 @@ public class StoredProcedureUtils {
 	
 	public static int executeUpdate(String sql, Transaction tx) {
 		return VanillaDb.newPlanner().executeUpdate(sql, tx);
+	}
+
+	public static int executeInsert(InsertData sql, Transaction tx) {
+		return VanillaDb.newPlanner().executeInsert(sql, tx);
 	}
 }
