@@ -56,7 +56,6 @@ public class AnnTestbedLoaderProc extends StoredProcedure<AnnTestbedLoaderParamH
     }
 
     private void dropOldData() {
-        // TODO: Implement this
         if (logger.isLoggable(Level.WARNING))
             logger.warning("Dropping is skipped.");
     }
@@ -83,7 +82,7 @@ public class AnnTestbedLoaderProc extends StoredProcedure<AnnTestbedLoaderParamH
 
         for (int i = startIId; i <= endIId; i++) {
             int iid = i;
-            List<String> fields = new ArrayList<>(Arrays.asList("i_id", "emb"));
+            List<String> fields = new ArrayList<>(Arrays.asList("i_id", "i_emb"));
             List<Constant> vals = new ArrayList<>(Arrays.asList(new IntegerConstant(iid), new VectorConstant(128)));
 
             InsertData sql = new InsertData(getHelper().getCollectionName(), fields, vals);

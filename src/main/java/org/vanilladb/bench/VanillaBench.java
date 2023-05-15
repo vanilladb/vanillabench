@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.vanilladb.bench.benchmarks.ann.AnnBenchmark;
 import org.vanilladb.bench.benchmarks.micro.MicroBenchmark;
 import org.vanilladb.bench.benchmarks.tpcc.TpccBenchmark;
 import org.vanilladb.bench.benchmarks.tpce.TpceBenchmark;
@@ -163,8 +164,10 @@ public class VanillaBench {
 			return new TpceBenchmark();
 		case YCSB:
 			return new YcsbBenchmark();
+		case ANN:
+			return new AnnBenchmark();
 		}
-		return null;
+		throw new RuntimeException("Unsupported benchmark type: " + VanillaBenchParameters.BENCH_TYPE);
 	}
 	
 	private StatisticMgr newStatisticMgr(Benchmark benchmarker) {

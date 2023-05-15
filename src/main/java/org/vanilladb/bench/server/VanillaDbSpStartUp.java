@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import org.vanilladb.bench.VanillaBenchParameters;
 import org.vanilladb.bench.server.procedure.BasicStoredProcFactory;
+import org.vanilladb.bench.server.procedure.ann.AnnBenchStoredProcFactory;
 import org.vanilladb.bench.server.procedure.micro.MicrobenchStoredProcFactory;
 import org.vanilladb.bench.server.procedure.tpcc.TpccStoredProcFactory;
 import org.vanilladb.bench.server.procedure.tpce.TpceStoredProcFactory;
@@ -70,6 +71,12 @@ public class VanillaDbSpStartUp implements SutStartUp {
 			if (logger.isLoggable(Level.INFO))
 				logger.info("using YCSB stored procedures");
 			factory = new YcsbStoredProcFactory();
+			break;
+		case ANN:
+			if (logger.isLoggable(Level.INFO))
+				logger.info("using ANN stored procedures");;
+
+			factory = new AnnBenchStoredProcFactory();
 			break;
 		}
 		factory = new BasicStoredProcFactory(factory);
