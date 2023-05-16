@@ -6,11 +6,9 @@ import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
 public class AnnTestbedLoaderParamHelper implements StoredProcedureHelper {
 
-    private static final String TABLES_DDL[] = {
-        "CREATE TABLE items (i_id INT, i_emb VECTOR(128))"
-    };
+    private static final String TABLES_DDL[] = new String[1];
 
-    private int numOfItems;
+    private int numOfItems, numDimension;
 
     public String[] getTableSchemas() {
         return TABLES_DDL;
@@ -20,6 +18,10 @@ public class AnnTestbedLoaderParamHelper implements StoredProcedureHelper {
         return numOfItems;
     }
 
+    public int getVecDimension() {
+        return numDimension;
+    }
+
     public String getCollectionName() {
         return "items";
     }
@@ -27,6 +29,8 @@ public class AnnTestbedLoaderParamHelper implements StoredProcedureHelper {
     @Override
     public void prepareParameters(Object... pars) {
         numOfItems = (Integer) pars[0];
+        numDimension = (Integer) pars[1];
+        TABLES_DDL[0] = "CREATE TABLE items (i_id INT, i_emb VECTOR(" + numDimension + "))";
     }
 
     @Override

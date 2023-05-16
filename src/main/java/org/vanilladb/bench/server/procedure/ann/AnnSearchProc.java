@@ -25,11 +25,11 @@ public class AnnSearchProc extends StoredProcedure<AnnSearchParamHelper> {
         Transaction tx = getTransaction();
         Planner planner = VanillaDb.newPlanner();
 
-        VectorQueryData annQuery = new VectorQueryData(query, paramHelper.getCollectionName(), true);
+        VectorQueryData annQuery = new VectorQueryData(query, paramHelper.getCollectionName(), paramHelper.getEmbeddingField(), false);
         // Execute Top-k ANN search
         Plan approximatePlan = planner.createVectorSearchPlan(annQuery, tx);
         // Execute True KNN search
-        VectorQueryData trueKnnQuery = new VectorQueryData(query, paramHelper.getCollectionName(), false);
+        VectorQueryData trueKnnQuery = new VectorQueryData(query, paramHelper.getCollectionName(), paramHelper.getEmbeddingField(), false);
         Plan truePlan = planner.createVectorSearchPlan(trueKnnQuery, tx);
         
         Scan approximateScan = approximatePlan.open();

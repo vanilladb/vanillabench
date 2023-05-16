@@ -6,32 +6,43 @@ import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
 public class AnnSearchParamHelper implements StoredProcedureHelper {
+    private String collection = "items";
+    private String embField = "i_emb";
+    private int vecSize;
+
     @Override
     public void prepareParameters(Object... pars) {
+        // TODO: query = something from pars
+        // TODO: collection = somethign from pars
+        // TODO: embField = something from pars
 
+        vecSize = (Integer) pars[0];
     }
 
     @Override
     public Schema getResultSetSchema() {
-        return null;
+        return new Schema();
     }
 
     @Override
     public SpResultRecord newResultSetRecord() {
-        return null;
+        return new SpResultRecord();
     }
 
     @Override
     public boolean isReadOnly() {
-        return false;
+        return true;
     }
 
     public String getCollectionName() {
-        return "embedding";
+        return collection;
+    }
+
+    public String getEmbeddingField() {
+        return embField;
     }
 
     public VectorConstant getQuery() {
-        // random vector
-        return new VectorConstant(128);
+        return new VectorConstant(vecSize);
     }
 }

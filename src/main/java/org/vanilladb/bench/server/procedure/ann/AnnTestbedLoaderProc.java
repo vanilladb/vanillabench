@@ -80,10 +80,12 @@ public class AnnTestbedLoaderProc extends StoredProcedure<AnnTestbedLoaderParamH
 
         Transaction tx = getTransaction();
 
+        int dim = getHelper().getVecDimension();
+
         for (int i = startIId; i <= endIId; i++) {
             int iid = i;
             List<String> fields = new ArrayList<>(Arrays.asList("i_id", "i_emb"));
-            List<Constant> vals = new ArrayList<>(Arrays.asList(new IntegerConstant(iid), new VectorConstant(128)));
+            List<Constant> vals = new ArrayList<>(Arrays.asList(new IntegerConstant(iid), new VectorConstant(dim)));
 
             InsertData sql = new InsertData(getHelper().getCollectionName(), fields, vals);
             StoredProcedureUtils.executeInsert(sql, tx);

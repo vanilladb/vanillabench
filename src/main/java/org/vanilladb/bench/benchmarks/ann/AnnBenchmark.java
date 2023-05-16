@@ -27,15 +27,15 @@ public class AnnBenchmark extends Benchmark {
 
     @Override
     public void executeLoadingProcedure(SutConnection conn) throws SQLException {
-        conn.callStoredProc(AnnTransactionType.TESTBED_LOADER.getProcedureId(), 
-                AnnBenchConstants.NUM_ITEMS);
+        Object[] params = new Object[] {AnnBenchConstants.NUM_ITEMS, AnnBenchConstants.NUM_DIMENSION};
+        conn.callStoredProc(AnnTransactionType.TESTBED_LOADER.getProcedureId(), params);
     }
 
     @Override
     public boolean executeDatabaseCheckProcedure(SutConnection conn) throws SQLException {
         SutResultSet result = null;
         AnnTransactionType txnType = AnnTransactionType.CHECK_DATABASE;
-        Object[] params = new Object[] {AnnBenchConstants.NUM_ITEMS};
+        Object[] params = new Object[] {AnnBenchConstants.NUM_ITEMS, AnnBenchConstants.NUM_DIMENSION};
 
         switch (VanillaBenchParameters.CONNECTION_MODE) {
             case JDBC:
