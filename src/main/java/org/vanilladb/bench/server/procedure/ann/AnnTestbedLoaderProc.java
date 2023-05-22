@@ -38,6 +38,7 @@ public class AnnTestbedLoaderProc extends StoredProcedure<AnnTestbedLoaderParamH
 
         // Generate item records
         generateItems(1, getHelper().getNumberOfItems());
+        
 
         if (logger.isLoggable(Level.INFO))
             logger.info("Loading completed. Flush all loading data to disks...");
@@ -68,6 +69,13 @@ public class AnnTestbedLoaderProc extends StoredProcedure<AnnTestbedLoaderParamH
             logger.info("Creating collections...");
 
         for (String sql : paramHelper.getTableSchemas())
+            StoredProcedureUtils.executeUpdate(sql, tx);
+
+        if (logger.isLoggable(Level.INFO))
+            logger.info("Creating indexes...");
+
+        // Create indexes
+        for (String sql : paramHelper.getIndexSchemas())
             StoredProcedureUtils.executeUpdate(sql, tx);
         
         if (logger.isLoggable(Level.FINE))

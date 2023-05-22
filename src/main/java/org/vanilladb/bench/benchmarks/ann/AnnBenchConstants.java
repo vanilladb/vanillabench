@@ -11,7 +11,7 @@ public class AnnBenchConstants {
         NUM_ITEMS = BenchProperties.getLoader().getPropertyAsInteger(
                 AnnBenchConstants.class.getName() + ".NUM_ITEMS", 100000);
         NUM_DIMENSION = BenchProperties.getLoader().getPropertyAsInteger(
-                AnnBenchConstants.class.getName() + ".NUM_DIMENSION", 8);
+                AnnBenchConstants.class.getName() + ".NUM_DIMENSIONS", 8);
     }
     
 }

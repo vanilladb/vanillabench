@@ -8,10 +8,19 @@ public class AnnTestbedLoaderParamHelper implements StoredProcedureHelper {
 
     private static final String TABLES_DDL[] = new String[1];
 
+    private static final String INDEXES_DDL[] = {
+        // Always provide the id column as the first column for vector indexes
+        "CREATE INDEX idx_item ON items (i_id, i_emb) USING LSH"
+    };
+
     private int numOfItems, numDimension;
 
     public String[] getTableSchemas() {
         return TABLES_DDL;
+    }
+
+    public String[] getIndexSchemas() {
+        return INDEXES_DDL;
     }
 
     public int getNumberOfItems() {
