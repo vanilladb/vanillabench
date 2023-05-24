@@ -1,17 +1,11 @@
 package org.vanilladb.bench.server.procedure.ann;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.vanilladb.bench.server.param.ann.AnnTestbedLoaderParamHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
-import org.vanilladb.core.query.parse.InsertData;
 import org.vanilladb.core.server.VanillaDb;
-import org.vanilladb.core.sql.Constant;
-import org.vanilladb.core.sql.IntegerConstant;
 import org.vanilladb.core.sql.VectorConstant;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;
@@ -66,17 +60,19 @@ public class AnnTestbedLoaderProc extends StoredProcedure<AnnTestbedLoaderParamH
         Transaction tx = getTransaction();
 
         if (logger.isLoggable(Level.FINE))
-            logger.info("Creating collections...");
+            logger.info("Creating tables...");
 
         for (String sql : paramHelper.getTableSchemas())
             StoredProcedureUtils.executeUpdate(sql, tx);
 
-        if (logger.isLoggable(Level.INFO))
-            logger.info("Creating indexes...");
+        // Skip adding indexes
 
-        // Create indexes
-        for (String sql : paramHelper.getIndexSchemas())
-            StoredProcedureUtils.executeUpdate(sql, tx);
+        // if (logger.isLoggable(Level.INFO))
+        //     logger.info("Creating indexes...");
+
+        // // Create indexes
+        // for (String sql : paramHelper.getIndexSchemas())
+        //     StoredProcedureUtils.executeUpdate(sql, tx);
         
         if (logger.isLoggable(Level.FINE))
             logger.info("Finish creating schemas.");
@@ -90,13 +86,15 @@ public class AnnTestbedLoaderProc extends StoredProcedure<AnnTestbedLoaderParamH
 
         int dim = getHelper().getVecDimension();
 
+        String sql;
         for (int i = startIId; i <= endIId; i++) {
             int iid = i;
-            List<String> fields = new ArrayList<>(Arrays.asList("i_id", "i_emb"));
-            List<Constant> vals = new ArrayList<>(Arrays.asList(new IntegerConstant(iid), new VectorConstant(dim)));
 
-            InsertData sql = new InsertData(getHelper().getCollectionName(), fields, vals);
-            StoredProcedureUtils.executeInsert(sql, tx);
+            String iname = "'item" + iid + "'";
+            VectorConstant vec = new VectorConstant(dim);
+            sql = "INSERT INTO items(i_id, i_emb, i_name) VALUES (" + iid + ", " + vec.toString() + ", " + iname + ")";
+            logger.info(sql);
+            StoredProcedureUtils.executeUpdate(sql, tx);
         }
         
         if (logger.isLoggable(Level.FINE))

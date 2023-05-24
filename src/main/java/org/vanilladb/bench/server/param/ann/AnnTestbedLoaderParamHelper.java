@@ -10,7 +10,7 @@ public class AnnTestbedLoaderParamHelper implements StoredProcedureHelper {
 
     private static final String INDEXES_DDL[] = {
         // Always provide the id column as the first column for vector indexes
-        "CREATE INDEX idx_item ON items (i_id, i_emb) USING LSH"
+        "CREATE INDEX idx_item ON items (i_id, i_emb, i_name) USING LSH"
     };
 
     private int numOfItems, numDimension;
@@ -31,15 +31,11 @@ public class AnnTestbedLoaderParamHelper implements StoredProcedureHelper {
         return numDimension;
     }
 
-    public String getCollectionName() {
-        return "items";
-    }
-
     @Override
     public void prepareParameters(Object... pars) {
         numOfItems = (Integer) pars[0];
         numDimension = (Integer) pars[1];
-        TABLES_DDL[0] = "CREATE TABLE items (i_id INT, i_emb VECTOR(" + numDimension + "))";
+        TABLES_DDL[0] = "CREATE TABLE items (i_id INT, i_emb VECTOR(" + numDimension + "), i_name VARCHAR(24))";
     }
 
     @Override
