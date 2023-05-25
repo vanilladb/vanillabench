@@ -111,7 +111,7 @@ public class VanillaBench {
 			Thread.sleep(VanillaBenchParameters.BENCHMARK_INTERVAL);
 
 			if (logger.isLoggable(Level.INFO))
-				logger.info("benchmark period finished. Stoping RTEs...");
+				logger.info("benchmark period finished. Stopping RTEs...");
 
 			// benchmark finished
 			for (int i = 0; i < emulators.length; i++)

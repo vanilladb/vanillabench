@@ -4,7 +4,7 @@ import org.vanilladb.bench.TxnResultSet;
 import org.vanilladb.bench.VanillaBenchParameters;
 import org.vanilladb.bench.benchmarks.ann.AnnTransactionType;
 import org.vanilladb.bench.remote.SutConnection;
-import org.vanilladb.bench.remote.SutResultSet;
+import org.vanilladb.bench.remote.sp.VanillaDbSpResultSet;
 import org.vanilladb.bench.rte.TransactionExecutor;
 import org.vanilladb.bench.rte.TxParamGenerator;
 import org.vanilladb.bench.rte.jdbc.JdbcExecutor;
@@ -24,7 +24,7 @@ public class AnnTxExecutor extends TransactionExecutor<AnnTransactionType>{
             // send txn request and start measuring txn response time
             long txnRT = System.nanoTime();
 
-            SutResultSet result = executeTxn(conn, params);
+            VanillaDbSpResultSet result = (VanillaDbSpResultSet) executeTxn(conn, params);
 
             // measure response time
             long txnEndTime = System.nanoTime();
@@ -33,7 +33,7 @@ public class AnnTxExecutor extends TransactionExecutor<AnnTransactionType>{
             // display output
             if (VanillaBenchParameters.SHOW_TXN_RESPONSE_ON_CONSOLE)
                 System.out.println(pg.getTxnType() + " " + result.outputMsg());
-            
+
             return new TxnResultSet(pg.getTxnType(), txnRT, txnEndTime, result.isCommitted(), result.outputMsg());
         } catch (Exception e) {
             e.printStackTrace();

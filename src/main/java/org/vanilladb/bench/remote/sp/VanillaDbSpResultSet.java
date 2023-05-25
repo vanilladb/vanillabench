@@ -46,4 +46,8 @@ public class VanillaDbSpResultSet implements SutResultSet {
 		
 		return message;
 	}
+
+	public Record[] getRecords() {
+		return result.getRecords();
+	}
 }

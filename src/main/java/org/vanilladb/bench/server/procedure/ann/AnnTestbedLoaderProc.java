@@ -93,7 +93,7 @@ public class AnnTestbedLoaderProc extends StoredProcedure<AnnTestbedLoaderParamH
             String iname = "'item" + iid + "'";
             VectorConstant vec = new VectorConstant(dim);
             sql = "INSERT INTO items(i_id, i_emb, i_name) VALUES (" + iid + ", " + vec.toString() + ", " + iname + ")";
-            logger.info(sql);
+            // logger.info(sql);
             StoredProcedureUtils.executeUpdate(sql, tx);
         }
         

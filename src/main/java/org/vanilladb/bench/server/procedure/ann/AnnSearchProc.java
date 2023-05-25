@@ -21,18 +21,27 @@ public class AnnSearchProc extends StoredProcedure<AnnSearchParamHelper> {
         VectorConstant query = paramHelper.getQuery();
         Transaction tx = getTransaction();
 
-        String nnQuery = "SELECT i_id FROM " + paramHelper.getCollectionName() + 
+        String nnQuery = "SELECT i_id FROM " + paramHelper.getTableName() + 
             " ORDER BY " + paramHelper.getEmbeddingField() + " <EUC> " + query.toString() + " LIMIT 20";
 
         // Execute nearest neighbor search
-        Scan approximateScan = StoredProcedureUtils.executeQuery(nnQuery, tx);
+        Scan nearestNeighborScan = StoredProcedureUtils.executeQuery(nnQuery, tx);
         
-        approximateScan.beforeFirst();
+        nearestNeighborScan.beforeFirst();
         
-        Set<Integer> approximateResult = new HashSet<>();
+        Set<Integer> nearestNeighbors = new HashSet<>();
 
-        while(approximateScan.next()) {
-            approximateResult.add((Integer) approximateScan.getVal("i_id").asJavaVal());
+        int count = 0;
+        while (nearestNeighborScan.next()) {
+            nearestNeighbors.add((Integer) nearestNeighborScan.getVal("i_id").asJavaVal());
+            count++;
         }
+
+        nearestNeighborScan.close();
+
+        if (count == 0)
+            throw new RuntimeException("Nearest neighbor query execution failed for " + query.toString());
+        
+        paramHelper.setNearestNeighbors(nearestNeighbors);
     }
 }
