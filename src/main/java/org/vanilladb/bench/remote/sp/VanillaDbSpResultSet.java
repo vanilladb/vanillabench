@@ -18,6 +18,7 @@ package org.vanilladb.bench.remote.sp;
 import org.vanilladb.bench.remote.SutResultSet;
 import org.vanilladb.core.remote.storedprocedure.SpResultSet;
 import org.vanilladb.core.sql.Record;
+import org.vanilladb.core.sql.Schema;
 
 public class VanillaDbSpResultSet implements SutResultSet {
 	
@@ -49,5 +50,9 @@ public class VanillaDbSpResultSet implements SutResultSet {
 
 	public Record[] getRecords() {
 		return result.getRecords();
+	}
+
+	public Schema getSchema() {
+		return result.getSchema();
 	}
 }

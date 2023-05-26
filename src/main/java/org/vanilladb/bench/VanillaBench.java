@@ -5,7 +5,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.vanilladb.bench.VanillaBenchParameters.BenchType;
 import org.vanilladb.bench.benchmarks.ann.AnnBenchmark;
+import org.vanilladb.bench.benchmarks.ann.AnnTransactionType;
+import org.vanilladb.bench.benchmarks.ann.rte.AnnRte;
 import org.vanilladb.bench.benchmarks.micro.MicroBenchmark;
 import org.vanilladb.bench.benchmarks.tpcc.TpccBenchmark;
 import org.vanilladb.bench.benchmarks.tpce.TpceBenchmark;
@@ -110,6 +113,13 @@ public class VanillaBench {
 			// waiting
 			Thread.sleep(VanillaBenchParameters.BENCHMARK_INTERVAL);
 
+			if (VanillaBenchParameters.BENCH_TYPE == BenchType.ANN) {
+				if (logger.isLoggable(Level.INFO))
+					logger.info("Calculating recall...");
+				
+				calculateRecall(statMgr);
+			}
+
 			if (logger.isLoggable(Level.INFO))
 				logger.info("benchmark period finished. Stopping RTEs...");
 
@@ -141,6 +151,12 @@ public class VanillaBench {
 
 		if (logger.isLoggable(Level.INFO))
 			logger.info("benchmark process finished.");
+	}
+
+	private void calculateRecall(StatisticMgr statMgr) throws SQLException {
+		SutConnection conn = getConnection();
+		AnnRte recallRte = new AnnRte(conn, statMgr, 0);
+		recallRte.executeCalculateRecall(conn);
 	}
 	
 	private SutDriver newDriver() {
