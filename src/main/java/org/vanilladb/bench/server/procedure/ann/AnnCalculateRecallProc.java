@@ -13,7 +13,7 @@ import org.vanilladb.core.storage.tx.Transaction;
 public class AnnCalculateRecallProc extends StoredProcedure<AnnSearchParamHelper> {
 
     public AnnCalculateRecallProc() {
-        super(new AnnSearchParamHelper()); // TODO: change to AnnCalculateRecallParamHelper
+        super(new AnnSearchParamHelper());
     }
 
     @Override
@@ -22,23 +22,21 @@ public class AnnCalculateRecallProc extends StoredProcedure<AnnSearchParamHelper
         VectorConstant query = paramHelper.getQuery();
         Transaction tx = getTransaction();
 
-        String nnQuery = "SELECT i_id FROM " + paramHelper.getTableName() + 
-            " ORDER BY " + paramHelper.getEmbeddingField() + " <EUC> " + query.toString() + " LIMIT 20";
-
-        // Execute nearest neighbor search
-        Scan nearestNeighborScan = StoredProcedureUtils.executeQuery(nnQuery, tx);
+        // Execute true earest neighbor search
+        Scan trueNeighborScan = StoredProcedureUtils.executeCalculateRecall(
+            query, paramHelper.getTableName(), paramHelper.getEmbeddingField(), paramHelper.getK(), tx);
         
-        nearestNeighborScan.beforeFirst();
+        trueNeighborScan.beforeFirst();
         
         Set<Integer> nearestNeighbors = new HashSet<>();
 
         int count = 0;
-        while (nearestNeighborScan.next()) {
-            nearestNeighbors.add((Integer) nearestNeighborScan.getVal("i_id").asJavaVal());
+        while (trueNeighborScan.next()) {
+            nearestNeighbors.add((Integer) trueNeighborScan.getVal("i_id").asJavaVal());
             count++;
         }
 
-        nearestNeighborScan.close();
+        trueNeighborScan.close();
 
         if (count == 0)
             throw new RuntimeException("Nearest neighbor query execution failed for " + query.toString());

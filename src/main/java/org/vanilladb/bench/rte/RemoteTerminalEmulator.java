@@ -31,7 +31,7 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 	private volatile boolean stopBenchmark;
 	private volatile boolean isWarmingUp = true;
 	private SutConnection conn;
-	private StatisticMgr statMgr;
+	protected StatisticMgr statMgr;
 	private long sleepTime;
 	
 	public RemoteTerminalEmulator(SutConnection conn, StatisticMgr statMgr,

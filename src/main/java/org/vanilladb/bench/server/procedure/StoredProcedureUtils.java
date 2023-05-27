@@ -15,10 +15,16 @@
  *******************************************************************************/
 package org.vanilladb.bench.server.procedure;
 
+import org.vanilladb.core.query.algebra.LimitPlan;
 import org.vanilladb.core.query.algebra.Plan;
 import org.vanilladb.core.query.algebra.Scan;
+import org.vanilladb.core.query.algebra.TablePlan;
+import org.vanilladb.core.query.algebra.materialize.SortPlan;
 import org.vanilladb.core.query.parse.InsertData;
 import org.vanilladb.core.server.VanillaDb;
+import org.vanilladb.core.sql.VectorConstant;
+import org.vanilladb.core.sql.distfn.DistanceFn;
+import org.vanilladb.core.sql.distfn.EuclideanFn;
 import org.vanilladb.core.storage.tx.Transaction;
 
 public class StoredProcedureUtils {
@@ -30,6 +36,18 @@ public class StoredProcedureUtils {
 	
 	public static int executeUpdate(String sql, Transaction tx) {
 		return VanillaDb.newPlanner().executeUpdate(sql, tx);
+	}
+
+	public static Scan executeCalculateRecall(VectorConstant query, String tableName, String field, int limit, Transaction tx) {
+		Plan p = new TablePlan(tableName, tx);
+
+		DistanceFn distFn = new EuclideanFn(field);
+		distFn.setQueryVector(query);
+		
+		p = new SortPlan(p, distFn, tx);
+		p = new LimitPlan(p, 20);
+
+		return p.open();
 	}
 
 	public static int executeInsert(InsertData sql, Transaction tx) {

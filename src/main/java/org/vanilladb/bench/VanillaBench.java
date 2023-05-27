@@ -7,7 +7,6 @@ import java.util.logging.Logger;
 
 import org.vanilladb.bench.VanillaBenchParameters.BenchType;
 import org.vanilladb.bench.benchmarks.ann.AnnBenchmark;
-import org.vanilladb.bench.benchmarks.ann.AnnTransactionType;
 import org.vanilladb.bench.benchmarks.ann.rte.AnnRte;
 import org.vanilladb.bench.benchmarks.micro.MicroBenchmark;
 import org.vanilladb.bench.benchmarks.tpcc.TpccBenchmark;
@@ -18,7 +17,6 @@ import org.vanilladb.bench.remote.SutDriver;
 import org.vanilladb.bench.remote.jdbc.VanillaDbJdbcDriver;
 import org.vanilladb.bench.remote.sp.VanillaDbSpDriver;
 import org.vanilladb.bench.rte.RemoteTerminalEmulator;
-import org.vanilladb.core.server.VanillaDb;
 
 public class VanillaBench {
 	private static Logger logger = Logger.getLogger(VanillaBench.class.getName());

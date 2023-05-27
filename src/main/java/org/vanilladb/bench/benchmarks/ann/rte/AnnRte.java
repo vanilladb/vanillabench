@@ -82,6 +82,7 @@ public class AnnRte extends RemoteTerminalEmulator<AnnTransactionType>{
             sum += recallRate;
         }
         double averageRecallRate = sum / recallList.size();
-        System.out.println("Average recall rate: " + averageRecallRate);
+
+        statMgr.setRecall(averageRecallRate);
 	}
 }

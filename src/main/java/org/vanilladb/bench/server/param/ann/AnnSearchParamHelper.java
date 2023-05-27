@@ -15,7 +15,7 @@ public class AnnSearchParamHelper implements StoredProcedureHelper {
     private VectorConstant query;
     private int numDimension;
     private Integer[] items;
-    private int numNeighbors = 20;
+    private int numNeighbors = 20; // Number of top-k
 
     @Override
     public void prepareParameters(Object... pars) {
@@ -68,5 +68,9 @@ public class AnnSearchParamHelper implements StoredProcedureHelper {
 
     public VectorConstant getQuery() {
         return query;
+    }
+
+    public int getK() {
+        return numNeighbors;
     }
 }

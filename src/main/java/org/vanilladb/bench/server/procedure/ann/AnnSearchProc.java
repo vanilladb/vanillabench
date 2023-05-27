@@ -22,7 +22,7 @@ public class AnnSearchProc extends StoredProcedure<AnnSearchParamHelper> {
         Transaction tx = getTransaction();
 
         String nnQuery = "SELECT i_id FROM " + paramHelper.getTableName() + 
-            " ORDER BY " + paramHelper.getEmbeddingField() + " <EUC> " + query.toString() + " LIMIT 20";
+            " ORDER BY " + paramHelper.getEmbeddingField() + " <EUC> " + query.toString() + " LIMIT " + paramHelper.getK();
 
         // Execute nearest neighbor search
         Scan nearestNeighborScan = StoredProcedureUtils.executeQuery(nnQuery, tx);
@@ -40,7 +40,7 @@ public class AnnSearchProc extends StoredProcedure<AnnSearchParamHelper> {
         nearestNeighborScan.close();
 
         if (count == 0)
-            throw new RuntimeException("Nearest neighbor query execution failed for " + query.toString());
+            throw new RuntimeException("True nearest neighbor query execution failed for " + query.toString());
         
         paramHelper.setNearestNeighbors(nearestNeighbors);
     }

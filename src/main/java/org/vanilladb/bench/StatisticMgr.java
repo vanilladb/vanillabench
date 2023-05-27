@@ -89,6 +89,7 @@ public class StatisticMgr {
 	private ZipThread zipThread;
 	private Map<BenchTransactionType, TxnStatistic> txnStatistics = new HashMap<BenchTransactionType, TxnStatistic>();
 	private Map<BenchTransactionType, Integer> abortedCounts = new HashMap<BenchTransactionType, Integer>();
+	private double recall = -1;
 
 	public StatisticMgr(Collection<BenchTransactionType> txTypes, File outputDir,
 			String namePostfix, int timelineGranularity) {
@@ -192,6 +193,10 @@ public class StatisticMgr {
 
 				writer.write(value.getmType() + " - committed: " + value.commitedTxnCount() + ", aborted: " + value.abortedTxnCount()
 						+ ", avg latency: " + avgResTimeMs + " ms");
+				writer.newLine();
+			}
+			if (recall != -1) {
+				writer.write("Recall: " + String.format("%.2f", recall * 100) + "%");
 				writer.newLine();
 			}
 
@@ -301,5 +306,9 @@ public class StatisticMgr {
 		for (Long lat : timeSlot)
 			mean += (lat / count);
 		return mean;
+	}
+
+	public void setRecall(double recall) {
+		this.recall = recall;
 	}
 }
