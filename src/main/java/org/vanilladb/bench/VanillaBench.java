@@ -18,6 +18,7 @@ import org.vanilladb.bench.remote.SutDriver;
 import org.vanilladb.bench.remote.jdbc.VanillaDbJdbcDriver;
 import org.vanilladb.bench.remote.sp.VanillaDbSpDriver;
 import org.vanilladb.bench.rte.RemoteTerminalEmulator;
+import org.vanilladb.core.server.VanillaDb;
 
 public class VanillaBench {
 	private static Logger logger = Logger.getLogger(VanillaBench.class.getName());
@@ -113,19 +114,18 @@ public class VanillaBench {
 			// waiting
 			Thread.sleep(VanillaBenchParameters.BENCHMARK_INTERVAL);
 
-			if (VanillaBenchParameters.BENCH_TYPE == BenchType.ANN) {
-				if (logger.isLoggable(Level.INFO))
-					logger.info("Calculating recall...");
-				
-				calculateRecall(statMgr);
-			}
-
 			if (logger.isLoggable(Level.INFO))
 				logger.info("benchmark period finished. Stopping RTEs...");
 
 			// benchmark finished
 			for (int i = 0; i < emulators.length; i++)
 				emulators[i].stopBenchmark();
+
+			if (VanillaBenchParameters.BENCH_TYPE == BenchType.ANN) {
+				if (logger.isLoggable(Level.INFO))
+					logger.info("Calculating recall...");
+				calculateRecall(statMgr);
+			}
 
 			if (VanillaBenchParameters.PROFILING_ON_SERVER) {
 				if (logger.isLoggable(Level.INFO))

@@ -19,6 +19,9 @@ public class AnnBenchStoredProcFactory implements StoredProcedureFactory {
             case ANN:
                 sp = new AnnSearchProc();
                 break;
+            case CALCULATE_RECALL:
+                sp = new AnnCalculateRecallProc();
+                break;
             default:
                 throw new UnsupportedOperationException("The benchmarker does not recognize procedure " + pid + "");
         }

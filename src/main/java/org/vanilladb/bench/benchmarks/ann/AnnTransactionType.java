@@ -8,7 +8,9 @@ public enum AnnTransactionType implements BenchTransactionType {
     // Database checking procedures
     CHECK_DATABASE(false),
     // Benchmark procedures
-    ANN(true);
+    ANN(true),
+    
+    CALCULATE_RECALL(false);
 
     public static AnnTransactionType fromProcedureId(int pid) {
         return AnnTransactionType.values()[pid];
