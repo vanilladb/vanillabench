@@ -32,8 +32,6 @@ public class AnnParamGen implements TxParamGenerator<AnnTransactionType> {
             paramList.add(query.get(i));
         }
 
-        // paramList.add(AnnBenchConstants.NUM_NEIGHBORS);
-
         return paramList.toArray();
     }
     

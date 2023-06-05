@@ -45,7 +45,7 @@ public class StoredProcedureUtils {
 		distFn.setQueryVector(query);
 		
 		p = new SortPlan(p, distFn, tx);
-		p = new LimitPlan(p, 20);
+		p = new LimitPlan(p, limit);
 
 		return p.open();
 	}

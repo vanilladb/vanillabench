@@ -27,7 +27,11 @@ public class AnnRte extends RemoteTerminalEmulator<AnnTransactionType>{
 
     public AnnRte(SutConnection conn, StatisticMgr statMgr, long sleepTime) {
         super(conn, statMgr, sleepTime);
-        executor = new AnnTxExecutor(new AnnParamGen(), resultMap);
+        if (isWarmingUp) {
+            executor = new AnnTxExecutor(new AnnParamGen(), null);
+        } else {
+            executor = new AnnTxExecutor(new AnnParamGen(), resultMap);
+        }
     }
 
     @Override

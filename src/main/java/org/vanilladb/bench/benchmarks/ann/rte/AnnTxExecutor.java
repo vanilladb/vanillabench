@@ -3,7 +3,6 @@ package org.vanilladb.bench.benchmarks.ann.rte;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.Vector;
 
 import org.vanilladb.bench.TxnResultSet;
 import org.vanilladb.bench.VanillaBenchParameters;
@@ -59,7 +58,8 @@ public class AnnTxExecutor extends TransactionExecutor<AnnTransactionType>{
                 approximateNeighbors.add((Integer) rec.getVal(fld).asJavaVal());
             }
 
-            resultMap.put(query, approximateNeighbors);
+            if (resultMap != null)
+                resultMap.put(query, approximateNeighbors);
 
             return new TxnResultSet(pg.getTxnType(), txnRT, txnEndTime, result.isCommitted(), result.outputMsg());
         } catch (Exception e) {

@@ -29,7 +29,7 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 	protected int rteId;
 	
 	private volatile boolean stopBenchmark;
-	private volatile boolean isWarmingUp = true;
+	protected volatile boolean isWarmingUp = true;
 	private SutConnection conn;
 	protected StatisticMgr statMgr;
 	private long sleepTime;
@@ -49,7 +49,7 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 	public void run() {
 		while (!stopBenchmark) {
 			TxnResultSet rs = executeTxnCycle(conn);
-			if (!isWarmingUp)
+			if (!isWarmingUp && !stopBenchmark)
 				statMgr.processTxnResult(rs);
 			
 			// Sleep for a while
