@@ -27,11 +27,8 @@ public class AnnRte extends RemoteTerminalEmulator<AnnTransactionType>{
 
     public AnnRte(SutConnection conn, StatisticMgr statMgr, long sleepTime) {
         super(conn, statMgr, sleepTime);
-        if (isWarmingUp) {
-            executor = new AnnTxExecutor(new AnnParamGen(), null);
-        } else {
-            executor = new AnnTxExecutor(new AnnParamGen(), resultMap);
-        }
+        
+        executor = new AnnTxExecutor(new AnnParamGen(), resultMap);
     }
 
     @Override
@@ -78,6 +75,7 @@ public class AnnRte extends RemoteTerminalEmulator<AnnTransactionType>{
 
             approximateNeighbors.retainAll(trueNeighbors);
             double recallRate = (double) approximateNeighbors.size() / trueNeighbors.size();
+
             recallList.add(recallRate);
         }
 

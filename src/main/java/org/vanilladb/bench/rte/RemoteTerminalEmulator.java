@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.vanilladb.bench.BenchTransactionType;
 import org.vanilladb.bench.StatisticMgr;
 import org.vanilladb.bench.TxnResultSet;
+import org.vanilladb.bench.benchmarks.ann.rte.AnnTxExecutor;
 import org.vanilladb.bench.remote.SutConnection;
 
 public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> extends Thread {
@@ -84,6 +85,8 @@ public abstract class RemoteTerminalEmulator<T extends BenchTransactionType> ext
 	private TxnResultSet executeTxnCycle(SutConnection conn) {
 		T txType = getNextTxType();
 		TransactionExecutor<T> executor = getTxExeutor(txType);
+		if (executor instanceof AnnTxExecutor)
+			((AnnTxExecutor) executor).setWarmingUp(isWarmingUp);
 		return executor.execute(conn);
 	}
 }

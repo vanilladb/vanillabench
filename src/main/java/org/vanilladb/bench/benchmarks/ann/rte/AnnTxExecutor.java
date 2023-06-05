@@ -19,10 +19,15 @@ import org.vanilladb.core.sql.Schema;
 public class AnnTxExecutor extends TransactionExecutor<AnnTransactionType>{
 
     private Map<VectorConstant, Set<Integer>> resultMap;
+    private boolean isWarmingUp = false;
 
     public AnnTxExecutor(TxParamGenerator<AnnTransactionType> pg, Map<VectorConstant, Set<Integer>> resultMap) {
         this.pg = pg;
         this.resultMap = resultMap;
+    }
+
+    public void setWarmingUp(boolean isWarmingUp) {
+        this.isWarmingUp = isWarmingUp;
     }
 
     @Override
@@ -58,7 +63,7 @@ public class AnnTxExecutor extends TransactionExecutor<AnnTransactionType>{
                 approximateNeighbors.add((Integer) rec.getVal(fld).asJavaVal());
             }
 
-            if (resultMap != null)
+            if (!isWarmingUp)
                 resultMap.put(query, approximateNeighbors);
 
             return new TxnResultSet(pg.getTxnType(), txnRT, txnEndTime, result.isCommitted(), result.outputMsg());
