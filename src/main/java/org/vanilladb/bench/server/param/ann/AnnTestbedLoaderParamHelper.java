@@ -7,11 +7,16 @@ import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 public class AnnTestbedLoaderParamHelper implements StoredProcedureHelper {
 
     private static final String TABLES_DDL[] = new String[1];
+    private static final String INDEXES_DDL[] = new String[1];
 
     private int numOfItems, numDimension;
 
     public String[] getTableSchemas() {
         return TABLES_DDL;
+    }
+
+    public String[] getIndexSchemas() {
+        return INDEXES_DDL;
     }
 
     public int getNumberOfItems() {
@@ -27,6 +32,7 @@ public class AnnTestbedLoaderParamHelper implements StoredProcedureHelper {
         numOfItems = (Integer) pars[0];
         numDimension = (Integer) pars[1];
         TABLES_DDL[0] = "CREATE TABLE items (i_id INT, i_emb VECTOR(" + numDimension + "), i_name VARCHAR(24))";
+        INDEXES_DDL[0] = "CREATE INDEX idx_item ON items (i_emb) USING IVF";
     }
 
     @Override
