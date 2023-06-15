@@ -51,7 +51,7 @@ public class AnnSearchParamHelper implements StoredProcedureHelper {
 
     @Override
     public boolean isReadOnly() {
-        return true;
+        return false;
     }
 
     public void setNearestNeighbors(Set<Integer> nearestNeighbors) {

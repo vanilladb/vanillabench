@@ -34,6 +34,12 @@ public class AnnTestbedLoaderProc extends StoredProcedure<AnnTestbedLoaderParamH
         generateItems(1, getHelper().getNumberOfItems());
 
         if (logger.isLoggable(Level.INFO))
+            logger.info("Training IVF index...");
+
+        StoredProcedureUtils.executeTrainIndex(getHelper().getTableName(), getHelper().getIdxFields(), 
+            getHelper().getIdxName(), getTransaction());
+
+        if (logger.isLoggable(Level.INFO))
             logger.info("Loading completed. Flush all loading data to disks...");
 
         RecoveryMgr.enableLogging(true);
