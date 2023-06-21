@@ -29,8 +29,8 @@ public class SiftParamGen implements TxParamGenerator<SiftTransactionType> {
                 br.readLine();
             }
             vectorString = br.readLine();
-            // VectorConstant randomNoise = VectorConstant.normal(SiftBenchConstants.NUM_DIMENSION, 0, 1);
-            return (VectorConstant) new VectorConstant(vectorString);
+            VectorConstant randomNoise = VectorConstant.normal(SiftBenchConstants.NUM_DIMENSION, 0, 1);
+            return (VectorConstant) (new VectorConstant(vectorString)).add(randomNoise);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(SiftBenchConstants.DATASET_FILE + " not found.");

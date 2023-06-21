@@ -1,6 +1,5 @@
 package org.vanilladb.bench.server.procedure.sift;
 
-
 import java.util.HashSet;
 import java.util.Set;
 
