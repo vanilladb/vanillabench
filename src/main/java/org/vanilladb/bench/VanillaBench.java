@@ -9,6 +9,8 @@ import org.vanilladb.bench.VanillaBenchParameters.BenchType;
 import org.vanilladb.bench.benchmarks.ann.AnnBenchmark;
 import org.vanilladb.bench.benchmarks.ann.rte.AnnRte;
 import org.vanilladb.bench.benchmarks.micro.MicroBenchmark;
+import org.vanilladb.bench.benchmarks.sift.SiftBenchmark;
+import org.vanilladb.bench.benchmarks.sift.rte.SiftRte;
 import org.vanilladb.bench.benchmarks.tpcc.TpccBenchmark;
 import org.vanilladb.bench.benchmarks.tpce.TpceBenchmark;
 import org.vanilladb.bench.benchmarks.ycsb.YcsbBenchmark;
@@ -119,10 +121,20 @@ public class VanillaBench {
 			for (int i = 0; i < emulators.length; i++)
 				emulators[i].stopBenchmark();
 
-			if (VanillaBenchParameters.BENCH_TYPE == BenchType.ANN) {
+			if (VanillaBenchParameters.BENCH_TYPE == BenchType.ANN || 
+				VanillaBenchParameters.BENCH_TYPE == BenchType.SIFT) {
 				if (logger.isLoggable(Level.INFO))
 					logger.info("Calculating recall...");
-				calculateRecall(statMgr);
+				SutConnection newConn = getConnection();
+				RemoteTerminalEmulator<?> rte = benchmarker.createRte(newConn, statMgr, 0);
+				if (VanillaBenchParameters.BENCH_TYPE == BenchType.ANN) {
+					AnnRte annRte = ((AnnRte) rte);
+					annRte.executeCalculateRecall(newConn);
+				} else {
+					SiftRte siftRte = ((SiftRte) rte);
+					siftRte.executeCalculateRecall(newConn);
+				}
+				
 			}
 
 			if (VanillaBenchParameters.PROFILING_ON_SERVER) {
@@ -151,11 +163,11 @@ public class VanillaBench {
 			logger.info("benchmark process finished.");
 	}
 
-	private void calculateRecall(StatisticMgr statMgr) throws SQLException {
-		SutConnection conn = getConnection();
-		AnnRte recallRte = new AnnRte(conn, statMgr, 0);
-		recallRte.executeCalculateRecall(conn);
-	}
+	// private void calculateRecall(StatisticMgr statMgr) throws SQLException {
+	// 	SutConnection conn = getConnection();
+	// 	AnnRte recallRte = new AnnRte(conn, statMgr, 0);
+	// 	recallRte.executeCalculateRecall(conn);
+	// }
 	
 	private SutDriver newDriver() {
 		// Create a driver for connection
@@ -180,6 +192,8 @@ public class VanillaBench {
 			return new YcsbBenchmark();
 		case ANN:
 			return new AnnBenchmark();
+		case SIFT:
+			return new SiftBenchmark();
 		}
 		throw new RuntimeException("Unsupported benchmark type: " + VanillaBenchParameters.BENCH_TYPE);
 	}

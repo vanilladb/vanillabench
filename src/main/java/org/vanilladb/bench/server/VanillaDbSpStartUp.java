@@ -22,6 +22,7 @@ import org.vanilladb.bench.VanillaBenchParameters;
 import org.vanilladb.bench.server.procedure.BasicStoredProcFactory;
 import org.vanilladb.bench.server.procedure.ann.AnnBenchStoredProcFactory;
 import org.vanilladb.bench.server.procedure.micro.MicrobenchStoredProcFactory;
+import org.vanilladb.bench.server.procedure.sift.SiftStoredProcFactory;
 import org.vanilladb.bench.server.procedure.tpcc.TpccStoredProcFactory;
 import org.vanilladb.bench.server.procedure.tpce.TpceStoredProcFactory;
 import org.vanilladb.bench.server.procedure.ycsb.YcsbStoredProcFactory;
@@ -74,9 +75,14 @@ public class VanillaDbSpStartUp implements SutStartUp {
 			break;
 		case ANN:
 			if (logger.isLoggable(Level.INFO))
-				logger.info("using ANN stored procedures");;
+				logger.info("using ANN stored procedures");
 
 			factory = new AnnBenchStoredProcFactory();
+			break;
+		case SIFT:
+			if (logger.isLoggable(Level.INFO))
+				logger.info("using SIFT stored procedures");
+			factory = new SiftStoredProcFactory();
 			break;
 		}
 		factory = new BasicStoredProcFactory(factory);

@@ -1,4 +1,4 @@
-package org.vanilladb.bench.server.param.ann;
+package org.vanilladb.bench.server.param.sift;
 
 import java.util.Set;
 
@@ -9,8 +9,8 @@ import org.vanilladb.core.sql.VectorConstant;
 import org.vanilladb.core.sql.storedprocedure.SpResultRecord;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedureHelper;
 
-public class AnnSearchParamHelper implements StoredProcedureHelper {
-    private final String table = "items";
+public class SiftBenchParamHelper implements StoredProcedureHelper {
+    private final String table = "sift";
     private final String embField = "i_emb";
     private VectorConstant query;
     private int numDimension;
@@ -51,7 +51,7 @@ public class AnnSearchParamHelper implements StoredProcedureHelper {
 
     @Override
     public boolean isReadOnly() {
-        return false;
+        return true;
     }
 
     public void setNearestNeighbors(Set<Integer> nearestNeighbors) {

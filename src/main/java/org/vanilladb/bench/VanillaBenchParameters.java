@@ -36,8 +36,8 @@ public class VanillaBenchParameters {
 	public static enum ConnectionMode { JDBC, SP };
 	public static final ConnectionMode CONNECTION_MODE;
 	
-	// Micro = 1, TPC-C = 2, TPC-E = 3, YCSB = 4, ANN = 5
-	public static enum BenchType { MICRO, TPCC, TPCE, YCSB, ANN };
+	// Micro = 1, TPC-C = 2, TPC-E = 3, YCSB = 4, ANN = 5, SIFT = 6
+	public static enum BenchType { MICRO, TPCC, TPCE, YCSB, ANN, SIFT };
 	public static final BenchType BENCH_TYPE;
 	
 	public static final boolean PROFILING_ON_SERVER;
@@ -94,6 +94,9 @@ public class VanillaBenchParameters {
 			break;
 		case 5:
 			BENCH_TYPE = BenchType.ANN;
+			break;
+		case 6:
+			BENCH_TYPE = BenchType.SIFT;
 			break;
 		default:
 			throw new IllegalArgumentException("The connection mode should be 1 (Micro), 2 (TPC-C), or 3 (TPC-E)");

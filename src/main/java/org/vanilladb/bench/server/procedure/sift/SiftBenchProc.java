@@ -1,23 +1,24 @@
-package org.vanilladb.bench.server.procedure.ann;
+package org.vanilladb.bench.server.procedure.sift;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.vanilladb.bench.server.param.ann.AnnSearchParamHelper;
+import org.vanilladb.bench.server.param.sift.SiftBenchParamHelper;
 import org.vanilladb.bench.server.procedure.StoredProcedureUtils;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.sql.VectorConstant;
 import org.vanilladb.core.sql.storedprocedure.StoredProcedure;
 import org.vanilladb.core.storage.tx.Transaction;
 
-public class AnnSearchProc extends StoredProcedure<AnnSearchParamHelper> {
-    public AnnSearchProc() {
-        super(new AnnSearchParamHelper());
+public class SiftBenchProc extends StoredProcedure<SiftBenchParamHelper> {
+
+    public SiftBenchProc() {
+        super(new SiftBenchParamHelper());
     }
 
     @Override
     protected void executeSql() {
-        AnnSearchParamHelper paramHelper = getHelper();
+        SiftBenchParamHelper paramHelper = getHelper();
         VectorConstant query = paramHelper.getQuery();
         Transaction tx = getTransaction();
 
@@ -44,4 +45,5 @@ public class AnnSearchProc extends StoredProcedure<AnnSearchParamHelper> {
         
         paramHelper.setNearestNeighbors(nearestNeighbors);
     }
+    
 }

@@ -23,11 +23,9 @@ import java.util.PriorityQueue;
 
 import static org.vanilladb.core.sql.RecordComparator.DIR_DESC;
 
-import org.vanilladb.core.query.algebra.LimitPlan;
 import org.vanilladb.core.query.algebra.Plan;
 import org.vanilladb.core.query.algebra.Scan;
 import org.vanilladb.core.query.algebra.TablePlan;
-import org.vanilladb.core.query.algebra.materialize.SortPlan;
 import org.vanilladb.core.query.parse.InsertData;
 import org.vanilladb.core.query.parse.VectorEmbeddingData;
 import org.vanilladb.core.server.VanillaDb;
