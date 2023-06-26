@@ -70,7 +70,6 @@ public class AnnTestbedLoaderProc extends StoredProcedure<AnnTestbedLoaderParamH
         for (String sql : paramHelper.getTableSchemas())
             StoredProcedureUtils.executeUpdate(sql, tx);
 
-        // Skip adding indexes
 
         if (logger.isLoggable(Level.INFO))
             logger.info("Creating indexes...");

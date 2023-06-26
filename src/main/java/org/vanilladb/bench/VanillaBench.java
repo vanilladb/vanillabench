@@ -127,13 +127,13 @@ public class VanillaBench {
 					logger.info("Calculating recall...");
 				SutConnection newConn = getConnection();
 				RemoteTerminalEmulator<?> rte = benchmarker.createRte(newConn, statMgr, 0);
-				if (VanillaBenchParameters.BENCH_TYPE == BenchType.ANN) {
-					AnnRte annRte = ((AnnRte) rte);
-					annRte.executeCalculateRecall(newConn);
-				} else {
-					SiftRte siftRte = ((SiftRte) rte);
-					siftRte.executeCalculateRecall(newConn);
-				}
+				// if (VanillaBenchParameters.BENCH_TYPE == BenchType.ANN) {
+				// 	AnnRte annRte = ((AnnRte) rte);
+				// 	annRte.executeCalculateRecall(newConn);
+				// } else {
+				// 	SiftRte siftRte = ((SiftRte) rte);
+				// 	siftRte.executeCalculateRecall(newConn);
+				// }
 				
 			}
 
